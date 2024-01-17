@@ -1,0 +1,15 @@
+{
+    "env": {
+      "SDK_REGISTRY_TOKEN": "pk.eyJ1IjoiZ29kZmF0aGVyZGVtb24iLCJhIjoiY2xvd24wdWlpMDc4aTJrbW8wNmV3dWFxMCJ9.U9ROHuBL2YNT0JLo9t_zNg"
+    },
+    "name": "Launch development",
+    "program": "lib/main.dart",
+    "request": "launch",
+    "type": "dart",
+    "args": [
+      "--flavor",
+      "dev",
+      "--target",
+      "lib/main.dart"
+    ]
+  }

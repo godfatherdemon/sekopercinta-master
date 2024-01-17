@@ -1,0 +1,85 @@
+name: sekopercinta
+description: A new Flutter application.
+publish_to: 'none'
+version: 1.0.0+14
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.16.0
+  chewie: ^1.0.0
+  video_player: ^2.0.2
+  showcaseview: ^2.0.3
+  lottie: ^2.7.0
+  hive: ^2.0.0
+  hive_flutter: ^1.1.0
+  image: ^3.0.0
+  # flutter_tindercard: any
+  # flutter_tindercard_plus: ^0.0.2
+  hooks_riverpod: ^0.14.0+3
+  hasura_connect: ^4.0.0+4
+  fluttertoast: ^8.0.3
+  audioplayers: ^0.20.1
+  flutter_markdown: ^0.6.1
+  intl: ^0.19.0
+  # geocoder: any
+  # geocoder: ^0.2.1
+  yandex_geocoder: ^2.1.0
+  # mapbox_gl: ^0.16.0
+  # mapbox_gl_web: ^0.16.0
+  permission_handler: ^11.1.0
+  location: ^5.0.3
+  file_picker: ^6.1.1
+  path_provider: ^2.0.1
+  path: ^1.8.3
+  dio: ^5.4.0
+  mime: ^1.0.0
+  camerawesome: ^1.2.1
+  # camerawesome: ^2.0.0+1
+  flutter_exif_rotation: ^0.5.1
+  shimmer: ^3.0.0
+  dotted_border: ^2.0.0
+  pinch_zoom: ^2.0.0
+  google_sign_in: ^6.2.1
+  page_view_sliding_indicator: ^0.0.4
+  http: ^0.13.5
+  url_launcher: ^6.0.9
+  advance_pdf_viewer: ^2.0.1
+
+  cupertino_icons: ^1.0.2
+  # flutter_launcher_icons: ^0.11.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  change_app_package_name: ^1.0.0
+  flutter_launcher_icons: ^0.11.0
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/logo/
+
+  fonts:
+    - family: Biennale
+      fonts:
+        - asset: assets/fonts/Biennale-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Biennale-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Biennale-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Biennale-Bold.ttf
+          weight: 700
+
+flutter_icons:
+  android: true
+  ios: true
+  # image_path: 'assets/icon/img-logo-sekoci.png' # Adjust the path to your app icon

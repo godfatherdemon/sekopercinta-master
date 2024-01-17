@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "498641063782",
+    "project_id": "poin-1582701001242",
+    "storage_bucket": "poin-1582701001242.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498641063782:android:96b014d8ddb3d21b52c2a7",
+        "android_client_info": {
+          "package_name": "id.braga.sekoci"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498641063782-mb48vfkikto0ou0h6ecre5cdj7gfdn7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.braga.sekoci",
+            "certificate_hash": "9fdda019f34ef701fac3fd7bb7e219f46e0cdfb0"
+          }
+        },
+        {
+          "client_id": "498641063782-0isldmigmeldokv517368570pgc6nhan.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_WibAy3HpvvtS5I6eHOHQvW2_lr_UFyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498641063782-0isldmigmeldokv517368570pgc6nhan.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
