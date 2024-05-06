@@ -13,16 +13,16 @@ dependencies:
   chewie: ^1.0.0
   video_player: ^2.0.2
   showcaseview: ^2.0.3
-  lottie: ^2.7.0
+  lottie: ^3.0.0
   hive: ^2.0.0
   hive_flutter: ^1.1.0
-  image: ^3.0.0
+  image: ^4.1.6
   # flutter_tindercard: any
   # flutter_tindercard_plus: ^0.0.2
   hooks_riverpod: ^0.14.0+3
   hasura_connect: ^4.0.0+4
   fluttertoast: ^8.0.3
-  audioplayers: ^0.20.1
+  audioplayers: ^5.2.1
   flutter_markdown: ^0.6.1
   intl: ^0.19.0
   # geocoder: any
@@ -34,10 +34,10 @@ dependencies:
   location: ^5.0.3
   file_picker: ^6.1.1
   path_provider: ^2.0.1
-  path: ^1.8.3
+  path: ^1.8.0
   dio: ^5.4.0
   mime: ^1.0.0
-  camerawesome: ^1.2.1
+  camerawesome: ^2.0.0+1
   # camerawesome: ^2.0.0+1
   flutter_exif_rotation: ^0.5.1
   shimmer: ^3.0.0
@@ -53,11 +53,12 @@ dependencies:
   # flutter_launcher_icons: ^0.11.0
 
 
+  flutter_riverpod: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: ^1.0.0
-  flutter_launcher_icons: ^0.11.0
+  flutter_launcher_icons: ^0.13.1
 
 
 flutter:

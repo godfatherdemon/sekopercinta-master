@@ -8,7 +8,6 @@ import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 
-
 import 'package:sekopercinta/components/custom_button/camera_button.dart';
 
 class CameraPage extends StatefulWidget {
@@ -33,7 +32,8 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   // ValueNotifier<Size?> _photoSize = ValueNotifier(null);
   ValueNotifier<Size> _photoSize =
       ValueNotifier(Size(0, 0)); // Initialize with a default Size
-  ValueNotifier<Sensors> _sensor = ValueNotifier(Sensors.back);
+  ValueNotifier<Sensor> _sensor =
+      ValueNotifier(Sensor.position(SensorPosition.back));
   ValueNotifier<CaptureMode> _captureMode = ValueNotifier(CaptureMode.photo);
   ValueNotifier<bool> _enableAudio = ValueNotifier(true);
   ValueNotifier<CameraOrientations> _orientation =
@@ -114,10 +114,13 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
                               ),
                               IconButton(
                                 onPressed: () {
-                                  if (_sensor.value == Sensors.front) {
-                                    _sensor.value = Sensors.back;
+                                  if (_sensor.value ==
+                                      Sensor.position(SensorPosition.front)) {
+                                    _sensor.value =
+                                        Sensor.position(SensorPosition.back);
                                   } else {
-                                    _sensor.value = Sensors.front;
+                                    _sensor.value =
+                                        Sensor.position(SensorPosition.front);
                                   }
                                 },
                                 icon: Icon(

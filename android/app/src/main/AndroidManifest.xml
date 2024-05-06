@@ -33,7 +33,7 @@
         android:largeHeap="true"
         tools:node="replace">
         <activity
-            android:name="id.braga.sekoci.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

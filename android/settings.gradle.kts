@@ -1,5 +1,7 @@
 // settings.gradle.kts
 
+rootProject.name = "sekopercinta-master"
+
 include(":app")
 
 val localPropertiesFile = File(rootProject.projectDir, "local.properties")
