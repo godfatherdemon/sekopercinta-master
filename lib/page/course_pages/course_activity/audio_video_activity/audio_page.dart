@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sekopercinta_master/providers/activities.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
@@ -18,33 +19,35 @@ class AudioPage extends HookWidget {
   final String title;
   final List<ProgresAktivita> progressAktivitas;
 
-  AudioPage({
+  const AudioPage({
+    super.key,
     required this.id,
     required this.title,
     required this.progressAktivitas,
   });
   @override
   Widget build(BuildContext context) {
-    final _audioPlayer = useState<AudioPlayer>(AudioPlayer());
-    final _currentDuration = useState<Duration>(Duration.zero);
-    final _totalDuration = useState(Duration.zero);
-    final _durationSubscription = useState<StreamSubscription?>(null);
-    final _positionSubscription = useState<StreamSubscription?>(null);
+    final audioPlayer = useState<AudioPlayer>(AudioPlayer());
+    final currentDuration = useState<Duration>(Duration.zero);
+    final totalDuration = useState(Duration.zero);
+    final durationSubscription = useState<StreamSubscription?>(null);
+    final positionSubscription = useState<StreamSubscription?>(null);
 
-    final _isLoading = useState(false);
-    final _isPlaying = useState(false);
-    final _playPauseAnimation =
-        useAnimationController(duration: Duration(milliseconds: 300));
+    final isLoading = useState(false);
+    final isPlaying = useState(false);
+    final playPauseAnimation =
+        useAnimationController(duration: const Duration(milliseconds: 300));
 
-    final _url = useState<String?>(null);
+    final url = useState<String?>(null);
 
-    final _updateProgress = useMemoized(
+    final updateProgress = useMemoized(
         () => () async {
-              _isLoading.value = true;
+              final navigator = Navigator.of(context);
+              isLoading.value = true;
 
-              final currentPosition = _currentDuration.value.inSeconds;
-              final totalDuration = _totalDuration.value.inSeconds;
-              var progress = currentPosition / totalDuration;
+              final currentPosition = currentDuration.value.inSeconds;
+              final totalDurations = totalDuration.value.inSeconds;
+              var progress = currentPosition / totalDurations;
 
               if (totalDuration == 0) {
                 return true;
@@ -60,8 +63,11 @@ class AudioPage extends HookWidget {
                 }
               }
 
-              print(progress);
-              print(id);
+              // print(progress);
+              // print(id);
+              final Logger logger = Logger();
+              logger.d(progress);
+              logger.d(id);
               try {
                 await context.read(activityProvider.notifier).updateProgress(
                       context,
@@ -70,10 +76,12 @@ class AudioPage extends HookWidget {
                       progress,
                     );
 
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                navigator.pop('update');
               } catch (error) {
-                _isLoading.value = false;
-                print('ERROR ${error.toString()}');
+                isLoading.value = false;
+                // print('ERROR ${error.toString()}');
+                logger.d('ERROR ${error.toString()}');
                 return true;
               }
             },
@@ -123,30 +131,32 @@ class AudioPage extends HookWidget {
     // }
 
     useEffect(() {
-      final getActivityAndPlay = () async {
+      getActivityAndPlay() async {
         try {
           final value = await context
               .read(activityProvider.notifier)
               .getActivityContent(context.read(hasuraClientProvider).state, id);
 
-          _url.value = value;
+          url.value = value;
           // await play(); // Make sure to await play
         } catch (error) {
           // Handle the error if necessary
-          print('Error: $error');
+          // print('Error: $error');
+          final Logger logger = Logger();
+          logger.d('Error: $error');
         }
-      };
+      }
 
       // Immediately invoke the asynchronous function inside useEffect
       getActivityAndPlay();
 
       return () {
-        if (_durationSubscription.value != null) {
-          _durationSubscription.value?.cancel();
+        if (durationSubscription.value != null) {
+          durationSubscription.value?.cancel();
         }
 
-        if (_positionSubscription.value != null) {
-          _positionSubscription.value?.cancel();
+        if (positionSubscription.value != null) {
+          positionSubscription.value?.cancel();
         }
       };
     }, []); // Pass an empty dependency list to run the effect only once
@@ -155,8 +165,8 @@ class AudioPage extends HookWidget {
       value: SystemUiOverlayStyle.light,
       child: PopScope(
         onPopInvoked: (bool isPopGesture) async {
-          await _audioPlayer.value.stop();
-          await _updateProgress();
+          await audioPlayer.value.stop();
+          await updateProgress();
         },
         // onWillPop: () async {
         //   await _audioPlayer.value.stop();
@@ -165,8 +175,8 @@ class AudioPage extends HookWidget {
         // },
         child: Scaffold(
           backgroundColor: accentColor,
-          body: _isLoading.value || _url.value == null
-              ? Center(
+          body: isLoading.value || url.value == null
+              ? const Center(
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
@@ -179,15 +189,17 @@ class AudioPage extends HookWidget {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back_ios,
                               color: Colors.white,
                             ),
                             onPressed: () async {
-                              await _audioPlayer.value.stop();
-                              var result = await _updateProgress();
+                              final navigator = Navigator.of(context);
+                              await audioPlayer.value.stop();
+                              var result = await updateProgress();
                               if (result != null && result) {
-                                Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
+                                navigator.pop('stop');
                               }
                             },
                           ),
@@ -229,7 +241,7 @@ class AudioPage extends HookWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${(_currentDuration.value.toString().split('.').first).split(':')[1]}:${(_currentDuration.value.toString().split('.').first).split(':')[2]}',
+                                          '${(currentDuration.value.toString().split('.').first).split(':')[1]}:${(currentDuration.value.toString().split('.').first).split(':')[2]}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -238,7 +250,7 @@ class AudioPage extends HookWidget {
                                               ),
                                         ),
                                         Text(
-                                          '${(_totalDuration.value.toString().split('.').first).split(':')[1]}:${(_totalDuration.value.toString().split('.').first).split(':')[2]}',
+                                          '${(totalDuration.value.toString().split('.').first).split(':')[1]}:${(totalDuration.value.toString().split('.').first).split(':')[2]}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium
@@ -256,16 +268,16 @@ class AudioPage extends HookWidget {
                                       child: LinearProgressIndicator(
                                         minHeight: 8,
                                         valueColor:
-                                            AlwaysStoppedAnimation<Color>(
+                                            const AlwaysStoppedAnimation<Color>(
                                                 primaryDarkColor),
                                         backgroundColor:
                                             primaryDarkColor.withOpacity(0.1),
-                                        value: (_currentDuration
+                                        value: (currentDuration
                                                     .value.inMilliseconds >
                                                 0)
-                                            ? _currentDuration
+                                            ? currentDuration
                                                     .value.inMilliseconds /
-                                                _totalDuration
+                                                totalDuration
                                                     .value.inMilliseconds
                                             : 0.0,
                                       ),
@@ -283,12 +295,12 @@ class AudioPage extends HookWidget {
                                             width: 24,
                                           ),
                                           onTap: () async {
-                                            await _audioPlayer.value.seek(
+                                            await audioPlayer.value.seek(
                                                 Duration(
-                                                    milliseconds:
-                                                        _currentDuration.value
-                                                                .inMilliseconds -
-                                                            10000));
+                                                    milliseconds: currentDuration
+                                                            .value
+                                                            .inMilliseconds -
+                                                        10000));
                                           },
                                         ),
                                         const SizedBox(
@@ -327,7 +339,7 @@ class AudioPage extends HookWidget {
                                             child: Center(
                                               child: AnimatedIcon(
                                                 icon: AnimatedIcons.pause_play,
-                                                progress: _playPauseAnimation,
+                                                progress: playPauseAnimation,
                                                 color: Colors.white,
                                                 semanticLabel: 'Show menu',
                                               ),
@@ -343,22 +355,22 @@ class AudioPage extends HookWidget {
                                             width: 24,
                                           ),
                                           onTap: () async {
-                                            if ((_currentDuration
+                                            if ((currentDuration
                                                         .value.inMilliseconds +
                                                     10000) <
-                                                _totalDuration
+                                                totalDuration
                                                     .value.inMilliseconds) {
-                                              await _audioPlayer.value.seek(
+                                              await audioPlayer.value.seek(
                                                 Duration(
-                                                    milliseconds:
-                                                        _currentDuration.value
-                                                                .inMilliseconds +
-                                                            10000),
+                                                    milliseconds: currentDuration
+                                                            .value
+                                                            .inMilliseconds +
+                                                        10000),
                                               );
                                             } else {
-                                              await _audioPlayer.value.seek(
+                                              await audioPlayer.value.seek(
                                                 Duration(
-                                                    milliseconds: _totalDuration
+                                                    milliseconds: totalDuration
                                                         .value.inMilliseconds),
                                               );
                                             }

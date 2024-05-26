@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/communities_componenets/detail_image.dart';
 import 'package:sekopercinta_master/components/custom_shape/triangle_painter.dart';
 import 'package:sekopercinta_master/components/shimmer_componenet/shimmer_card.dart';
@@ -12,7 +13,7 @@ import 'package:sekopercinta_master/utils/string_extension.dart';
 class CommunityItem extends HookWidget {
   final Komunitas post;
 
-  CommunityItem(this.post);
+  const CommunityItem(this.post, {super.key});
 
   String formatDuration(Duration duration) {
     if (duration.inDays >= 30) {
@@ -32,50 +33,50 @@ class CommunityItem extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _isShowLikePopUp = useState(false);
-    final _animationController =
-        useAnimationController(duration: Duration(milliseconds: 400));
+    final isShowLikePopUp = useState(false);
+    final animationController =
+        useAnimationController(duration: const Duration(milliseconds: 400));
 
-    final _iconAnimationController =
-        useAnimationController(duration: Duration(milliseconds: 1000));
+    final iconAnimationController =
+        useAnimationController(duration: const Duration(milliseconds: 1000));
 
     // final _likeStatus = useState<String>(post.responsKomunitas.isEmpty
     //     ? null
     //     : post.responsKomunitas[0].respons);
 
-    final _likeStatus = useState<String>(
+    final likeStatus = useState<String>(
       post.responsKomunitas.isEmpty
           ? "default_value"
           : post.responsKomunitas[0].respons,
     );
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _sendLikeResponse = useMemoized(
+    final sendLikeResponse = useMemoized(
         () => (String response) async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 await context.read(communitiesProvider.notifier).giveResponse(
                       likeResponse: response,
                       id: post.idKiriman,
                       hasuraConnect: context.read(hasuraClientProvider).state,
                       // isUpdate: _likeStatus.value != null,
-                      isUpdate: _likeStatus.value.isNotEmpty,
+                      isUpdate: likeStatus.value.isNotEmpty,
                     );
-                _likeStatus.value = response;
+                likeStatus.value = response;
                 post.funnyCount++;
 
-                _iconAnimationController.forward();
-                Future.delayed(Duration(seconds: 1)).then(
-                    (value) => _iconAnimationController.reverse(from: 0.5));
+                iconAnimationController.forward();
+                Future.delayed(const Duration(seconds: 1)).then(
+                    (value) => iconAnimationController.reverse(from: 0.5));
               } catch (error) {
-                _isLoading.value = false;
+                isLoading.value = false;
 
-                throw error;
+                rethrow;
               }
 
-              _isLoading.value = false;
+              isLoading.value = false;
             },
         []);
 
@@ -100,7 +101,7 @@ class CommunityItem extends HookWidget {
                               .toString()
                               .contains('http')
                           ? Image.network(
-                              '${post.profilPublik.fotoProfil}',
+                              post.profilPublik.fotoProfil,
                               fit: BoxFit.cover,
                               height: 36,
                               width: 36,
@@ -130,7 +131,8 @@ class CommunityItem extends HookWidget {
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                           Text(
-                            '${formatDuration(DateTime.now().difference(post.dikirimPada))}',
+                            formatDuration(
+                                DateTime.now().difference(post.dikirimPada)),
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ],
@@ -169,7 +171,7 @@ class CommunityItem extends HookWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      child: ShimmerCard(
+                      child: const ShimmerCard(
                         height: 202,
                         width: double.infinity,
                         borderRadius: 6,
@@ -185,12 +187,12 @@ class CommunityItem extends HookWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (!_isShowLikePopUp.value) {
-                          _animationController.forward();
+                        if (!isShowLikePopUp.value) {
+                          animationController.forward();
                         } else {
-                          _animationController.reverse();
+                          animationController.reverse();
                         }
-                        _isShowLikePopUp.value = !_isShowLikePopUp.value;
+                        isShowLikePopUp.value = !isShowLikePopUp.value;
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
@@ -203,7 +205,7 @@ class CommunityItem extends HookWidget {
                             //   width: 18,
                             // ),
                             Image.asset(
-                              'assets/images/ic-${_likeStatus.value}.png',
+                              'assets/images/ic-${likeStatus.value}.png',
                               width: 18,
                             ),
                             const SizedBox(
@@ -226,12 +228,12 @@ class CommunityItem extends HookWidget {
                             //       ),
                             // ),
                             Text(
-                              _likeStatus.value.capitalizeFirstOfEach,
+                              likeStatus.value.capitalizeFirstOfEach,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
                                   ?.copyWith(
-                                    color: Color(0xFF217CE8),
+                                    color: const Color(0xFF217CE8),
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -301,7 +303,7 @@ class CommunityItem extends HookWidget {
                                     : '${post.funnyCount + post.likeCount + post.superCount + post.wowCount}',
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: Color(0xFF7F8C8D),
+                                      color: const Color(0xFF7F8C8D),
                                     ),
                           ),
                         ],
@@ -316,7 +318,7 @@ class CommunityItem extends HookWidget {
         Positioned(
           bottom: 56,
           left: 14,
-          child: Container(
+          child: SizedBox(
             height: 75,
             width: 300,
             child: Align(
@@ -324,8 +326,8 @@ class CommunityItem extends HookWidget {
               child: ScaleTransition(
                 alignment: Alignment.bottomLeft,
                 scale: CurvedAnimation(
-                  parent: _animationController,
-                  curve: Interval(
+                  parent: animationController,
+                  curve: const Interval(
                     0,
                     0.5,
                     curve: Curves.ease,
@@ -343,15 +345,15 @@ class CommunityItem extends HookWidget {
                         horizontal: 16,
                       ),
                       decoration: BoxDecoration(
-                        color: Color(0xFFE3E7EA),
+                        color: const Color(0xFFE3E7EA),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
                           ScaleTransition(
                             scale: CurvedAnimation(
-                              parent: _animationController,
-                              curve: Interval(
+                              parent: animationController,
+                              curve: const Interval(
                                 0.5,
                                 0.625,
                                 curve: Curves.ease,
@@ -359,9 +361,9 @@ class CommunityItem extends HookWidget {
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                _sendLikeResponse('like');
-                                _isShowLikePopUp.value = false;
-                                _animationController.reverse();
+                                sendLikeResponse('like');
+                                isShowLikePopUp.value = false;
+                                animationController.reverse();
                               },
                               child: Container(
                                 width: 40,
@@ -384,8 +386,8 @@ class CommunityItem extends HookWidget {
                           ),
                           ScaleTransition(
                             scale: CurvedAnimation(
-                              parent: _animationController,
-                              curve: Interval(
+                              parent: animationController,
+                              curve: const Interval(
                                 0.625,
                                 0.75,
                                 curve: Curves.ease,
@@ -393,10 +395,12 @@ class CommunityItem extends HookWidget {
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                print('super');
-                                _sendLikeResponse('super');
-                                _isShowLikePopUp.value = false;
-                                _animationController.reverse();
+                                // print('super');
+                                final Logger logger = Logger();
+                                logger.d('super');
+                                sendLikeResponse('super');
+                                isShowLikePopUp.value = false;
+                                animationController.reverse();
                               },
                               child: Container(
                                 width: 40,
@@ -419,8 +423,8 @@ class CommunityItem extends HookWidget {
                           ),
                           ScaleTransition(
                             scale: CurvedAnimation(
-                              parent: _animationController,
-                              curve: Interval(
+                              parent: animationController,
+                              curve: const Interval(
                                 0.75,
                                 0.875,
                                 curve: Curves.ease,
@@ -428,9 +432,9 @@ class CommunityItem extends HookWidget {
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                _sendLikeResponse('wow');
-                                _isShowLikePopUp.value = false;
-                                _animationController.reverse();
+                                sendLikeResponse('wow');
+                                isShowLikePopUp.value = false;
+                                animationController.reverse();
                               },
                               child: Container(
                                 width: 40,
@@ -453,8 +457,8 @@ class CommunityItem extends HookWidget {
                           ),
                           ScaleTransition(
                             scale: CurvedAnimation(
-                              parent: _animationController,
-                              curve: Interval(
+                              parent: animationController,
+                              curve: const Interval(
                                 0.875,
                                 1,
                                 curve: Curves.ease,
@@ -462,11 +466,13 @@ class CommunityItem extends HookWidget {
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                print('funny');
-                                _sendLikeResponse('funny');
+                                // print('funny');
+                                final Logger logger = Logger();
+                                logger.d('funny');
+                                sendLikeResponse('funny');
 
-                                _isShowLikePopUp.value = false;
-                                _animationController.reverse();
+                                isShowLikePopUp.value = false;
+                                animationController.reverse();
                               },
                               child: Container(
                                 width: 40,
@@ -493,11 +499,11 @@ class CommunityItem extends HookWidget {
                         quarterTurns: 90,
                         child: CustomPaint(
                           painter: TrianglePainter(
-                            strokeColor: Color(0xFFE3E7EA),
+                            strokeColor: const Color(0xFFE3E7EA),
                             strokeWidth: 10,
                             paintingStyle: PaintingStyle.fill,
                           ),
-                          child: Container(
+                          child: const SizedBox(
                             height: 13,
                             width: 19,
                           ),
@@ -510,32 +516,28 @@ class CommunityItem extends HookWidget {
             ),
           ),
         ),
-        if (_isLoading.value)
-          Positioned.fill(
-            child: Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+        if (isLoading.value)
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           ),
         Positioned.fill(
-          child: Container(
-            child: Center(
-              child: ScaleTransition(
-                scale: CurvedAnimation(
-                  parent: _iconAnimationController,
-                  curve: Curves.elasticOut,
-                ),
-                // child: Image.asset(
-                //   _likeStatus.value == null
-                //       ? 'assets/images/ic-like-placeholder.png'
-                //       : 'assets/images/ic-${_likeStatus.value}.png',
-                //   width: 100,
-                // ),
-                child: Image.asset(
-                  'assets/images/ic-${_likeStatus.value}.png',
-                  width: 100,
-                ),
+          child: Center(
+            child: ScaleTransition(
+              scale: CurvedAnimation(
+                parent: iconAnimationController,
+                curve: Curves.elasticOut,
+              ),
+              // child: Image.asset(
+              //   _likeStatus.value == null
+              //       ? 'assets/images/ic-like-placeholder.png'
+              //       : 'assets/images/ic-${_likeStatus.value}.png',
+              //   width: 100,
+              // ),
+              child: Image.asset(
+                'assets/images/ic-${likeStatus.value}.png',
+                width: 100,
               ),
             ),
           ),

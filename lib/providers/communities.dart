@@ -1,6 +1,7 @@
 // import 'package:flutter/material.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 class Komunitas {
   Komunitas({
@@ -109,13 +110,15 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print('PRINT $responseData');
+    // print('PRINT $responseData');
+    final Logger logger = Logger();
+    logger.d('PRINT $responseData');
 
     List<Komunitas> loadedData = [];
 
-    (responseData['komunitas_saya'] as List<dynamic>).forEach((element) {
+    for (var element in (responseData['komunitas_saya'] as List<dynamic>)) {
       loadedData.add(Komunitas.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }
@@ -150,13 +153,15 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d('PRINT $responseData');
 
     List<Komunitas> loadedData = [];
 
-    (responseData['komunitas'] as List<dynamic>).forEach((element) {
+    for (var element in (responseData['komunitas'] as List<dynamic>)) {
       loadedData.add(Komunitas.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }
@@ -185,6 +190,8 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d('PRINT $responseData');
   }
 }

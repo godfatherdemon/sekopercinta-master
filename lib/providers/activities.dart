@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:mime/mime.dart';
 import 'package:sekopercinta_master/providers/classes.dart';
 
@@ -85,7 +86,9 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d(responseData);
 
     return responseData['sumber_aktivitas_by_pk']['konten'];
   }
@@ -132,7 +135,9 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d(responseData);
 
     return responseData['resume_aktivitas_by_pk'];
   }
@@ -146,7 +151,10 @@ query MyQuery {
 
       final classState = context.read(classProvider.notifier);
 
-      print(
+      // print(
+      //     '==================> ini aktivitas terakhir di pelajaran ${lesson.idPelajaran}');
+      final Logger logger = Logger();
+      logger.d(
           '==================> ini aktivitas terakhir di pelajaran ${lesson.idPelajaran}');
 
       await classState.updateProgressLesson(hasuraConnect, lesson.idPelajaran);
@@ -155,7 +163,10 @@ query MyQuery {
           .where((element) => id == element.idAktivitas)
           .first
           .isInLastLesson) {
-        print(
+        // print(
+        //     '==================> ini aktivitas di lesson terakhir di kelas ${lesson.idKelas}');
+        final Logger logger = Logger();
+        logger.d(
             '==================> ini aktivitas di lesson terakhir di kelas ${lesson.idKelas}');
 
         isLast = true;
@@ -190,7 +201,9 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d(responseData);
 
     responseData['insert_progres_aktivitas_one']['aktivitas']
         ['is_in_last_lesson'] = isLast;
@@ -227,7 +240,9 @@ mutation MyMutation {
 
     final responseData = response['data'];
 
-    print('SEND COMPLETE $responseData');
+    // print('SEND COMPLETE $responseData');
+    final Logger logger = Logger();
+    logger.d('SEND COMPLETE $responseData');
   }
 
   Future<void> sendCommunityImage(
@@ -246,6 +261,8 @@ mutation MyMutation {
 
     final responseData = response['data'];
 
-    print('SEND COMPLETE $responseData');
+    // print('SEND COMPLETE $responseData');
+    final Logger logger = Logger();
+    logger.d('SEND COMPLETE $responseData');
   }
 }

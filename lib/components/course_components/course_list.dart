@@ -12,13 +12,15 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class CourseList extends HookWidget {
+  const CourseList({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _isLoading = useState(true);
-    final _classes = useProvider(classWatcher);
+    final isLoading = useState(true);
+    final classes = useProvider(classWatcher);
 
-    final _tabController = useTabController(initialLength: 2);
-    final _activeIndex = useState(0);
+    final tabController = useTabController(initialLength: 2);
+    final activeIndex = useState(0);
 
     useEffect(() {
       Future.delayed(Duration.zero).then((_) {
@@ -29,15 +31,15 @@ class CourseList extends HookWidget {
 
     useEffect(() {
       Future.delayed(Duration.zero).then((_) {
-        _tabController.addListener(() {
-          _activeIndex.value = _tabController.index;
+        tabController.addListener(() {
+          activeIndex.value = tabController.index;
         });
 
         context
             .read(classProvider.notifier)
             .getClasses(context.read(hasuraClientProvider).state)
             .then((_) {
-          _isLoading.value = false;
+          isLoading.value = false;
 
           if (context.read(authProvider.notifier).isFirstTimeAccessCourse()) {
             ShowCaseWidget.of(context)
@@ -47,7 +49,7 @@ class CourseList extends HookWidget {
       });
 
       return;
-    }, [_activeIndex.value]);
+    }, [activeIndex.value]);
 
     return Column(
       children: [
@@ -59,13 +61,13 @@ class CourseList extends HookWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10),
-            child: Container(
+            child: SizedBox(
               height: 40,
               width: double.infinity,
               child: TabBar(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 indicatorColor: primaryColor,
-                indicator: MD2Indicator(
+                indicator: const MD2Indicator(
                   indicatorSize: MD2IndicatorSize.full,
                   indicatorHeight: 4.0,
                   indicatorColor: primaryColor,
@@ -73,12 +75,12 @@ class CourseList extends HookWidget {
                 labelStyle: Theme.of(context).textTheme.titleMedium,
                 unselectedLabelColor: primaryBlack,
                 labelColor: primaryColor,
-                controller: _tabController,
+                controller: tabController,
                 onTap: (val) {
                   context.read(moduleProvider).state =
                       val == 0 ? 'Dasar' : 'Tematik';
-                  _activeIndex.value = val;
-                  _isLoading.value = true;
+                  activeIndex.value = val;
+                  isLoading.value = true;
                 },
                 tabs: [
                   Tab(
@@ -88,7 +90,7 @@ class CourseList extends HookWidget {
                       children: [
                         Image.asset(
                           'assets/images/ic-mark.png',
-                          color: _activeIndex.value == 0
+                          color: activeIndex.value == 0
                               ? primaryColor
                               : primaryBlack,
                           width: 20,
@@ -104,10 +106,10 @@ class CourseList extends HookWidget {
                               .textTheme
                               .bodyLarge
                               ?.copyWith(
-                                  color: _activeIndex.value == 0
+                                  color: activeIndex.value == 0
                                       ? primaryColor
                                       : primaryBlack,
-                                  fontWeight: _activeIndex.value == 0
+                                  fontWeight: activeIndex.value == 0
                                       ? FontWeight.w500
                                       : FontWeight.w400),
                         ),
@@ -121,7 +123,7 @@ class CourseList extends HookWidget {
                       children: [
                         Image.asset(
                           'assets/images/ic-mark.png',
-                          color: _activeIndex.value == 1
+                          color: activeIndex.value == 1
                               ? primaryColor
                               : primaryBlack,
                           width: 20,
@@ -137,10 +139,10 @@ class CourseList extends HookWidget {
                               .textTheme
                               .bodyLarge
                               ?.copyWith(
-                                  color: _activeIndex.value == 1
+                                  color: activeIndex.value == 1
                                       ? primaryColor
                                       : primaryBlack,
-                                  fontWeight: _activeIndex.value == 1
+                                  fontWeight: activeIndex.value == 1
                                       ? FontWeight.w500
                                       : FontWeight.w400),
                         ),
@@ -155,12 +157,12 @@ class CourseList extends HookWidget {
         const SizedBox(
           height: 16,
         ),
-        _isLoading.value
+        isLoading.value
             ? ListView.separated(
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(0),
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) => ShimmerCard(
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) => const ShimmerCard(
                   height: 272,
                   width: double.infinity,
                   borderRadius: 10,
@@ -187,10 +189,10 @@ class CourseList extends HookWidget {
             : ListView.separated(
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(0),
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _classes.length,
-                itemBuilder: (context, index) => CourseListItem(_classes[index],
-                    _classes[index == 0 ? 0 : index - 1], index),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: classes.length,
+                itemBuilder: (context, index) => CourseListItem(
+                    classes[index], classes[index == 0 ? 0 : index - 1], index),
                 separatorBuilder: (context, index) => Stack(
                   clipBehavior: Clip.none,
                   children: [

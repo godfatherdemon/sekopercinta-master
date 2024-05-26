@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-// import 'package:sekopercinta/components/custom_app_bar/pop_app_bar.dart';
-// import 'package:sekopercinta/page/auth_pages/sign_up_setup_pages/setup_education_certificate_page.dart';
+// import 'package:sekopercinta_master/components/custom_app_bar/pop_app_bar.dart';
+// import 'package:sekopercinta_master/page/auth_pages/sign_up_setup_pages/setup_education_certificate_page.dart';
 import 'package:sekopercinta_master/page/auth_pages/sign_up_setup_pages/setup_education_page.dart';
 import 'package:sekopercinta_master/page/auth_pages/sign_up_setup_pages/setup_history_page.dart';
 import 'package:sekopercinta_master/page/auth_pages/sign_up_setup_pages/setup_profile_page.dart';

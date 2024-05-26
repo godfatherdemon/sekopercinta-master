@@ -47,9 +47,10 @@ query MyQuery {
 
     List<Facilitator> loadedData = [];
 
-    (responseData['get_user_facilitator'] as List<dynamic>).forEach((element) {
+    for (var element
+        in (responseData['get_user_facilitator'] as List<dynamic>)) {
       loadedData.add(Facilitator.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }

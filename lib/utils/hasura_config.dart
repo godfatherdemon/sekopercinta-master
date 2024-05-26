@@ -40,7 +40,7 @@ class TokenInterceptor extends Interceptor {
       ref.read(userDataProvider.notifier).resetUserData();
 
       navigatorKey.currentState?.pushAndRemoveUntil(
-        createRoute(page: BottomNavPage()),
+        createRoute(page: const BottomNavPage()),
         (route) => false,
       );
       Fluttertoast.showToast(

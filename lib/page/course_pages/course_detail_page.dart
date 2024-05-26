@@ -14,73 +14,76 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'course_discussion/course_discussion_tab.dart';
 
 class CourseDetailPage extends HookWidget {
+  const CourseDetailPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _courseId = (ModalRoute.of(context)?.settings.arguments
+    final courseId = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['id'];
-    final _modul = (ModalRoute.of(context)?.settings.arguments
+    final modul = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['modul'];
-    final _index = (ModalRoute.of(context)?.settings.arguments
+    final index = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['index'];
-    final _tabIndex = (ModalRoute.of(context)?.settings.arguments
+    final tabIndex = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['tab_index'];
-    final bool _isLastLessons = (ModalRoute.of(context)?.settings.arguments
+    final bool isLastLessons = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['isLastLessons'];
     // final String _lessonImage = (ModalRoute.of(context)?.settings.arguments
     //     as Map<String, dynamic>)['lesson_image'];
-    final String? _lessonImage = (ModalRoute.of(context)?.settings.arguments
+    final String? lessonImage = (ModalRoute.of(context)?.settings.arguments
         as Map<String, dynamic>)['lesson_image'];
 
-    final _lessonData = useState<Pelajaran?>(null);
-    final _isLoading = useState(false);
+    final lessonData = useState<Pelajaran?>(null);
+    final isLoading = useState(false);
 
-    final _tabController =
-        useTabController(initialLength: 4, initialIndex: _tabIndex);
-    final _activeIndex = useState(0);
+    final tabController =
+        useTabController(initialLength: 4, initialIndex: tabIndex);
+    final activeIndex = useState(0);
 
-    final _totalSecond = useState(0);
-    final _totalMinute = useState(0);
-    final _totalDuration = useState<String>('00:00:00');
-    final _totalArticle = useState(0);
-    final _totalActivityGames = useState(0);
+    final totalSecond = useState(0);
+    final totalMinute = useState(0);
+    final totalDuration = useState<String>('00:00:00');
+    final totalArticle = useState(0);
+    final totalActivityGames = useState(0);
 
-    final _getActivity = useMemoized(
+    final getActivity = useMemoized(
         () => () async {
               await context.read(lessonProvider.notifier).getLessons(
                     context.read(hasuraClientProvider).state,
-                    _courseId,
-                    _isLastLessons,
+                    courseId,
+                    isLastLessons,
                   );
 
-              _lessonData.value = context.read(lessonProvider);
+              // lessonData.value = context.read(lessonProvider);
+              lessonData.value = lessonProvider as Pelajaran?;
             },
         []);
 
     useEffect(
       () {
-        _tabController.addListener(() {
-          _activeIndex.value = _tabController.index;
+        tabController.addListener(() {
+          activeIndex.value = tabController.index;
         });
-        _isLoading.value = true;
-        _getActivity().then((value) {
-          _isLoading.value = false;
+        isLoading.value = true;
+        getActivity().then((value) {
+          isLoading.value = false;
 
-          for (var lesson in _lessonData.value!.aktivitas) {
+          for (var lesson in lessonData.value!.aktivitas) {
             if (lesson.jenisAktivitas == 'article') {
-              _totalArticle.value++;
+              totalArticle.value++;
             } else if (lesson.jenisAktivitas == 'audio' ||
                 lesson.jenisAktivitas == 'video') {
               final time = DateTime.parse(
                   '2012-02-27 ${lesson.sumberAktivitas[0].durasiKonten}');
-              _totalSecond.value = _totalSecond.value + time.second;
-              _totalMinute.value = _totalMinute.value + time.minute;
+              totalSecond.value = totalSecond.value + time.second;
+              totalMinute.value = totalMinute.value + time.minute;
               // _totalDuration.value.add(Duration(hours: ))
             } else {
-              _totalActivityGames.value++;
+              totalActivityGames.value++;
             }
           }
 
-          _totalDuration.value = '${_totalMinute.value}:${_totalSecond.value}';
+          totalDuration.value = '${totalMinute.value}:${totalSecond.value}';
         });
 
         return;
@@ -106,7 +109,7 @@ class CourseDetailPage extends HookWidget {
               leading: Tooltip(
                 message: 'Back',
                 child: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
                     size: 18,
@@ -120,7 +123,7 @@ class CourseDetailPage extends HookWidget {
               expandedHeight: 310.0,
               forceElevated: innerBoxIsScrolled,
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -128,25 +131,25 @@ class CourseDetailPage extends HookWidget {
               ),
               flexibleSpace: Hero(
                 // tag: _lessonImage,
-                tag: _lessonImage ?? 'defaultTagValue',
+                tag: lessonImage ?? 'defaultTagValue',
                 child: Container(
                   height: 330.0,
                   decoration: BoxDecoration(
-                    gradient: _index == 0
+                    gradient: index == 0
                         ? gradientA
-                        : _index == 1
+                        : index == 1
                             ? gradientB
-                            : _index == 2
+                            : index == 2
                                 ? gradientC
                                 : gradientD,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
                     ),
                   ),
                   padding: const EdgeInsets.only(top: 60),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
                     ),
@@ -155,7 +158,7 @@ class CourseDetailPage extends HookWidget {
                         children: [
                           Positioned.fill(
                             child: SingleChildScrollView(
-                              physics: NeverScrollableScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               child: SizedBox(
                                 height: 280,
                                 child: Padding(
@@ -166,7 +169,7 @@ class CourseDetailPage extends HookWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Modul $_modul',
+                                        'Modul $modul',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall
@@ -178,7 +181,7 @@ class CourseDetailPage extends HookWidget {
                                       const SizedBox(
                                         height: 6,
                                       ),
-                                      _lessonData.value == null
+                                      lessonData.value == null
                                           ? ShimmerCard(
                                               height: 68,
                                               width: double.infinity,
@@ -189,7 +192,7 @@ class CourseDetailPage extends HookWidget {
                                                   .withOpacity(0.2),
                                             )
                                           : Text(
-                                              _lessonData.value!.namaPelajaran,
+                                              lessonData.value!.namaPelajaran,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .headlineSmall
@@ -210,7 +213,7 @@ class CourseDetailPage extends HookWidget {
                                             width: 8,
                                           ),
                                           Text(
-                                            '${_totalDuration.value} Menit Audio Visual',
+                                            '${totalDuration.value} Menit Audio Visual',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -234,7 +237,7 @@ class CourseDetailPage extends HookWidget {
                                             width: 8,
                                           ),
                                           Text(
-                                            '${_totalArticle.value} Materi Bacaan',
+                                            '${totalArticle.value} Materi Bacaan',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -258,7 +261,7 @@ class CourseDetailPage extends HookWidget {
                                             width: 8,
                                           ),
                                           Text(
-                                            '${_totalActivityGames.value} Aktivitas',
+                                            '${totalActivityGames.value} Aktivitas',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
@@ -283,13 +286,13 @@ class CourseDetailPage extends HookWidget {
                           Positioned(
                             bottom: -40,
                             right: -40,
-                            child: _lessonImage != null
+                            child: lessonImage != null
                                 ? Image.network(
-                                    _lessonImage,
+                                    lessonImage,
                                     width: 200,
                                     height: 200,
                                   )
-                                : SizedBox(),
+                                : const SizedBox(),
                           ),
                         ],
                       ),
@@ -304,7 +307,7 @@ class CourseDetailPage extends HookWidget {
                 child: Container(
                   color: Colors.white,
                   child: TabBar(
-                    indicator: MD2Indicator(
+                    indicator: const MD2Indicator(
                       indicatorSize: MD2IndicatorSize.normal,
                       indicatorHeight: 4.0,
                       indicatorColor: primaryColor,
@@ -312,9 +315,9 @@ class CourseDetailPage extends HookWidget {
                     labelStyle: Theme.of(context).textTheme.bodyLarge,
                     labelColor: primaryColor,
                     unselectedLabelColor: primaryBlack,
-                    controller: _tabController,
+                    controller: tabController,
                     isScrollable: true,
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     tabs: [
                       Tab(
                         iconMargin: const EdgeInsets.all(0),
@@ -322,7 +325,7 @@ class CourseDetailPage extends HookWidget {
                           children: [
                             Image.asset(
                               'assets/images/ic-mark.png',
-                              color: _activeIndex.value == 0
+                              color: activeIndex.value == 0
                                   ? primaryColor
                                   : primaryBlack,
                               width: 20,
@@ -336,10 +339,10 @@ class CourseDetailPage extends HookWidget {
                                   .textTheme
                                   .bodyLarge
                                   ?.copyWith(
-                                      color: _activeIndex.value == 0
+                                      color: activeIndex.value == 0
                                           ? primaryColor
                                           : primaryBlack,
-                                      fontWeight: _activeIndex.value == 0
+                                      fontWeight: activeIndex.value == 0
                                           ? FontWeight.w500
                                           : FontWeight.w400),
                             ),
@@ -352,7 +355,7 @@ class CourseDetailPage extends HookWidget {
                           children: [
                             Image.asset(
                               'assets/images/ic-games-outlined.png',
-                              color: _activeIndex.value == 1
+                              color: activeIndex.value == 1
                                   ? primaryColor
                                   : primaryBlack,
                               width: 20,
@@ -366,10 +369,10 @@ class CourseDetailPage extends HookWidget {
                                   .textTheme
                                   .bodyLarge
                                   ?.copyWith(
-                                      color: _activeIndex.value == 1
+                                      color: activeIndex.value == 1
                                           ? primaryColor
                                           : primaryBlack,
-                                      fontWeight: _activeIndex.value == 1
+                                      fontWeight: activeIndex.value == 1
                                           ? FontWeight.w500
                                           : FontWeight.w400),
                             ),
@@ -382,7 +385,7 @@ class CourseDetailPage extends HookWidget {
                           children: [
                             Image.asset(
                               'assets/images/ic-mark.png',
-                              color: _activeIndex.value == 2
+                              color: activeIndex.value == 2
                                   ? primaryColor
                                   : primaryBlack,
                               width: 20,
@@ -396,10 +399,10 @@ class CourseDetailPage extends HookWidget {
                                   .textTheme
                                   .bodyLarge
                                   ?.copyWith(
-                                      color: _activeIndex.value == 2
+                                      color: activeIndex.value == 2
                                           ? primaryColor
                                           : primaryBlack,
-                                      fontWeight: _activeIndex.value == 2
+                                      fontWeight: activeIndex.value == 2
                                           ? FontWeight.w500
                                           : FontWeight.w400),
                             ),
@@ -412,7 +415,7 @@ class CourseDetailPage extends HookWidget {
                           children: [
                             Image.asset(
                               'assets/images/ic-discuss.png',
-                              color: _activeIndex.value == 3
+                              color: activeIndex.value == 3
                                   ? primaryColor
                                   : primaryBlack,
                               width: 20,
@@ -426,10 +429,10 @@ class CourseDetailPage extends HookWidget {
                                   .textTheme
                                   .bodyLarge
                                   ?.copyWith(
-                                      color: _activeIndex.value == 3
+                                      color: activeIndex.value == 3
                                           ? primaryColor
                                           : primaryBlack,
-                                      fontWeight: _activeIndex.value == 3
+                                      fontWeight: activeIndex.value == 3
                                           ? FontWeight.w500
                                           : FontWeight.w400),
                             ),
@@ -444,13 +447,13 @@ class CourseDetailPage extends HookWidget {
           ];
         },
         body: TabBarView(
-          controller: _tabController,
-          physics: BouncingScrollPhysics(),
+          controller: tabController,
+          physics: const BouncingScrollPhysics(),
           children: [
-            CourseIntroductionTab(_lessonData.value!),
-            CourseActiveTab(_lessonData.value!),
-            CourseAttachmentTab(),
-            CourseDiscussionTab(_lessonData.value!),
+            CourseIntroductionTab(lessonData.value!),
+            CourseActiveTab(lessonData.value!),
+            const CourseAttachmentTab(),
+            CourseDiscussionTab(lessonData.value!),
           ],
         ),
       ),

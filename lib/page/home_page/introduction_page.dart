@@ -10,10 +10,10 @@ class IntroductionPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _doc = useState<PDFDocument?>(null);
+    final doc = useState<PDFDocument?>(null);
     useEffect(() {
       PDFDocument.fromAsset('assets/images/sk-gubernur.pdf').then((value) {
-        _doc.value = value;
+        doc.value = value;
       });
 
       return;
@@ -22,7 +22,7 @@ class IntroductionPage extends HookWidget {
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -38,7 +38,7 @@ class IntroductionPage extends HookWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(createRoute(
-                        page: FullScreenVideo(
+                        page: const FullScreenVideo(
                       url:
                           'https://webgeocreate.s3.ap-southeast-1.amazonaws.com/sekoper-cinta/home-assets/sekopercinta.mp4',
                       id: '',
@@ -136,11 +136,11 @@ class IntroductionPage extends HookWidget {
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
-                if (_doc.value != null)
+                if (doc.value != null)
                   const SizedBox(
                     height: 38,
                   ),
-                if (_doc.value != null)
+                if (doc.value != null)
                   Text(
                     'SK Gubernur Jawa Barat',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -148,17 +148,17 @@ class IntroductionPage extends HookWidget {
                           fontWeight: FontWeight.w600,
                         ),
                   ),
-                if (_doc.value != null)
+                if (doc.value != null)
                   const SizedBox(
                     height: 12,
                   ),
-                if (_doc.value != null)
+                if (doc.value != null)
                   SizedBox(
                     width: double.infinity,
                     height: 500,
                     child: PDFViewer(
                       showPicker: false,
-                      document: _doc.value!,
+                      document: doc.value!,
                     ),
                   ),
                 const SizedBox(

@@ -8,34 +8,40 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sekopercinta_master/utils/hasura_config.dart';
 
 class ChangePasswordPage extends HookWidget {
+  const ChangePasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _passTextEditingController = useTextEditingController();
-    final _oldPassword = useState<String?>(null);
-    final _newPassword = useState<String?>(null);
+    final formKey = useState(GlobalKey<FormState>());
+    final passTextEditingController = useTextEditingController();
+    final oldPassword = useState<String?>(null);
+    final newPassword = useState<String?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
-              if (!_formKey.value.currentState!.validate()) {
+              final navigator = Navigator.of(context);
+
+              if (!formKey.value.currentState!.validate()) {
                 return;
               }
 
-              _formKey.value.currentState?.save();
-              _isLoading.value = true;
+              formKey.value.currentState?.save();
+              isLoading.value = true;
 
               try {
                 await context.read(authProvider.notifier).changePassword(
-                      _newPassword.value ?? 'defaultPassword',
-                      _oldPassword.value ?? 'defaultPassword',
+                      newPassword.value ?? 'defaultPassword',
+                      oldPassword.value ?? 'defaultPassword',
                       context.read(hasuraClientProvider).state,
                     );
-                Navigator.of(context).pop('edit');
+                // Navigator.of(context).pop('edit');
+                // var navigator;
+                navigator.pop('edit');
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
@@ -53,7 +59,7 @@ class ChangePasswordPage extends HookWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             size: 16,
             color: primaryBlack,
@@ -61,7 +67,7 @@ class ChangePasswordPage extends HookWidget {
         ),
       ),
       body: Form(
-        key: _formKey.value,
+        key: formKey.value,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Stack(
@@ -105,12 +111,13 @@ class ChangePasswordPage extends HookWidget {
                                 obscureText: true,
                                 maxLine: 1,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Password lama tidak boleh kosong';
                                   }
+                                  return null;
                                 },
                                 onSaved: (value) {
-                                  _oldPassword.value = value;
+                                  oldPassword.value = value;
                                 },
                                 initialValue: '',
                                 focusNode: FocusNode(),
@@ -118,7 +125,7 @@ class ChangePasswordPage extends HookWidget {
                                 onChanged: (string) {},
                                 onTap: () {},
                                 // suffixIcon: Container(),
-                                suffixIcon: Icon(Icons.verified_user),
+                                suffixIcon: const Icon(Icons.verified_user),
                                 textEditingController: TextEditingController(),
                               ),
                               const SizedBox(
@@ -127,19 +134,20 @@ class ChangePasswordPage extends HookWidget {
                               BorderedFormField(
                                 hint: 'Password baru',
                                 textEditingController:
-                                    _passTextEditingController,
+                                    passTextEditingController,
                                 obscureText: true,
                                 maxLine: 1,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Password baru tidak boleh kosong';
                                   }
                                   if (value.length < 8) {
                                     return 'Password harus 8 huruf atau lebih';
                                   }
+                                  return null;
                                 },
                                 onSaved: (value) {
-                                  _newPassword.value = value;
+                                  newPassword.value = value;
                                 },
                                 initialValue: '',
                                 focusNode: FocusNode(),
@@ -165,7 +173,7 @@ class ChangePasswordPage extends HookWidget {
                                             fontWeight: FontWeight.w700,
                                           ),
                                     ),
-                                    TextSpan(
+                                    const TextSpan(
                                       text: ' dengan',
                                     ),
                                     TextSpan(
@@ -188,19 +196,19 @@ class ChangePasswordPage extends HookWidget {
                                 obscureText: true,
                                 maxLine: 1,
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value!.isEmpty) {
                                     return 'Password tidak boleh kosong';
                                   }
-                                  if (value !=
-                                      _passTextEditingController.text) {
+                                  if (value != passTextEditingController.text) {
                                     return 'Password tidak sesuai';
                                   }
                                   if (value.length < 8) {
                                     return 'Password harus 8 huruf atau lebih';
                                   }
+                                  return null;
                                 },
                                 textEditingController:
-                                    _passTextEditingController,
+                                    passTextEditingController,
                                 initialValue: '',
                                 focusNode: FocusNode(),
                                 onFieldSubmitted: (string) {},
@@ -218,8 +226,8 @@ class ChangePasswordPage extends HookWidget {
                       ),
                       FillButton(
                         text: 'Simpan',
-                        isLoading: _isLoading.value,
-                        onTap: _submit,
+                        isLoading: isLoading.value,
+                        onTap: submit,
                         leading: Container(),
                       ),
                     ],

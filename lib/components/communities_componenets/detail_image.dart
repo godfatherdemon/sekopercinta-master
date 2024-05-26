@@ -7,11 +7,12 @@ import 'package:sekopercinta_master/providers/communities.dart';
 class DetailImage extends HookWidget {
   final Komunitas post;
 
-  DetailImage(this.post);
+  const DetailImage(this.post, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return PinchZoom(
+      maxScale: 2.5,
       child: Center(
         child: Image.network(
           post.foto.replaceFirst('small/', ''),
@@ -38,7 +39,7 @@ class DetailImage extends HookWidget {
                           width: 24,
                           height: 24,
                           padding: const EdgeInsets.all(4),
-                          child: Center(
+                          child: const Center(
                             child: Icon(
                               Icons.close,
                               color: Colors.black, // Use your preferred color
@@ -52,8 +53,8 @@ class DetailImage extends HookWidget {
                 ],
               );
             } else {
-              return Padding(
-                padding: const EdgeInsets.all(20.0),
+              return const Padding(
+                padding: EdgeInsets.all(20.0),
                 child: ShimmerCard(
                   height: 202,
                   width: double.infinity,
@@ -64,8 +65,6 @@ class DetailImage extends HookWidget {
           },
         ),
       ),
-      // resetDuration: const Duration(milliseconds: 100),
-      maxScale: 2.5,
     );
   }
 }

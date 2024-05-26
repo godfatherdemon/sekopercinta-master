@@ -4,7 +4,7 @@ import 'package:sekopercinta_master/utils/constants.dart';
 
 class LoginFirstPage extends StatelessWidget {
   final ValueNotifier<int> _activeIndex;
-  LoginFirstPage(this._activeIndex);
+  const LoginFirstPage(this._activeIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +40,18 @@ class LoginFirstPage extends StatelessWidget {
                   ),
                 ],
               ),
-              FillButton(
-                text: 'Masuk',
-                onTap: () {
+              // FillButton(
+              //   text: 'Masuk',
+              //   onTap: () {
+              //     _activeIndex.value = 3;
+              //   },
+              //   leading: Container(),
+              // ),
+              ElevatedButton(
+                onPressed: () {
                   _activeIndex.value = 3;
                 },
-                leading: Container(),
+                child: const Text('Masuk'),
               ),
             ],
           ),

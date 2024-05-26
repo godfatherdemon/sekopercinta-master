@@ -13,7 +13,8 @@ class FinishActivityPage extends StatelessWidget {
   final List<Pertanyaan> questions;
   final List<String> answers;
 
-  FinishActivityPage({
+  const FinishActivityPage({
+    super.key,
     required this.activity,
     required this.questions,
     required this.answers,

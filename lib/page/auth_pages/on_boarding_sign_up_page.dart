@@ -10,14 +10,17 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class OnBoardingSignUpPage extends HookWidget {
+  const OnBoardingSignUpPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _signUpData = ModalRoute.of(context)?.settings.arguments;
-    final _isLoading = useState(false);
+    final signUpData = ModalRoute.of(context)?.settings.arguments;
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
       () => () async {
-        _isLoading.value = true;
+        final navigator = Navigator.of(context);
+        isLoading.value = true;
 
         // try {
         //   await context.read(authProvider.notifier).login(
@@ -31,9 +34,9 @@ class OnBoardingSignUpPage extends HookWidget {
 
         try {
           // Ensure _signUpData is a Map<String, String>
-          if (_signUpData is Map<String, String>) {
+          if (signUpData is Map<String, String>) {
             await context.read(authProvider.notifier).login(
-                  _signUpData,
+                  signUpData,
                   context.read(hasuraClientProvider).state,
                 );
           } else {
@@ -41,12 +44,17 @@ class OnBoardingSignUpPage extends HookWidget {
             throw ArgumentError('Invalid type for _signUpData');
           }
         } catch (error) {
-          _isLoading.value = false;
-          throw error;
+          isLoading.value = false;
+          rethrow;
         }
 
-        Navigator.pushReplacement(
-            context, createRoute(page: SignUpSetupPage()));
+        // Navigator.pushReplacement(
+        //     context, createRoute(page: const SignUpSetupPage()));
+        navigator.pushReplacement(
+          createRoute(
+            page: const SignUpSetupPage(),
+          ),
+        );
       },
     );
     return Scaffold(
@@ -54,7 +62,7 @@ class OnBoardingSignUpPage extends HookWidget {
       body: SafeArea(
         child: Column(
           children: [
-            PopAppBar(
+            const PopAppBar(
               title: 'Buat Akun',
               justTitle: true,
             ),
@@ -87,11 +95,11 @@ class OnBoardingSignUpPage extends HookWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: _isLoading.value
-                  ? Center(child: CircularProgressIndicator())
+              child: isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
                   : FillButton(
                       text: 'Lanjutkan',
-                      onTap: _submit,
+                      onTap: submit,
                       leading: Container(),
                     ),
             ),

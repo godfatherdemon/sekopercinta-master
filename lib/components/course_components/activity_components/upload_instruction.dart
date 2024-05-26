@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class UploadInstruction extends StatelessWidget {
+  const UploadInstruction({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

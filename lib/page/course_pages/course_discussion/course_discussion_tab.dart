@@ -13,39 +13,40 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class CourseDiscussionTab extends HookWidget {
   final Pelajaran lesson;
-  CourseDiscussionTab(this.lesson);
+  const CourseDiscussionTab(this.lesson, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _discussions =
+    final discussions =
         useState<List<Diskusi>>(context.read(discussionsProvider));
 
     // final _discussions = useProvider(discussionsProvider);
 
-    final _userData = useState<UserData>(context.read(userDataProvider));
+    final userData = useState<UserData>(context.read(userDataProvider));
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _getDiscussions = useMemoized(
+    final getDiscussions = useMemoized(
         () => () async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 await context.read(discussionsProvider.notifier).getDiscussions(
                       lesson.idPelajaran,
                       context.read(hasuraClientProvider).state,
                     );
-                _discussions.value = context.read(discussionsProvider);
+                // discussions.value = context.read(discussionsProvider);
+                discussions.value = discussionsProvider as List<Diskusi>;
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
-              _isLoading.value = false;
+              isLoading.value = false;
             },
         []);
 
     useEffect(() {
-      _getDiscussions();
+      getDiscussions();
 
       return;
     }, []);
@@ -53,7 +54,7 @@ class CourseDiscussionTab extends HookWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -88,11 +89,11 @@ class CourseDiscussionTab extends HookWidget {
                 );
 
                 if (isSendComment != null) {
-                  _getDiscussions();
+                  getDiscussions();
                 }
               },
               child: Ink(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFF9F9F9),
                 ),
                 padding: const EdgeInsets.symmetric(
@@ -108,29 +109,29 @@ class CourseDiscussionTab extends HookWidget {
                         gradient: gradientPrimary,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child:
-                          _userData.value.fotoProfil.toString().contains('http')
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    '${_userData.value.fotoProfil}',
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Image.asset(
-                                  _userData.value.fotoProfil == '{{default_1}}'
-                                      ? 'assets/images/img-women-a.png'
-                                      : _userData.value.fotoProfil ==
-                                              '{{default_2}}'
-                                          ? 'assets/images/img-women-b.png'
-                                          : 'assets/images/img-women-c.png',
-                                  fit: BoxFit.cover,
-                                ),
+                      child: userData.value.fotoProfil
+                              .toString()
+                              .contains('http')
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                '${userData.value.fotoProfil}',
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              userData.value.fotoProfil == '{{default_1}}'
+                                  ? 'assets/images/img-women-a.png'
+                                  : userData.value.fotoProfil == '{{default_2}}'
+                                      ? 'assets/images/img-women-b.png'
+                                      : 'assets/images/img-women-c.png',
+                              fit: BoxFit.cover,
+                            ),
                     ),
                     const SizedBox(
                       width: 16,
                     ),
-                    Text(
+                    const Text(
                       'Tulis Komentar',
                       style: TextStyle(
                         fontSize: 12,
@@ -143,25 +144,25 @@ class CourseDiscussionTab extends HookWidget {
             const SizedBox(
               height: 24,
             ),
-            _isLoading.value
+            isLoading.value
                 ? ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: 10,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
                     itemBuilder: (context, index) {
-                      return ShimmerCard(
+                      return const ShimmerCard(
                           height: 80, width: double.infinity, borderRadius: 12);
                     },
                   )
                 : ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(0),
-                    itemCount: _discussions.value.length,
-                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: discussions.value.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
@@ -181,21 +182,21 @@ class CourseDiscussionTab extends HookWidget {
                                     gradient: gradientD,
                                     borderRadius: BorderRadius.circular(8),
                                     image: DecorationImage(
-                                      image: _discussions.value[index]
+                                      image: discussions.value[index]
                                               .profilPublik.fotoProfil
                                               .contains('http')
-                                          ? NetworkImage(_discussions
+                                          ? NetworkImage(discussions
                                               .value[index]
                                               .profilPublik
                                               .fotoProfil)
                                           : AssetImage(
-                                              _discussions
+                                              discussions
                                                           .value[index]
                                                           .profilPublik
                                                           .fotoProfil ==
                                                       '{{default_1}}'
                                                   ? 'assets/images/img-women-a.png'
-                                                  : _discussions
+                                                  : discussions
                                                               .value[index]
                                                               .profilPublik
                                                               .fotoProfil ==
@@ -219,7 +220,7 @@ class CourseDiscussionTab extends HookWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            '${_discussions.value[index].profilPublik.namaPengguna}',
+                                            '${discussions.value[index].profilPublik.namaPengguna}',
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
@@ -227,7 +228,7 @@ class CourseDiscussionTab extends HookWidget {
                                                 .titleSmall,
                                           ),
                                           Text(
-                                            '${DateFormat('MMM dd, yyyy').format(_discussions.value[index].dikirimPada)} at ${DateFormat('hh:mm a').format(_discussions.value[index].dikirimPada)}',
+                                            '${DateFormat('MMM dd, yyyy').format(discussions.value[index].dikirimPada)} at ${DateFormat('hh:mm a').format(discussions.value[index].dikirimPada)}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium,
@@ -244,11 +245,12 @@ class CourseDiscussionTab extends HookWidget {
                               decoration: BoxDecoration(
                                 border: Border(
                                   left: BorderSide(
-                                    color: (_discussions
+                                    color: (discussions
                                             .value[index]
                                             .balasanDiskusiPelajarans
                                             .isNotEmpty)
-                                        ? Color(0xFF4D4FF1).withOpacity(0.1)
+                                        ? const Color(0xFF4D4FF1)
+                                            .withOpacity(0.1)
                                         : Colors.transparent,
                                     width: 2.9,
                                   ),
@@ -256,11 +258,11 @@ class CourseDiscussionTab extends HookWidget {
                               ),
                               padding: const EdgeInsets.only(left: 25),
                               child: Text(
-                                '${_discussions.value[index].isiDiskusi}',
+                                discussions.value[index].isiDiskusi,
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
-                            if (_discussions.value[index]
+                            if (discussions.value[index]
                                 .balasanDiskusiPelajarans.isNotEmpty)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +291,7 @@ class CourseDiscussionTab extends HookWidget {
                                                 gradient: gradientD,
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                image: DecorationImage(
+                                                image: const DecorationImage(
                                                   image: AssetImage(
                                                       'assets/images/img-women-a.png'),
                                                 ),
@@ -318,7 +320,7 @@ class CourseDiscussionTab extends HookWidget {
                                                             .titleSmall,
                                                       ),
                                                       Text(
-                                                        '${DateFormat('MMM dd, yyyy').format(_discussions.value[index].balasanDiskusiPelajarans[0].dikirimPada)} at ${DateFormat('hh:mm a').format(_discussions.value[index].balasanDiskusiPelajarans[0].dikirimPada)}',
+                                                        '${DateFormat('MMM dd, yyyy').format(discussions.value[index].balasanDiskusiPelajarans[0].dikirimPada)} at ${DateFormat('hh:mm a').format(discussions.value[index].balasanDiskusiPelajarans[0].dikirimPada)}',
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyMedium,
@@ -329,7 +331,11 @@ class CourseDiscussionTab extends HookWidget {
                                                     height: 7,
                                                   ),
                                                   Text(
-                                                    '${_discussions.value[index].balasanDiskusiPelajarans[0].isiBalasan}',
+                                                    discussions
+                                                        .value[index]
+                                                        .balasanDiskusiPelajarans[
+                                                            0]
+                                                        .isiBalasan,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyLarge,
@@ -349,7 +355,7 @@ class CourseDiscussionTab extends HookWidget {
                       );
                     },
                   ),
-            if (_discussions.value.isEmpty)
+            if (discussions.value.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Center(
@@ -369,7 +375,7 @@ class CourseDiscussionTab extends HookWidget {
                         'Mulai Berdiskusi!',
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Color(0xFF4F4F4F),
+                                  color: const Color(0xFF4F4F4F),
                                 ),
                       ),
                       const SizedBox(
@@ -380,7 +386,7 @@ class CourseDiscussionTab extends HookWidget {
                         textAlign: TextAlign.center,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Color(0xFF4F4F4F),
+                                  color: const Color(0xFF4F4F4F),
                                 ),
                       ),
                     ],

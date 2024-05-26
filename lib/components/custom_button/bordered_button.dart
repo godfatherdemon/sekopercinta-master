@@ -8,7 +8,8 @@ class BorderedButton extends StatelessWidget {
   final Color textColor;
   final Widget leading;
 
-  BorderedButton({
+  const BorderedButton({
+    super.key,
     required this.text,
     required this.onTap,
     required this.leading,

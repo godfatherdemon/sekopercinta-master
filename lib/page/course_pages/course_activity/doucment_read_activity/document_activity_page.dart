@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/providers/activities.dart';
 import 'package:sekopercinta_master/providers/lessons.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
@@ -11,24 +12,26 @@ class DocumentActivityPage extends HookWidget {
   final String id;
   final Aktivitas aktivitas;
 
-  DocumentActivityPage({
+  const DocumentActivityPage({
+    super.key,
     required this.id,
     required this.aktivitas,
   });
   @override
   Widget build(BuildContext context) {
-    final _scrollController = useScrollController();
-    final _progressReading = useState(0.0);
-    final _isFinish = useState(false);
-    final _data = useState<String?>(null);
+    final scrollController = useScrollController();
+    final progressReading = useState(0.0);
+    final isFinish = useState(false);
+    final data = useState<String?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _updateProgress = useMemoized(
+    final updateProgress = useMemoized(
         () => () async {
-              _isLoading.value = true;
+              final navigator = Navigator.of(context);
+              isLoading.value = true;
 
-              var progress = _progressReading.value;
+              var progress = progressReading.value;
 
               if (progress == 0) {
                 return true;
@@ -40,8 +43,11 @@ class DocumentActivityPage extends HookWidget {
                 }
               }
 
-              print(progress);
-              print(id);
+              // print(progress);
+              // print(id);
+              final Logger logger = Logger();
+              logger.d(progress);
+              logger.d(id);
               try {
                 await context.read(activityProvider.notifier).updateProgress(
                       context,
@@ -50,45 +56,48 @@ class DocumentActivityPage extends HookWidget {
                       progress,
                     );
 
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                navigator.pop('update');
               } catch (error) {
-                _isLoading.value = false;
-                print('ERROR ${error.toString()}');
+                isLoading.value = false;
+                // print('ERROR ${error.toString()}');
+                final Logger logger = Logger();
+                logger.d('ERROR ${error.toString()}');
                 return true;
               }
             },
         []);
 
     useEffect(() {
-      _isLoading.value = true;
+      isLoading.value = true;
       context
           .read(activityProvider.notifier)
           .getActivityContent(context.read(hasuraClientProvider).state, id)
           .then((value) {
-        _data.value = value;
-        _isLoading.value = false;
+        data.value = value;
+        isLoading.value = false;
       });
       return;
     }, []);
 
     useEffect(() {
-      _scrollController.addListener(() {
-        if (_progressReading.value != 1) {
-          if (_progressReading.value <
-              _scrollController.position.pixels /
-                  _scrollController.position.maxScrollExtent) {
-            _progressReading.value = _scrollController.position.pixels /
-                _scrollController.position.maxScrollExtent;
+      scrollController.addListener(() {
+        if (progressReading.value != 1) {
+          if (progressReading.value <
+              scrollController.position.pixels /
+                  scrollController.position.maxScrollExtent) {
+            progressReading.value = scrollController.position.pixels /
+                scrollController.position.maxScrollExtent;
           }
         }
 
-        _isFinish.value = _progressReading.value == 1;
+        isFinish.value = progressReading.value == 1;
       });
       return;
     }, []);
     return PopScope(
       onPopInvoked: (bool isPopGesture) async {
-        await _updateProgress();
+        await updateProgress();
       },
       // onWillPop: () async {
       //   await _updateProgress();
@@ -96,12 +105,12 @@ class DocumentActivityPage extends HookWidget {
       // },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: _isLoading.value
-            ? Center(child: CircularProgressIndicator())
+        body: isLoading.value
+            ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
                   Ink(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: brokenWhite,
                       borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(12),
@@ -114,12 +123,12 @@ class DocumentActivityPage extends HookWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.close,
                               color: primaryBlack,
                             ),
                             onPressed: () async {
-                              final result = await _updateProgress();
+                              final result = await updateProgress();
                               if (result != null && result) {
                                 Navigator.of(context).pop();
                               }
@@ -176,16 +185,16 @@ class DocumentActivityPage extends HookWidget {
                   ),
                   Expanded(
                     child: Markdown(
-                      controller: _scrollController,
+                      controller: scrollController,
                       styleSheet: MarkdownStyleSheet(
-                        p: TextStyle(
+                        p: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           height: 1.5,
                         ),
                       ),
                       selectable: true,
-                      data: _data.value!,
+                      data: data.value!,
                     ),
                   ),
                   Material(
@@ -204,29 +213,29 @@ class DocumentActivityPage extends HookWidget {
                           AnimatedContainer(
                             width: 36,
                             height: 36,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             decoration: BoxDecoration(
                               color:
-                                  _isFinish.value ? primaryBlue : primaryColor,
+                                  isFinish.value ? primaryBlue : primaryColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
                               child: AnimatedSwitcher(
-                                duration: Duration(milliseconds: 300),
+                                duration: const Duration(milliseconds: 300),
                                 transitionBuilder: (Widget child,
                                     Animation<double> animation) {
                                   return ScaleTransition(
-                                      child: child, scale: animation);
+                                      scale: animation, child: child);
                                 },
-                                child: _isFinish.value
+                                child: isFinish.value
                                     ? Image.asset(
                                         'assets/images/ic-done.png',
-                                        key: ValueKey<int>(0),
+                                        key: const ValueKey<int>(0),
                                         width: 22.5,
                                       )
                                     : Image.asset(
                                         'assets/images/ic-act.png',
-                                        key: ValueKey<int>(1),
+                                        key: const ValueKey<int>(1),
                                         width: 22.5,
                                       ),
                               ),
@@ -262,13 +271,13 @@ class DocumentActivityPage extends HookWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   child: LinearProgressIndicator(
                                     minHeight: 6,
-                                    value: _progressReading.value,
+                                    value: progressReading.value,
                                     backgroundColor:
                                         accentColor.withOpacity(0.1),
-                                    valueColor: _isFinish.value
-                                        ? AlwaysStoppedAnimation<Color>(
+                                    valueColor: isFinish.value
+                                        ? const AlwaysStoppedAnimation<Color>(
                                             primaryBlue)
-                                        : AlwaysStoppedAnimation<Color>(
+                                        : const AlwaysStoppedAnimation<Color>(
                                             accentColor),
                                   ),
                                 ),

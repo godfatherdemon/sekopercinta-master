@@ -18,29 +18,30 @@ class SetupEducationCertificatePage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
 
-  SetupEducationCertificatePage({
+  const SetupEducationCertificatePage({
+    super.key,
     required this.pageController,
     required this.currentPage,
   });
   @override
   Widget build(BuildContext context) {
-    final _selectedFile = useState<File?>(null);
+    final selectedFile = useState<File?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
               try {
-                if (_selectedFile.value == null) {
+                if (selectedFile.value == null) {
                   Fluttertoast.showToast(
                     msg: 'Mohon pilih file Anda',
                   );
                   return;
                 }
 
-                _isLoading.value = true;
+                isLoading.value = true;
 
-                if (_selectedFile.value!.lengthSync() > 2097152) {
+                if (selectedFile.value!.lengthSync() > 2097152) {
                   Fluttertoast.showToast(
                     msg: 'File harus kurang dari 2 Mb',
                   );
@@ -48,21 +49,21 @@ class SetupEducationCertificatePage extends HookWidget {
                 }
 
                 final url = await getSignedLink(
-                    file: _selectedFile.value!,
+                    file: selectedFile.value!,
                     hasuraConnect: context.read(hasuraClientProvider).state,
                     docType: 'diploma');
 
-                await sendFile(_selectedFile.value!, url);
+                await sendFile(selectedFile.value!, url);
 
                 currentPage.value++;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
@@ -117,7 +118,7 @@ class SetupEducationCertificatePage extends HookWidget {
               if (action == 'camera') {
                 if (await Permission.camera.request().isGranted) {
                   final selectedFilePath = await Navigator.of(context)
-                      .push(createRoute(page: CameraPage()));
+                      .push(createRoute(page: const CameraPage()));
 
                   if (selectedFilePath != null) {
                     File file = File(selectedFilePath);
@@ -129,7 +130,7 @@ class SetupEducationCertificatePage extends HookWidget {
                       return;
                     }
 
-                    _selectedFile.value = file;
+                    selectedFile.value = file;
                   }
                 }
               } else {
@@ -148,14 +149,14 @@ class SetupEducationCertificatePage extends HookWidget {
                     return;
                   }
 
-                  _selectedFile.value = file;
+                  selectedFile.value = file;
                 }
               }
             },
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Color(0xFFE7E4E2),
+                  color: const Color(0xFFE7E4E2),
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -172,7 +173,7 @@ class SetupEducationCertificatePage extends HookWidget {
                     ),
                     child: Center(
                       child: Image.asset(
-                        _selectedFile.value != null
+                        selectedFile.value != null
                             ? 'assets/images/ic-upload-done.png'
                             : 'assets/images/ic-upload.png',
                         width: 32,
@@ -187,8 +188,8 @@ class SetupEducationCertificatePage extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _selectedFile.value != null
-                              ? basename(_selectedFile.value!.path)
+                          selectedFile.value != null
+                              ? basename(selectedFile.value!.path)
                               : 'Upload Ijazah / Sertifikat',
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -199,15 +200,15 @@ class SetupEducationCertificatePage extends HookWidget {
                           height: 4,
                         ),
                         Text(
-                          _selectedFile.value != null
-                              ? '${(_selectedFile.value!.lengthSync() / 1000000).toStringAsFixed(1)} Mb'
+                          selectedFile.value != null
+                              ? '${(selectedFile.value!.lengthSync() / 1000000).toStringAsFixed(1)} Mb'
                               : 'Jenis file PDF, JPEG, PNG, Ukuran Maks 2Mb',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(
                           height: 2,
                         ),
-                        if (_selectedFile.value != null)
+                        if (selectedFile.value != null)
                           Text(
                             'Upload Ulang',
                             style:
@@ -228,8 +229,8 @@ class SetupEducationCertificatePage extends HookWidget {
           ),
           FillButton(
             text: 'Lanjutkan',
-            onTap: _submit,
-            isLoading: _isLoading.value,
+            onTap: submit,
+            isLoading: isLoading.value,
             leading: Container(),
           ),
           const SizedBox(
@@ -243,7 +244,7 @@ class SetupEducationCertificatePage extends HookWidget {
               currentPage.value--;
               pageController.animateToPage(
                 currentPage.value,
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.ease,
               );
             },

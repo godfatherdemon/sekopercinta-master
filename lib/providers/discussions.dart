@@ -1,5 +1,6 @@
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 class Diskusi {
   Diskusi({
@@ -112,13 +113,15 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d(responseData);
 
     List<Diskusi> loadedData = [];
 
-    (responseData['diskusi_pelajaran'] as List<dynamic>).forEach((element) {
+    for (var element in (responseData['diskusi_pelajaran'] as List<dynamic>)) {
       loadedData.add(Diskusi.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }

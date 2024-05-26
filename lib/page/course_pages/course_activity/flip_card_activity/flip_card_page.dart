@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/flip_card_header.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/flip_card_questions.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/flip_card_statement.dart';
@@ -17,26 +18,26 @@ import '../finish_activity_page.dart';
 
 class FlipCardPage extends HookWidget {
   final Aktivitas activity;
-  FlipCardPage({required this.activity});
+  const FlipCardPage({super.key, required this.activity});
   @override
   Widget build(BuildContext context) {
-    final _listKey = useState(GlobalKey<AnimatedListState>());
-    final _isLoading = useState(true);
-    final _widgets = useState<List<Widget>>([]);
-    final _isStart = useState(false);
-    final _currentQuestion = useState(0);
-    final _questions = useState<String?>(null);
-    final _answer = useState<List<bool>>([]);
+    final listKey = useState(GlobalKey<AnimatedListState>());
+    final isLoading = useState(true);
+    final widgets = useState<List<Widget>>([]);
+    final isStart = useState(false);
+    final currentQuestion = useState(0);
+    final questions = useState<String?>(null);
+    final answer = useState<List<bool>>([]);
 
-    final _sendAnswer = useMemoized(
+    final sendAnswer = useMemoized(
         () => () async {
               List<Map<String, dynamic>> objects = [];
 
               final choices = context.read(questionProvider);
 
-              for (int i = 0; i < _answer.value.length; i++) {
+              for (int i = 0; i < answer.value.length; i++) {
                 Map<String, dynamic> object = {
-                  'isi_jawaban': _answer.value[i],
+                  'isi_jawaban': answer.value[i],
                   'id_pertanyaan': choices[i].idPertanyaan,
                 };
 
@@ -61,17 +62,17 @@ class FlipCardPage extends HookWidget {
                 activity: activity,
                 questions: [
                   Pertanyaan(
-                      isiPertanyaan: _questions.value!,
-                      idPertanyaan: _questions.value!,
+                      isiPertanyaan: questions.value!,
+                      idPertanyaan: questions.value!,
                       kunciJawabanPilgans: [],
                       pilihanJawaban: [])
                 ],
-                answers: _answer.value.map((e) => e.toString()).toList(),
+                answers: answer.value.map((e) => e.toString()).toList(),
               )));
             },
         []);
 
-    final _startActivity = useMemoized(
+    final startActivity = useMemoized(
         () => () async {
               // final duration = Duration(milliseconds: 500);
 
@@ -79,34 +80,35 @@ class FlipCardPage extends HookWidget {
               // await Future.delayed(Duration(milliseconds: 700));
               //
 
-              _isStart.value = false;
-              _widgets.value[0] = FlipCardHeader(
-                _isStart,
-                _currentQuestion.value / _questions.value!.length,
+              isStart.value = false;
+              widgets.value[0] = FlipCardHeader(
+                isStart,
+                currentQuestion.value / questions.value!.length,
                 activity.namaAktivitas,
               );
-              _widgets.value[1] = FlipCardQuestions(
-                _isStart,
+              widgets.value[1] = FlipCardQuestions(
+                isStart,
                 (value) {
-                  _answer.value.add(value);
+                  answer.value.add(value);
 
-                  if (_answer.value.length ==
+                  if (answer.value.length ==
                       context.read(questionProvider).length) {
-                    _sendAnswer();
+                    sendAnswer();
                   }
-                  print(_answer.value);
+                  // print(answer.value);
+                  final Logger logger = Logger();
+                  logger.d(answer.value);
                 },
               );
-              _widgets.value[2] =
-                  FlipCardStatement(_isStart, _questions.value!);
-              _isStart.value = true;
+              widgets.value[2] = FlipCardStatement(isStart, questions.value!);
+              isStart.value = true;
 
-              _listKey.value.currentState?.removeItem(
+              listKey.value.currentState?.removeItem(
                 3,
                 (context, animation) {
                   return FadeTransition(
                     opacity: animation,
-                    child: _widgets.value[1],
+                    child: widgets.value[1],
                   );
                 },
                 duration: Duration.zero,
@@ -147,10 +149,10 @@ class FlipCardPage extends HookWidget {
             },
         []);
 
-    final _showQuestion = useMemoized(
+    final showQuestion = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
-              _listKey.value.currentState?.removeItem(
+              const duration = Duration(milliseconds: 500);
+              listKey.value.currentState?.removeItem(
                 2,
                 (context, animation) {
                   return FadeTransition(
@@ -163,13 +165,13 @@ class FlipCardPage extends HookWidget {
                         parent: animation,
                         curve: Curves.easeOutBack,
                       )),
-                      child: _widgets.value[2],
+                      child: widgets.value[2],
                     ),
                   );
                 },
                 duration: duration,
               );
-              _listKey.value.currentState?.removeItem(
+              listKey.value.currentState?.removeItem(
                 2,
                 (context, animation) {
                   return FadeTransition(
@@ -182,7 +184,7 @@ class FlipCardPage extends HookWidget {
                         parent: animation,
                         curve: Curves.easeOutBack,
                       )),
-                      child: _widgets.value[3],
+                      child: widgets.value[3],
                     ),
                   );
                 },
@@ -192,9 +194,8 @@ class FlipCardPage extends HookWidget {
               await Future.delayed(
                   Duration(milliseconds: duration.inMilliseconds + 200));
 
-              _widgets.value[2] =
-                  FlipCardStatement(_isStart, _questions.value!);
-              _widgets.value[3] = Padding(
+              widgets.value[2] = FlipCardStatement(isStart, questions.value!);
+              widgets.value[3] = Padding(
                 padding: const EdgeInsets.only(
                   left: 20.0,
                   right: 20.0,
@@ -205,36 +206,36 @@ class FlipCardPage extends HookWidget {
                   color: Colors.white,
                   textColor: accentColor,
                   onTap: () {
-                    _startActivity();
+                    startActivity();
                   },
                   leading: Container(),
                 ),
               );
 
-              _listKey.value.currentState?.insertItem(
+              listKey.value.currentState?.insertItem(
                 2,
                 duration: duration,
               );
 
-              _listKey.value.currentState?.insertItem(
+              listKey.value.currentState?.insertItem(
                 3,
                 duration: duration,
               );
             },
         []);
 
-    final _initialAnimation = useMemoized(
+    final initialAnimation = useMemoized(
         () => () async {
-              for (int i = 0; i < _widgets.value.length; i++) {
-                _listKey.value.currentState?.insertItem(
+              for (int i = 0; i < widgets.value.length; i++) {
+                listKey.value.currentState?.insertItem(
                   i,
                   duration: i == 0 || i == 1
                       ? Duration.zero
-                      : Duration(milliseconds: 500),
+                      : const Duration(milliseconds: 500),
                 );
 
                 if (i != 0 && i != 1) {
-                  await Future.delayed(Duration(
+                  await Future.delayed(const Duration(
                     milliseconds: 700,
                   ));
                 }
@@ -254,24 +255,26 @@ class FlipCardPage extends HookWidget {
                 hasuraConnect: context.read(hasuraClientProvider).state,
                 id: activity.idAktivitas)
             .then((_) {
-          _questions.value = value['isi_pernyataan'];
+          questions.value = value['isi_pernyataan'];
 
-          _widgets.value = [
+          widgets.value = [
             FlipCardHeader(
-                _isStart,
-                _currentQuestion.value / _questions.value!.length,
+                isStart,
+                currentQuestion.value / questions.value!.length,
                 activity.namaAktivitas),
             FlipCardQuestions(
-              _isStart,
+              isStart,
               (value) {
-                _answer.value.add(value);
+                answer.value.add(value);
 
-                if (_answer.value.length ==
+                if (answer.value.length ==
                     context.read(questionProvider).length) {
-                  _sendAnswer();
+                  sendAnswer();
                 }
 
-                print(_answer.value);
+                // print(answer.value);
+                final Logger logger = Logger();
+                logger.d(answer.value);
               },
             ),
             FlipInstruction(),
@@ -286,16 +289,16 @@ class FlipCardPage extends HookWidget {
                 color: Colors.white,
                 textColor: accentColor,
                 onTap: () {
-                  _showQuestion();
+                  showQuestion();
                 },
                 leading: Container(),
               ),
             ),
           ];
-          Future.delayed(Duration(milliseconds: 1000)).then((value) {
-            _isLoading.value = false;
-            Future.delayed(Duration(milliseconds: 200)).then((value) {
-              _initialAnimation();
+          Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+            isLoading.value = false;
+            Future.delayed(const Duration(milliseconds: 200)).then((value) {
+              initialAnimation();
             });
           });
         });
@@ -304,15 +307,15 @@ class FlipCardPage extends HookWidget {
       return;
     }, []);
 
-    return _isLoading.value
-        ? LoadingActivityPage()
+    return isLoading.value
+        ? const LoadingActivityPage()
         : Scaffold(
             backgroundColor: accentColor,
             body: SafeArea(
               child: AnimatedList(
-                key: _listKey.value,
+                key: listKey.value,
                 initialItemCount: 0,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index, animation) {
                   return FadeTransition(
                     key: Key('$index'),
@@ -322,7 +325,7 @@ class FlipCardPage extends HookWidget {
                         end: Offset.zero,
                         begin: const Offset(0.0, -0.1),
                       )),
-                      child: _widgets.value[index],
+                      child: widgets.value[index],
                     ),
                   );
                 },

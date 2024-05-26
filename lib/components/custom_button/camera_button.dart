@@ -6,7 +6,7 @@ class CameraButton extends StatefulWidget {
   final bool isRecording;
   final Function onTap;
 
-  CameraButton({
+  const CameraButton({
     required Key key,
     required this.captureMode,
     required this.isRecording,
@@ -21,7 +21,7 @@ class _CameraButtonState extends State<CameraButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late double _scale;
-  Duration _duration = Duration(milliseconds: 100);
+  final Duration _duration = const Duration(milliseconds: 100);
 
   @override
   void initState() {
@@ -51,9 +51,9 @@ class _CameraButtonState extends State<CameraButton>
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
-      child: Container(
-        key: ValueKey('cameraButton' +
-            (widget.captureMode == CaptureMode.photo ? 'Photo' : 'Video')),
+      child: SizedBox(
+        key: ValueKey(
+            'cameraButton${widget.captureMode == CaptureMode.photo ? 'Photo' : 'Video'}'),
         height: 80,
         width: 80,
         child: Transform.scale(
@@ -80,7 +80,7 @@ class _CameraButtonState extends State<CameraButton>
     });
 
     // this.widget.onTap?.call();
-    this.widget.onTap.call();
+    widget.onTap.call();
   }
 
   _onTapCancel() {
@@ -107,7 +107,7 @@ class CameraButtonPainter extends CustomPainter {
     bgPainter.color = Colors.white.withOpacity(.5);
     canvas.drawCircle(center, radius, bgPainter);
 
-    if (this.captureMode == CaptureMode.video && this.isRecording) {
+    if (captureMode == CaptureMode.video && isRecording) {
       bgPainter.color = Colors.red;
       canvas.drawRRect(
           RRect.fromRectAndRadius(
@@ -117,7 +117,7 @@ class CameraButtonPainter extends CustomPainter {
                 size.width - (17 * 2),
                 size.height - (17 * 2),
               ),
-              Radius.circular(12.0)),
+              const Radius.circular(12.0)),
           bgPainter);
     } else {
       bgPainter.color =

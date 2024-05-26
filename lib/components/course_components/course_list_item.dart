@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/list_item/icon_card_item.dart';
 import 'package:sekopercinta_master/components/tool_tip/tool_tip_container.dart';
 import 'package:sekopercinta_master/page/course_pages/course_detail_page.dart';
@@ -13,7 +14,8 @@ class CourseListItem extends StatelessWidget {
   final Kelas kelas;
   final Kelas prevKelas;
   final int classIndex;
-  CourseListItem(this.kelas, this.prevKelas, this.classIndex);
+  const CourseListItem(this.kelas, this.prevKelas, this.classIndex,
+      {super.key});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -103,8 +105,8 @@ class CourseListItem extends StatelessWidget {
               shrinkWrap: true,
               padding: const EdgeInsets.all(0),
               itemCount: kelas.pelajarans.length,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
@@ -134,16 +136,18 @@ class CourseListItem extends StatelessWidget {
                                     width: 66,
                                     height: 66,
                                     gradient: gradients[index % 4],
-                                    child: kelas.pelajarans[index]
-                                                .logoPelajaran !=
-                                            null
-                                        ? Image.network(
-                                            kelas.pelajarans[index]
-                                                .logoPelajaran,
-                                            width: 53.33,
-                                          )
-                                        : SizedBox
-                                            .shrink(), // Replace with any other widget or SizedBox.shrink() to have an empty space
+                                    child: Image.network(
+                                        kelas.pelajarans[index].logoPelajaran),
+                                    // child: kelas.pelajarans[index]
+                                    //             .logoPelajaran !=
+                                    //         null
+                                    //     ? Image.network(
+                                    //         kelas.pelajarans[index]
+                                    //             .logoPelajaran,
+                                    //         width: 53.33,
+                                    //       )
+                                    //     : const SizedBox
+                                    //         .shrink(), // Replace with any other widget or SizedBox.shrink() to have an empty space
                                   ),
                                 ),
                               ),
@@ -206,9 +210,9 @@ class CourseListItem extends StatelessWidget {
   }
 
   void goToDetail(BuildContext context, int index) {
-    final goToDetailCourse = () {
+    goToDetailCourse() {
       Navigator.of(context).push(createRoute(
-        page: CourseDetailPage(),
+        page: const CourseDetailPage(),
         arguments: {
           'id': kelas.pelajarans[index].idPelajaran,
           'modul': kelas.modul.namaModul,
@@ -218,11 +222,12 @@ class CourseListItem extends StatelessWidget {
           'tab_index': 2,
         },
       ));
-    };
+    }
+
     context.read(changeTabIndexProvider).state = goToDetailCourse;
 
     Navigator.of(context).push(createRoute(
-      page: CourseDetailPage(),
+      page: const CourseDetailPage(),
       arguments: {
         'id': kelas.pelajarans[index].idPelajaran,
         'modul': kelas.modul.namaModul,
@@ -237,37 +242,51 @@ class CourseListItem extends StatelessWidget {
   void functionPicker(BuildContext context, int index) {
     if (kelas.pelajarans[index].progresPelajarans.isEmpty) {
       if (index == 0 && classIndex == 0) {
-        print('di kelas pertama');
+        // print('di kelas pertama');
+        final Logger logger = Logger();
+        logger.d('di kelas pertama');
         goToDetail(context, index);
       } else if (index == 0 && prevKelas.progresKelas.isEmpty) {
-        print('kelas sebelum blm selesai');
+        // print('kelas sebelum blm selesai');
+        final Logger logger = Logger();
+        logger.d('kelas sebelem belum selesai');
       } else if (index == 0 && prevKelas.progresKelas.isNotEmpty) {
-        print('kelas sebelum sudah selesai');
+        // print('kelas sebelum sudah selesai');
+        final Logger logger = Logger();
+        logger.d('kelas sebelum sudah selesai');
         goToDetail(context, index);
       } else if (kelas.pelajarans[index - 1].progresPelajarans.isNotEmpty) {
-        print('kelas sebelum sdh selesai');
+        // print('kelas sebelum sdh selesai');
+        final Logger logger = Logger();
+        logger.d('kelas sebelum sudah selesai');
         goToDetail(context, index);
       } else if (prevKelas.progresKelas.isEmpty) {
-        print('kelas sebelum blm selesai');
+        // print('kelas sebelum blm selesai');
+        final Logger logger = Logger();
+        logger.d('kelas sebelum belum selesai');
       } else if (index == 0) {
-        print('di pertama');
+        // print('di pertama');
+        final Logger logger = Logger();
+        logger.d('di pertama');
         goToDetail(context, index);
       }
     } else {
-      print('ada progress');
+      // print('ada progress');
+      final Logger logger = Logger();
+      logger.d('ada progress');
       goToDetail(context, index);
     }
-    // (kelas.pelajarans[index].progresPelajarans.isEmpty)
-    //     ? index == 0 && classIndex == 0
-    //         ? goToDetail(context, index)
-    //         : prevKelas.progresKelas.isEmpty
-    //             ? null
-    //             : index == 0
-    //                 ? goToDetail(context, index)
-    //                 : kelas.pelajarans[index - 1].progresPelajarans.isNotEmpty
-    //                     ? goToDetail(context, index)
-    //                     : null
-    //     : goToDetail(context, index);
+    (kelas.pelajarans[index].progresPelajarans.isEmpty)
+        ? index == 0 && classIndex == 0
+            ? goToDetail(context, index)
+            : prevKelas.progresKelas.isEmpty
+                ? null
+                : index == 0
+                    ? goToDetail(context, index)
+                    : kelas.pelajarans[index - 1].progresPelajarans.isNotEmpty
+                        ? goToDetail(context, index)
+                        : null
+        : goToDetail(context, index);
   }
 
   Color getLessonColor(int index) {
@@ -294,7 +313,7 @@ class CourseListItem extends StatelessWidget {
             ? null
             : index == 0 && prevKelas.progresKelas.isEmpty
                 ? BoxDecoration(
-                    color: Color(0xFFE7E4E2),
+                    color: const Color(0xFFE7E4E2),
                     backgroundBlendMode: BlendMode.saturation,
                     borderRadius: BorderRadius.circular(12),
                   )
@@ -304,14 +323,14 @@ class CourseListItem extends StatelessWidget {
                         ? null
                         : prevKelas.progresKelas.isEmpty
                             ? BoxDecoration(
-                                color: Color(0xFFE7E4E2),
+                                color: const Color(0xFFE7E4E2),
                                 backgroundBlendMode: BlendMode.saturation,
                                 borderRadius: BorderRadius.circular(12),
                               )
                             : index == 0
                                 ? null
                                 : BoxDecoration(
-                                    color: Color(0xFFE7E4E2),
+                                    color: const Color(0xFFE7E4E2),
                                     backgroundBlendMode: BlendMode.saturation,
                                     borderRadius: BorderRadius.circular(12),
                                   )

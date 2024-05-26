@@ -6,7 +6,8 @@ class IconItemCard extends StatelessWidget {
   final double width;
   final double height;
 
-  IconItemCard({
+  const IconItemCard({
+    super.key,
     required this.width,
     required this.height,
     required this.child,
@@ -21,7 +22,7 @@ class IconItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         gradient: gradient,
-        image: DecorationImage(
+        image: const DecorationImage(
           image: AssetImage(
             'assets/images/bg-pattern-icon.png',
           ),

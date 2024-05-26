@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
+import 'package:logger/logger.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
@@ -16,7 +17,7 @@ class CameraPage extends StatefulWidget {
 
   final bool randomPhotoName;
 
-  CameraPage({this.randomPhotoName = true});
+  const CameraPage({super.key, this.randomPhotoName = true});
 
   @override
   _CameraPageState createState() => _CameraPageState();
@@ -24,19 +25,20 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   late String _lastPhotoPath;
-  bool _isRecordingVideo = false;
-  IconData _flashIcon = Icons.flash_auto;
+  final bool _isRecordingVideo = false;
+  final IconData _flashIcon = Icons.flash_auto;
 
   // ValueNotifier<CameraFlashes> _switchFlash = ValueNotifier(CameraFlashes.AUTO);
-  ValueNotifier<double> _zoomNotifier = ValueNotifier(0);
+  final ValueNotifier<double> _zoomNotifier = ValueNotifier(0);
   // ValueNotifier<Size?> _photoSize = ValueNotifier(null);
-  ValueNotifier<Size> _photoSize =
-      ValueNotifier(Size(0, 0)); // Initialize with a default Size
-  ValueNotifier<Sensor> _sensor =
+  final ValueNotifier<Size> _photoSize =
+      ValueNotifier(const Size(0, 0)); // Initialize with a default Size
+  final ValueNotifier<Sensor> _sensor =
       ValueNotifier(Sensor.position(SensorPosition.back));
-  ValueNotifier<CaptureMode> _captureMode = ValueNotifier(CaptureMode.photo);
-  ValueNotifier<bool> _enableAudio = ValueNotifier(true);
-  ValueNotifier<CameraOrientations> _orientation =
+  final ValueNotifier<CaptureMode> _captureMode =
+      ValueNotifier(CaptureMode.photo);
+  final ValueNotifier<bool> _enableAudio = ValueNotifier(true);
+  final ValueNotifier<CameraOrientations> _orientation =
       ValueNotifier(CameraOrientations.portrait_up);
 
   /// use this to call a take picture
@@ -65,7 +67,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
                     color: Colors.transparent,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 202,
                 ),
                 Expanded(
@@ -107,7 +109,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
                                 },
                               ),
                               CameraButton(
-                                key: ValueKey('cameraButton'),
+                                key: const ValueKey('cameraButton'),
                                 captureMode: _captureMode.value,
                                 isRecording: _isRecordingVideo,
                                 onTap: _takePhoto,
@@ -123,7 +125,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
                                         Sensor.position(SensorPosition.front);
                                   }
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.flip_camera_ios_outlined,
                                   color: Colors.white,
                                 ),
@@ -158,7 +160,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   //   }
   // }
 
-  _takePhoto() async {
+  _takePhoto(BuildContext context) async {
     final Directory extDir = await getTemporaryDirectory();
     final testDir =
         await Directory('${extDir.path}/test').create(recursive: true);
@@ -173,7 +175,8 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
     File rotatedImage =
         await FlutterExifRotation.rotateImage(path: _lastPhotoPath);
 
-    Navigator.of(context).pop(rotatedImage.path);
+    // Navigator.of(context).pop(rotatedImage.path);
+    Navigator.pop(context, rotatedImage.path);
   }
 
   _onOrientationChange(CameraOrientations? newOrientation) {
@@ -183,12 +186,12 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   _onPermissionsResult(bool? granted) {
     if (!granted!) {
       AlertDialog alert = AlertDialog(
-        title: Text('Error'),
-        content: Text(
+        title: const Text('Error'),
+        content: const Text(
             'It seems you doesn\'t authorized some permissions. Please check on your settings and try again.'),
         actions: [
           TextButton(
-            child: Text('OK'),
+            child: const Text('OK'),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -203,7 +206,9 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
       );
     } else {
       setState(() {});
-      print("granted");
+      // print("granted");
+      final Logger logger = Logger();
+      logger.d("granted");
     }
   }
 
@@ -234,7 +239,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   // }
 
   Widget buildFullscreenCamera() {
-    return Positioned(
+    return const Positioned(
       top: 0,
       left: 0,
       bottom: 0,

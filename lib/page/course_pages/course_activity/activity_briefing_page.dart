@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/custom_app_bar/pop_app_bar.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
 import 'package:sekopercinta_master/page/course_pages/course_activity/essay_activity/essay_page.dart';
@@ -20,23 +21,26 @@ import 'multiple_choice_activity/multiple_choice_page.dart';
 class ActivityBriefingPage extends HookWidget {
   final Aktivitas activity;
 
-  ActivityBriefingPage({
+  const ActivityBriefingPage({
+    super.key,
     required this.activity,
   });
   @override
   Widget build(BuildContext context) {
-    final _data = useState<String?>(null);
-    final _totalQuestion = useState<int>(0);
+    final data = useState<String?>(null);
+    final totalQuestion = useState<int>(0);
 
     useEffect(() {
-      print(activity.idAktivitas);
+      // print(activity.idAktivitas);
+      final Logger logger = Logger();
+      logger.d(activity.idAktivitas);
       context
           .read(activityProvider.notifier)
           .getActivityIntroduction(
               context.read(hasuraClientProvider).state, activity.idAktivitas)
           .then((value) {
-        _data.value = value['isi_pengantar'];
-        _totalQuestion.value = value['total'];
+        data.value = value['isi_pengantar'];
+        totalQuestion.value = value['total'];
       });
       return;
     }, []);
@@ -49,7 +53,7 @@ class ActivityBriefingPage extends HookWidget {
             PopAppBar(
               title: 'Aktivitas',
               action: IconButton(
-                icon: Icon(Icons.settings),
+                icon: const Icon(Icons.settings),
                 onPressed: () {
                   // Your action logic here
                 },
@@ -59,10 +63,10 @@ class ActivityBriefingPage extends HookWidget {
               },
             ),
             Expanded(
-              child: _data.value == null
-                  ? Center(child: CircularProgressIndicator())
+              child: data.value == null
+                  ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Column(
@@ -90,7 +94,7 @@ class ActivityBriefingPage extends HookWidget {
                             //   style: Theme.of(context).textTheme.bodySmall,
                             // ),
                             Text(
-                              _data.value ??
+                              data.value ??
                                   '', // Use an empty string if _data.value is null
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
@@ -195,7 +199,7 @@ class ActivityBriefingPage extends HookWidget {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          '${activity.jenisAktivitas == 'upload' ? 2 : _totalQuestion.value} Pertanyaan',
+                                          '${activity.jenisAktivitas == 'upload' ? 2 : totalQuestion.value} Pertanyaan',
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleSmall

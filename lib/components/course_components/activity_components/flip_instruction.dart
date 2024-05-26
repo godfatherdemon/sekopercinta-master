@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class FlipInstruction extends StatelessWidget {
+  const FlipInstruction({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(

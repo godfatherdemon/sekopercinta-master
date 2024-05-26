@@ -70,7 +70,7 @@ const List<LinearGradient> gradients = [
   gradientD,
 ];
 
-const TextTheme mainTextTheme = const TextTheme(
+const TextTheme mainTextTheme = TextTheme(
   headlineSmall: TextStyle(
     fontWeight: FontWeight.w600,
     color: primaryBlack,

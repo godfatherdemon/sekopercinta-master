@@ -7,12 +7,14 @@ import 'package:sekopercinta_master/utils/constants.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class SetupFinishPage extends HookWidget {
+  const SetupFinishPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      Future.delayed(Duration(seconds: 5)).then((value) {
-        Navigator.pushAndRemoveUntil(
-            context, createRoute(page: BottomNavPage()), (route) => false);
+      Future.delayed(const Duration(seconds: 5)).then((value) {
+        Navigator.pushAndRemoveUntil(context,
+            createRoute(page: const BottomNavPage()), (route) => false);
       });
       return;
     }, []);

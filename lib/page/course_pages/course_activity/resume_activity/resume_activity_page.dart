@@ -19,16 +19,17 @@ class ResumeActivityPage extends HookWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  ResumeActivityPage({
+  const ResumeActivityPage({
+    super.key,
     required this.activity,
     required this.question,
     required this.answer,
   });
   @override
   Widget build(BuildContext context) {
-    final _resume = useState<String?>(null);
-    final _titleResume = useState<String?>(null);
-    final _pengantar = useState<String?>(null);
+    final resume = useState<String?>(null);
+    final titleResume = useState<String?>(null);
+    final pengantar = useState<String?>(null);
 
     useEffect(() {
       context
@@ -36,9 +37,9 @@ class ResumeActivityPage extends HookWidget {
           .getActivityResume(
               context.read(hasuraClientProvider).state, activity.idAktivitas)
           .then((value) {
-        _resume.value = value['isi_resume'];
-        _titleResume.value = value['judul_resume'];
-        _pengantar.value = value['pengantar_ke_lampiran'];
+        resume.value = value['isi_resume'];
+        titleResume.value = value['judul_resume'];
+        pengantar.value = value['pengantar_ke_lampiran'];
       });
       return;
     }, []);
@@ -47,8 +48,8 @@ class ResumeActivityPage extends HookWidget {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: backgroundColor,
-        body: _resume.value == null
-            ? Center(
+        body: resume.value == null
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
@@ -127,7 +128,7 @@ class ResumeActivityPage extends HookWidget {
                         height: 4,
                       ),
                       Text(
-                        _titleResume.value ?? activity.namaAktivitas,
+                        titleResume.value ?? activity.namaAktivitas,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
@@ -135,17 +136,17 @@ class ResumeActivityPage extends HookWidget {
                         height: 16,
                       ),
                       Text(
-                        _resume.value ?? 'Default Value',
+                        resume.value ?? 'Default Value',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(
                         height: 16,
                       ),
-                      if (_pengantar.value != null)
+                      if (pengantar.value != null)
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Color(0xFFF3EEFC),
+                            color: const Color(0xFFF3EEFC),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: const EdgeInsets.all(16),
@@ -166,7 +167,7 @@ class ResumeActivityPage extends HookWidget {
                                 height: 8,
                               ),
                               Text(
-                                '${_pengantar.value}',
+                                '${pengantar.value}',
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                               const SizedBox(

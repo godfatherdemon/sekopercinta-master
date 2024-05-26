@@ -4,7 +4,7 @@ import 'package:sekopercinta_master/utils/constants.dart';
 
 class HomeProgress extends HookWidget {
   final ValueNotifier<int> _activeIndex;
-  HomeProgress(this._activeIndex);
+  const HomeProgress(this._activeIndex, {super.key});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,7 +38,7 @@ class HomeProgress extends HookWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: gradientPrimary,
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: AssetImage('assets/images/bg-card-1.png'),
                   fit: BoxFit.cover,
                 ),
@@ -87,7 +87,7 @@ class HomeProgress extends HookWidget {
                           ],
                         ),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.arrow_forward_ios,
                         color: Colors.white,
                       ),
@@ -101,7 +101,8 @@ class HomeProgress extends HookWidget {
                     child: LinearProgressIndicator(
                       value: 1 / 3,
                       minHeight: 8,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
                       backgroundColor: Colors.white.withOpacity(0.1),
                     ),
                   ),

@@ -4,6 +4,8 @@ import 'package:sekopercinta_master/utils/constants.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class HomeHeader extends StatelessWidget {
+  const HomeHeader({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -29,7 +31,7 @@ class HomeHeader extends StatelessWidget {
         background: Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(88),
                 bottomRight: Radius.circular(88),
               ),
@@ -43,7 +45,7 @@ class HomeHeader extends StatelessWidget {
               width: double.infinity,
               height: 375,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(88),
                   bottomRight: Radius.circular(88),
                 ),
@@ -68,7 +70,7 @@ class HomeHeader extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(createRoute(
-                              page: FullScreenVideo(
+                              page: const FullScreenVideo(
                             url:
                                 'https://webgeocreate.s3.ap-southeast-1.amazonaws.com/sekoper-cinta/home-assets/pengantar_sekoci_app.mp4',
                             id: '',

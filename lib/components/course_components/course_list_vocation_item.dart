@@ -13,7 +13,8 @@ class CourseListVocationItem extends StatelessWidget {
   final Kelas kelas;
   final Kelas prevKelas;
   final int classIndex;
-  CourseListVocationItem(this.kelas, this.prevKelas, this.classIndex);
+  const CourseListVocationItem(this.kelas, this.prevKelas, this.classIndex,
+      {super.key});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -97,8 +98,8 @@ class CourseListVocationItem extends StatelessWidget {
               shrinkWrap: true,
               padding: const EdgeInsets.all(0),
               itemCount: kelas.pelajarans.length,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
@@ -128,16 +129,20 @@ class CourseListVocationItem extends StatelessWidget {
                                     width: 66,
                                     height: 66,
                                     gradient: gradients[index % 4],
-                                    child: kelas.pelajarans[index]
-                                                .logoPelajaran !=
-                                            null
-                                        ? Image.network(
-                                            kelas.pelajarans[index]
-                                                .logoPelajaran,
-                                            width: 53.33,
-                                          )
-                                        : SizedBox
-                                            .shrink(), // Replace with any other widget or SizedBox.shrink() to have an empty space
+                                    child: Image.network(
+                                      kelas.pelajarans[index].logoPelajaran,
+                                      width: 53.33,
+                                    ),
+                                    // child: kelas.pelajarans[index]
+                                    //             .logoPelajaran !=
+                                    //         null
+                                    //     ? Image.network(
+                                    //         kelas.pelajarans[index]
+                                    //             .logoPelajaran,
+                                    //         width: 53.33,
+                                    //       )
+                                    //     : SizedBox
+                                    //         .shrink(), // Replace with any other widget or SizedBox.shrink() to have an empty space
                                   ),
                                 ),
                               ),
@@ -200,9 +205,9 @@ class CourseListVocationItem extends StatelessWidget {
   }
 
   void goToDetail(BuildContext context, int index) {
-    final goToDetailCourse = () {
+    goToDetailCourse() {
       Navigator.of(context).push(createRoute(
-        page: CourseDetailPage(),
+        page: const CourseDetailPage(),
         arguments: {
           'id': kelas.pelajarans[index].idPelajaran,
           'modul': kelas.modul.namaModul,
@@ -212,11 +217,12 @@ class CourseListVocationItem extends StatelessWidget {
           'tab_index': 2,
         },
       ));
-    };
+    }
+
     context.read(changeTabIndexProvider).state = goToDetailCourse;
 
     Navigator.of(context).push(createRoute(
-      page: CourseDetailPage(),
+      page: const CourseDetailPage(),
       arguments: {
         'id': kelas.pelajarans[index].idPelajaran,
         'modul': kelas.modul.namaModul,
@@ -230,17 +236,17 @@ class CourseListVocationItem extends StatelessWidget {
 
   void functionPicker(BuildContext context, int index) {
     goToDetail(context, index);
-    // (kelas.pelajarans[index].progresPelajarans.isEmpty)
-    //     ? index == 0 && classIndex == 0
-    //         ? goToDetail(context, index)
-    //         : prevKelas.progresKelas.isEmpty
-    //             ? null
-    //             : index == 0
-    //                 ? goToDetail(context, index)
-    //                 : kelas.pelajarans[index - 1].progresPelajarans.isNotEmpty
-    //                     ? goToDetail(context, index)
-    //                     : null
-    //     : goToDetail(context, index);
+    (kelas.pelajarans[index].progresPelajarans.isEmpty)
+        ? index == 0 && classIndex == 0
+            ? goToDetail(context, index)
+            : prevKelas.progresKelas.isEmpty
+                ? null
+                : index == 0
+                    ? goToDetail(context, index)
+                    : kelas.pelajarans[index - 1].progresPelajarans.isNotEmpty
+                        ? goToDetail(context, index)
+                        : null
+        : goToDetail(context, index);
   }
 
   Color getLessonColor(int index) {

@@ -4,6 +4,8 @@ import 'package:sekopercinta_master/utils/constants.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class HomeInspiration extends StatelessWidget {
+  const HomeInspiration({super.key});
+
   @override
   Widget build(BuildContext context) {
     final inspiration = [
@@ -76,8 +78,8 @@ class HomeInspiration extends StatelessWidget {
               shrinkWrap: true,
               itemCount: 4,
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 161 / 238,
                 crossAxisSpacing: 14,
@@ -89,7 +91,7 @@ class HomeInspiration extends StatelessWidget {
                       page: FullScreenVideo(
                     url: inspiration[index]['link']!,
                     id: '',
-                    progressAktivitas: [],
+                    progressAktivitas: const [],
                   )));
                 },
                 child: Column(

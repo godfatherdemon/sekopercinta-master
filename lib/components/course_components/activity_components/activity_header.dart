@@ -6,7 +6,8 @@ class ActivityHeader extends StatelessWidget {
   final double progress;
   final String activityName;
 
-  ActivityHeader({
+  const ActivityHeader({
+    super.key,
     required this.progress,
     required this.activityName,
   });
@@ -18,15 +19,16 @@ class ActivityHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: Colors.white,
             ),
             onPressed: () async {
+              final navigator = Navigator.of(context);
               final isExit = await showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(12),
                     topLeft: Radius.circular(12),
@@ -43,7 +45,8 @@ class ActivityHeader extends StatelessWidget {
               }
 
               if (isExit) {
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
+                navigator.pop('context');
               }
             },
           ),
@@ -100,7 +103,7 @@ class ActivityHeader extends StatelessWidget {
                         child: LinearProgressIndicator(
                           minHeight: 6,
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                              const AlwaysStoppedAnimation<Color>(Colors.white),
                           backgroundColor: Colors.white.withOpacity(0.25),
                           value: progress,
                         ),

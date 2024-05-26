@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/activity_header.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/essay_question_card.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/questions_card.dart';
@@ -15,29 +16,29 @@ import '../finish_activity_page.dart';
 
 class EssayPage extends HookWidget {
   final Aktivitas activity;
-  EssayPage({required this.activity});
+  const EssayPage({super.key, required this.activity});
   @override
   Widget build(BuildContext context) {
-    final _listKey = useState(GlobalKey<AnimatedListState>());
-    final _isLoading = useState(true);
-    final _widgets = useState<List<Widget>>([]);
-    final _currentQuestion = useState(0);
-    final _questions = useState<List<Pertanyaan>>([]);
-    final _answer = useState<List<String>>([]);
+    final listKey = useState(GlobalKey<AnimatedListState>());
+    final isLoading = useState(true);
+    final widgets = useState<List<Widget>>([]);
+    final currentQuestion = useState(0);
+    final questions = useState<List<Pertanyaan>>([]);
+    final answer = useState<List<String>>([]);
 
-    final _nextQuestion = useMemoized(
+    final nextQuestion = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
+              const duration = Duration(milliseconds: 500);
 
-              if (_currentQuestion.value < _questions.value.length - 1) {
-                _currentQuestion.value += 1;
+              if (currentQuestion.value < questions.value.length - 1) {
+                currentQuestion.value += 1;
 
-                _widgets.value[0] = ActivityHeader(
-                  progress: (_currentQuestion.value) / _questions.value.length,
+                widgets.value[0] = ActivityHeader(
+                  progress: (currentQuestion.value) / questions.value.length,
                   activityName: activity.namaAktivitas,
                 );
 
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   2,
                   (context, animation) {
                     return FadeTransition(
@@ -50,7 +51,7 @@ class EssayPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[2],
+                        child: widgets.value[2],
                       ),
                     );
                   },
@@ -59,24 +60,24 @@ class EssayPage extends HookWidget {
 
                 await Future.delayed(duration);
 
-                _widgets.value[1] = QuestionsCard(
+                widgets.value[1] = QuestionsCard(
                     questions:
-                        _questions.value.map((e) => e.isiPertanyaan).toList(),
-                    currentQuestions: _currentQuestion);
+                        questions.value.map((e) => e.isiPertanyaan).toList(),
+                    currentQuestions: currentQuestion);
 
-                await Future.delayed(Duration(milliseconds: 700));
+                await Future.delayed(const Duration(milliseconds: 700));
 
-                _listKey.value.currentState?.insertItem(
+                listKey.value.currentState?.insertItem(
                   2,
                   duration: duration,
                 );
               } else {
-                _widgets.value[0] = ActivityHeader(
+                widgets.value[0] = ActivityHeader(
                   progress: 1,
                   activityName: activity.namaAktivitas,
                 );
 
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -89,13 +90,13 @@ class EssayPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[1],
+                        child: widgets.value[1],
                       ),
                     );
                   },
                   duration: duration,
                 );
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -108,7 +109,7 @@ class EssayPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[2],
+                        child: widgets.value[2],
                       ),
                     );
                   },
@@ -118,27 +119,27 @@ class EssayPage extends HookWidget {
                 await Future.delayed(
                     Duration(milliseconds: duration.inMilliseconds + 200));
 
-                _widgets.value[1] = SizedBox(
+                widgets.value[1] = SizedBox(
                   height: MediaQuery.of(context).size.height - 150,
                   width: double.infinity,
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(Colors.white),
                     ),
                   ),
                 );
 
-                _listKey.value.currentState?.insertItem(
+                listKey.value.currentState?.insertItem(
                   1,
                   duration: duration,
                 );
 
                 List<Map<String, String>> objects = [];
 
-                for (int i = 0; i < _questions.value.length; i++) {
+                for (int i = 0; i < questions.value.length; i++) {
                   Map<String, String> object = {
-                    'isi_jawaban': _answer.value[i],
-                    'id_pertanyaan': _questions.value[i].idPertanyaan,
+                    'isi_jawaban': answer.value[i],
+                    'id_pertanyaan': questions.value[i].idPertanyaan,
                   };
 
                   objects.add(object);
@@ -160,19 +161,19 @@ class EssayPage extends HookWidget {
                 Navigator.of(context).pushReplacement(createRoute(
                     page: FinishActivityPage(
                   activity: activity,
-                  answers: _answer.value,
-                  questions: _questions.value,
+                  answers: answer.value,
+                  questions: questions.value,
                 )));
               }
             },
         []);
 
-    final _prevQuestion = useMemoized(
+    final prevQuestion = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
+              const duration = Duration(milliseconds: 500);
 
-              if (_currentQuestion.value > 0) {
-                _listKey.value.currentState?.removeItem(
+              if (currentQuestion.value > 0) {
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -185,13 +186,13 @@ class EssayPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[1],
+                        child: widgets.value[1],
                       ),
                     );
                   },
                   duration: duration,
                 );
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -204,7 +205,7 @@ class EssayPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[2],
+                        child: widgets.value[2],
                       ),
                     );
                   },
@@ -214,19 +215,19 @@ class EssayPage extends HookWidget {
                 await Future.delayed(
                     Duration(milliseconds: duration.inMilliseconds + 200));
 
-                _currentQuestion.value -= 1;
+                currentQuestion.value -= 1;
 
-                _widgets.value[0] = ActivityHeader(
-                  progress: (_currentQuestion.value) / _questions.value.length,
+                widgets.value[0] = ActivityHeader(
+                  progress: (currentQuestion.value) / questions.value.length,
                   activityName: activity.namaAktivitas,
                 );
 
-                _listKey.value.currentState?.insertItem(
+                listKey.value.currentState?.insertItem(
                   1,
                   duration: duration,
                 );
 
-                _listKey.value.currentState?.insertItem(
+                listKey.value.currentState?.insertItem(
                   2,
                   duration: duration,
                 );
@@ -234,13 +235,14 @@ class EssayPage extends HookWidget {
             },
         []);
 
-    final _initialAnimation = useMemoized(
+    final initialAnimation = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 1000);
-              for (int i = 0; i < _widgets.value.length; i++) {
-                _listKey.value.currentState?.insertItem(
+              const duration = Duration(milliseconds: 1000);
+              for (int i = 0; i < widgets.value.length; i++) {
+                listKey.value.currentState?.insertItem(
                   i,
-                  duration: i == 0 ? duration : Duration(milliseconds: 500),
+                  duration:
+                      i == 0 ? duration : const Duration(milliseconds: 500),
                 );
                 await Future.delayed(Duration(
                   milliseconds: i == 0 ? duration.inMilliseconds + 200 : 700,
@@ -256,47 +258,49 @@ class EssayPage extends HookWidget {
               hasuraConnect: context.read(hasuraClientProvider).state,
               id: activity.idAktivitas)
           .then((value) {
-        _questions.value = context.read(questionProvider);
-        _widgets.value = [
+        questions.value = context.read(questionProvider);
+        widgets.value = [
           ActivityHeader(
-            progress: _currentQuestion.value / _questions.value.length,
+            progress: currentQuestion.value / questions.value.length,
             activityName: activity.namaAktivitas,
           ),
           QuestionsCard(
-            questions: _questions.value.map((e) => e.isiPertanyaan).toList(),
-            currentQuestions: _currentQuestion,
+            questions: questions.value.map((e) => e.isiPertanyaan).toList(),
+            currentQuestions: currentQuestion,
           ),
           EssayQuestionCard(
-            nextQuestion: _nextQuestion,
-            prevQuestion: _prevQuestion,
+            nextQuestion: nextQuestion,
+            prevQuestion: prevQuestion,
             saveAnswer: (value) {
-              _answer.value.add(value);
+              answer.value.add(value);
 
-              print(_answer.value);
+              // print(answer.value);
+              final Logger logger = Logger();
+              logger.d(answer.value);
             },
-            currentQuestion: _currentQuestion,
+            currentQuestion: currentQuestion,
           ),
         ];
-        Future.delayed(Duration(milliseconds: 1000)).then((value) {
-          _isLoading.value = false;
+        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+          isLoading.value = false;
 
-          Future.delayed(Duration(milliseconds: 200)).then((value) {
-            _initialAnimation();
+          Future.delayed(const Duration(milliseconds: 200)).then((value) {
+            initialAnimation();
           });
         });
       });
       return;
     }, []);
 
-    return _isLoading.value
-        ? LoadingActivityPage()
+    return isLoading.value
+        ? const LoadingActivityPage()
         : Scaffold(
             backgroundColor: accentColor,
             body: SafeArea(
               child: AnimatedList(
-                key: _listKey.value,
+                key: listKey.value,
                 initialItemCount: 0,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index, animation) {
                   return FadeTransition(
                     key: Key('$index'),
@@ -306,7 +310,7 @@ class EssayPage extends HookWidget {
                         end: Offset.zero,
                         begin: const Offset(0.0, -0.1),
                       )),
-                      child: _widgets.value[index],
+                      child: widgets.value[index],
                     ),
                   );
                 },

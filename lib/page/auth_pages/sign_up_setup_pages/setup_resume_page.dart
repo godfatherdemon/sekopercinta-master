@@ -9,14 +9,15 @@ class SetupResumePage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
 
-  SetupResumePage({
+  const SetupResumePage({
+    super.key,
     required this.pageController,
     required this.currentPage,
   });
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -59,7 +60,7 @@ class SetupResumePage extends HookWidget {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Color(0xFFE7E4E2),
+                  color: const Color(0xFFE7E4E2),
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -217,7 +218,7 @@ class SetupResumePage extends HookWidget {
                 currentPage.value++;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               },
@@ -234,7 +235,7 @@ class SetupResumePage extends HookWidget {
                 currentPage.value--;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               },

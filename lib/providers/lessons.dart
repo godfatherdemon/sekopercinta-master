@@ -1,5 +1,6 @@
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/providers/activities.dart';
 
 class Pelajaran {
@@ -61,7 +62,9 @@ class LessonNotifier extends StateNotifier<Pelajaran> {
 
   Future<void> getLessons(
       HasuraConnect hasuraConnect, String id, bool isLastLessons) async {
-    print(id);
+    // print(id);
+    final Logger logger = Logger();
+    logger.d(id);
 
     String docQuery = """
 query MyQuery {
@@ -93,7 +96,8 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print('GET PELAJARAN $responseData');
+    // print('GET PELAJARAN $responseData');
+    logger.d('GET PELAJARAN $responseData');
 
     responseData['pelajaran'][0]['is_last_lesson'] = isLastLessons;
 
@@ -113,6 +117,8 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    final Logger logger = Logger();
+    logger.d(responseData);
   }
 }

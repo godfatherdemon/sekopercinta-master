@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/providers/activities.dart';
 import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:video_player/video_player.dart';
@@ -11,26 +12,28 @@ class FullScreenVideo extends HookWidget {
   final String id;
   final List<ProgresAktivita> progressAktivitas;
 
-  FullScreenVideo({
+  const FullScreenVideo({
+    super.key,
     required this.url,
     required this.id,
     required this.progressAktivitas,
   });
   @override
   Widget build(BuildContext context) {
-    final _videoPlayerController = useState<VideoPlayerController?>(null);
-    final _chewieController = useState<ChewieController?>(null);
+    final videoPlayerController0 = useState<VideoPlayerController?>(null);
+    final chewieController0 = useState<ChewieController?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _updateProgress = useMemoized(
+    final updateProgress = useMemoized(
         () => () async {
-              _isLoading.value = true;
+              final navigator = Navigator.of(context);
+              isLoading.value = true;
 
               final currentPosition =
-                  _videoPlayerController.value?.value.position.inSeconds;
+                  videoPlayerController0.value?.value.position.inSeconds;
               final totalDuration =
-                  _videoPlayerController.value?.value.duration.inSeconds;
+                  videoPlayerController0.value?.value.duration.inSeconds;
               var progress = currentPosition! / totalDuration!;
 
               if (progressAktivitas.isNotEmpty) {
@@ -43,8 +46,11 @@ class FullScreenVideo extends HookWidget {
                 return;
               }
 
-              print(progress);
-              print(id);
+              // print(progress);
+              // print(id);
+              final Logger logger = Logger();
+              logger.d(progress);
+              logger.d(id);
               try {
                 await context.read(activityProvider.notifier).updateProgress(
                       context,
@@ -53,10 +59,13 @@ class FullScreenVideo extends HookWidget {
                       progress,
                     );
 
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                navigator.pop('update');
               } catch (error) {
-                _isLoading.value = false;
-                print('ERROR ${error.toString()}');
+                isLoading.value = false;
+                // print('ERROR ${error.toString()}');
+                // final Logger logger = Logger();
+                logger.d('ERROR ${error.toString()}');
                 return;
               }
             },
@@ -73,7 +82,7 @@ class FullScreenVideo extends HookWidget {
       );
 
       videoPlayerController.initialize().then((_) {
-        _chewieController.value = chewieController;
+        chewieController0.value = chewieController;
       });
 
       return () {
@@ -88,24 +97,24 @@ class FullScreenVideo extends HookWidget {
       //         return true;
       // },
       onPopInvoked: (bool isPopGesture) async {
-        await _updateProgress();
+        await updateProgress();
       },
 
       child: Scaffold(
-        backgroundColor: Color(0xFF0A0A0A),
+        backgroundColor: const Color(0xFF0A0A0A),
         body: SafeArea(
           child: Center(
-            child: _isLoading.value
-                ? CircularProgressIndicator(
+            child: isLoading.value
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(Colors.white),
                   )
-                : _chewieController.value != null &&
-                        _chewieController
+                : chewieController0.value != null &&
+                        chewieController0
                             .value!.videoPlayerController.value.isInitialized
                     ? Chewie(
-                        controller: _chewieController.value!,
+                        controller: chewieController0.value!,
                       )
-                    : CircularProgressIndicator(
+                    : const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.white),
                       ),
           ),

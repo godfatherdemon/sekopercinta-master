@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sekopercinta_master/components/text_field/bordered_text_field.dart';
 import 'package:sekopercinta_master/page/camera_page/camera_page.dart';
@@ -16,43 +17,49 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class AddPostPage extends HookWidget {
+  const AddPostPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _postDescription = useState<String?>(null);
-    final _isLoading = useState(false);
-    final _selectedFile = useState<File?>(null);
+    final formKey = useState(GlobalKey<FormState>());
+    final postDescription = useState<String?>(null);
+    final isLoading = useState(false);
+    final selectedFile = useState<File?>(null);
 
-    final _addPost = useMemoized(
+    final addPost = useMemoized(
         () => () async {
-              if (_selectedFile.value == null) {
+              final navigator = Navigator.of(context);
+              if (selectedFile.value == null) {
                 Fluttertoast.showToast(
                   msg: 'Mohon masukkan foto',
                 );
               }
 
-              if (!_formKey.value.currentState!.validate()) {
+              if (!formKey.value.currentState!.validate()) {
                 return;
               }
-              _formKey.value.currentState?.save();
-              print(_postDescription.value);
+              formKey.value.currentState?.save();
+              // print(postDescription.value);
+              final Logger logger = Logger();
+              logger.d(postDescription.value);
 
-              _isLoading.value = true;
+              isLoading.value = true;
 
               try {
                 await context
                     .read(activityProvider.notifier)
                     .sendCommunityImage(
-                      file: _selectedFile.value!,
-                      comment: _postDescription.value!,
+                      file: selectedFile.value!,
+                      comment: postDescription.value!,
                       hasuraConnect: context.read(hasuraClientProvider).state,
                     );
 
-                _isLoading.value = false;
-                Navigator.of(context).pop(true);
+                isLoading.value = false;
+                // Navigator.of(context).pop(true);
+                navigator.pop('add photo');
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
@@ -61,7 +68,7 @@ class AddPostPage extends HookWidget {
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Form(
-          key: _formKey.value,
+          key: formKey.value,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -72,13 +79,13 @@ class AddPostPage extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
+                        icon: const Icon(Icons.arrow_back_ios),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                      _isLoading.value
-                          ? CircularProgressIndicator()
+                      isLoading.value
+                          ? const CircularProgressIndicator()
                           : InkWell(
-                              onTap: _addPost,
+                              onTap: addPost,
                               borderRadius: BorderRadius.circular(8),
                               child: Ink(
                                 decoration: BoxDecoration(
@@ -114,7 +121,7 @@ class AddPostPage extends HookWidget {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color(0xFFF5F0FC),
+                          color: const Color(0xFFF5F0FC),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         padding: const EdgeInsets.all(16),
@@ -157,9 +164,9 @@ class AddPostPage extends HookWidget {
                       ),
                       DottedBorder(
                         borderType: BorderType.RRect,
-                        radius: Radius.circular(16),
-                        dashPattern: [4, 4, 4, 4],
-                        color: Color(0xFFE75C96),
+                        radius: const Radius.circular(16),
+                        dashPattern: const [4, 4, 4, 4],
+                        color: const Color(0xFFE75C96),
                         child: InkWell(
                           onTap: () async {
                             final action = await selectPhotoHandler(context);
@@ -171,11 +178,11 @@ class AddPostPage extends HookWidget {
                             if (action == 'camera') {
                               if (await Permission.camera.request().isGranted) {
                                 final selectedFilePath =
-                                    await Navigator.of(context)
-                                        .push(createRoute(page: CameraPage()));
+                                    await Navigator.of(context).push(
+                                        createRoute(page: const CameraPage()));
 
                                 if (selectedFilePath != null) {
-                                  _selectedFile.value = File(selectedFilePath);
+                                  selectedFile.value = File(selectedFilePath);
                                 }
                               }
                             } else {
@@ -215,7 +222,7 @@ class AddPostPage extends HookWidget {
                                     return;
                                   }
 
-                                  _selectedFile.value = file;
+                                  selectedFile.value = file;
                                 } else {
                                   // Handle the case when the file path is null
                                 }
@@ -226,12 +233,12 @@ class AddPostPage extends HookWidget {
                             height: 180,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: Color(0xFFF9F9F9),
+                              color: const Color(0xFFF9F9F9),
                               borderRadius: BorderRadius.circular(14),
-                              image: _selectedFile.value != null
+                              image: selectedFile.value != null
                                   ? DecorationImage(
                                       image: FileImage(
-                                        _selectedFile.value!,
+                                        selectedFile.value!,
                                       ),
                                       fit: BoxFit.cover,
                                     )
@@ -253,7 +260,7 @@ class AddPostPage extends HookWidget {
                                       .textTheme
                                       .titleSmall
                                       ?.copyWith(
-                                        color: _selectedFile.value == null
+                                        color: selectedFile.value == null
                                             ? primaryBlack
                                             : Colors.white,
                                       ),
@@ -267,7 +274,7 @@ class AddPostPage extends HookWidget {
                                       .textTheme
                                       .bodyMedium
                                       ?.copyWith(
-                                        color: _selectedFile.value == null
+                                        color: selectedFile.value == null
                                             ? primaryBlack
                                             : Colors.white,
                                       ),
@@ -292,22 +299,23 @@ class AddPostPage extends HookWidget {
                         keyboardType: TextInputType.multiline,
                         maxLine: 7,
                         onSaved: (value) {
-                          _postDescription.value = value;
+                          postDescription.value = value;
                         },
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Deskripsi post tidak boleh kosong';
                           }
+                          return null;
                         },
                         onFieldSubmitted: (value) {
-                          _addPost();
+                          addPost();
                         },
                         textEditingController: TextEditingController(),
                         initialValue: '',
                         focusNode: FocusNode(),
                         onChanged: (string) {},
                         onTap: () {},
-                        suffixIcon: Icon(Icons.verified_user),
+                        suffixIcon: const Icon(Icons.verified_user),
                       ),
                     ],
                   ),

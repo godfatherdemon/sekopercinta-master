@@ -5,7 +5,8 @@ import 'package:sekopercinta_master/utils/constants.dart';
 class QuestionsCard extends HookWidget {
   final List<String> questions;
   final ValueNotifier<int> currentQuestions;
-  QuestionsCard({required this.questions, required this.currentQuestions});
+  const QuestionsCard(
+      {super.key, required this.questions, required this.currentQuestions});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,11 +17,11 @@ class QuestionsCard extends HookWidget {
       ),
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
             opacity: animation,
-            child: SizeTransition(child: child, sizeFactor: animation),
+            child: SizeTransition(sizeFactor: animation, child: child),
           );
         },
         child: Column(

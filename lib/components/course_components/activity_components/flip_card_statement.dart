@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
 
 class FlipCardStatement extends HookWidget {
   final ValueNotifier<bool> isStart;
   final String question;
 
-  FlipCardStatement(this.isStart, this.question);
+  const FlipCardStatement(this.isStart, this.question, {super.key});
   @override
   Widget build(BuildContext context) {
-    print(isStart.value);
+    // print(isStart.value);
+    final Logger logger = Logger();
+    logger.d(isStart.value);
     return AnimatedContainer(
       height: isStart.value ? 118 : MediaQuery.of(context).size.height - 100,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             child: Container(
               key: ValueKey<bool>(isStart.value),
               width: double.infinity,
@@ -42,7 +45,7 @@ class FlipCardStatement extends HookWidget {
                     height: 12,
                   ),
                   Text(
-                    '$question',
+                    question,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: isStart.value ? Colors.white : primaryBlack),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/answer_many_instruction.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/answer_many_questions.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/answer_many_statement.dart';
@@ -16,29 +17,29 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class AnswerManyPage extends HookWidget {
   final Aktivitas activity;
-  AnswerManyPage({required this.activity});
+  const AnswerManyPage({super.key, required this.activity});
   @override
   Widget build(BuildContext context) {
-    final _listKey = useState(GlobalKey<AnimatedListState>());
-    final _isLoading = useState(true);
-    final _widgets = useState<List<Widget>>([]);
-    final _isStart = useState(false);
-    final _currentQuestion = useState(0);
-    final _questions = useState<List<Pertanyaan>>([]);
-    final _answer = useState<List<String>>([]);
+    final listKey = useState(GlobalKey<AnimatedListState>());
+    final isLoading = useState(true);
+    final widgets = useState<List<Widget>>([]);
+    final isStart = useState(false);
+    final currentQuestion = useState(0);
+    final questions = useState<List<Pertanyaan>>([]);
+    final answer = useState<List<String>>([]);
 
-    final _finishQuestion = useMemoized(
+    final finishQuestion = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
+              const duration = Duration(milliseconds: 500);
 
-              if (!(_currentQuestion.value < _questions.value.length - 1)) {
-                _widgets.value[0] = FlipCardHeader(
-                  _isStart,
+              if (!(currentQuestion.value < questions.value.length - 1)) {
+                widgets.value[0] = FlipCardHeader(
+                  isStart,
                   1,
                   activity.namaAktivitas,
                 );
 
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -51,13 +52,13 @@ class AnswerManyPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[1],
+                        child: widgets.value[1],
                       ),
                     );
                   },
                   duration: duration,
                 );
-                _listKey.value.currentState?.removeItem(
+                listKey.value.currentState?.removeItem(
                   1,
                   (context, animation) {
                     return FadeTransition(
@@ -70,7 +71,7 @@ class AnswerManyPage extends HookWidget {
                           parent: animation,
                           curve: Curves.easeOutBack,
                         )),
-                        child: _widgets.value[2],
+                        child: widgets.value[2],
                       ),
                     );
                   },
@@ -80,42 +81,44 @@ class AnswerManyPage extends HookWidget {
                 await Future.delayed(
                     Duration(milliseconds: duration.inMilliseconds + 200));
 
-                _widgets.value[1] = SizedBox(
+                widgets.value[1] = SizedBox(
                   height: MediaQuery.of(context).size.height - 150,
                   width: double.infinity,
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(Colors.white),
                     ),
                   ),
                 );
 
-                _listKey.value.currentState?.insertItem(
+                listKey.value.currentState?.insertItem(
                   1,
                   duration: duration,
                 );
 
                 List<Map<String, String>> objects = [];
 
-                for (int i = 0; i < _answer.value.length; i++) {
+                for (int i = 0; i < answer.value.length; i++) {
                   Map<String, String> object = {
-                    'isi_jawaban': _answer.value[i],
-                    'id_pertanyaan': _questions.value[0].idPertanyaan,
+                    'isi_jawaban': answer.value[i],
+                    'id_pertanyaan': questions.value[0].idPertanyaan,
                   };
 
                   objects.add(object);
                 }
 
-                var answer = _answer.value.toString().replaceFirst('[', '{');
+                var answers = answer.value.toString().replaceFirst('[', '{');
 
-                print(answer.length);
+                // print(answers.length);
+                final Logger logger = Logger();
+                logger.d(answers.length);
 
-                answer = answer.replaceRange(answer.length - 1, null, '}');
+                answers = answers.replaceRange(answers.length - 1, null, '}');
 
                 await context.read(questionProvider.notifier).giveAnswerMany(
                       context.read(hasuraClientProvider).state,
-                      answer,
-                      _questions.value[0].idPertanyaan,
+                      answers,
+                      questions.value[0].idPertanyaan,
                     );
 
                 await context.read(activityProvider.notifier).updateProgress(
@@ -128,58 +131,58 @@ class AnswerManyPage extends HookWidget {
                 Navigator.of(context).pushReplacement(createRoute(
                     page: FinishActivityPage(
                   activity: activity,
-                  answers: _answer.value,
-                  questions: _questions.value,
+                  answers: answer.value,
+                  questions: questions.value,
                 )));
               }
             },
         []);
 
-    final _startActivity = useMemoized(
+    final startActivity = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
+              const duration = Duration(milliseconds: 500);
 
               // await Future.delayed(Duration(milliseconds: 700));
 
-              _isStart.value = false;
-              _widgets.value[0] = FlipCardHeader(
-                  _isStart,
-                  _currentQuestion.value / _questions.value.length,
+              isStart.value = false;
+              widgets.value[0] = FlipCardHeader(
+                  isStart,
+                  currentQuestion.value / questions.value.length,
                   activity.namaAktivitas);
-              _widgets.value[2] = AnswerManyQuestions(
-                isStart: _isStart,
-                answers: _answer,
-                finish: _finishQuestion,
+              widgets.value[2] = AnswerManyQuestions(
+                isStart: isStart,
+                answers: answer,
+                finish: finishQuestion,
               );
 
-              _widgets.value[1] = AnswerManyStatement(
-                  _isStart, _questions.value[0].isiPertanyaan);
-              _isStart.value = true;
+              widgets.value[1] = AnswerManyStatement(
+                  isStart, questions.value[0].isiPertanyaan);
+              isStart.value = true;
 
-              _listKey.value.currentState?.removeItem(
+              listKey.value.currentState?.removeItem(
                 2,
                 (context, animation) {
                   return FadeTransition(
                     opacity: animation,
-                    child: _widgets.value[2],
+                    child: widgets.value[2],
                   );
                 },
                 duration: Duration.zero,
               );
 
-              await Future.delayed(Duration(milliseconds: 500));
+              await Future.delayed(const Duration(milliseconds: 500));
 
-              _listKey.value.currentState?.insertItem(
+              listKey.value.currentState?.insertItem(
                 2,
                 duration: duration,
               );
             },
         []);
 
-    final _showQuestion = useMemoized(
+    final showQuestion = useMemoized(
         () => () async {
-              final duration = Duration(milliseconds: 500);
-              _listKey.value.currentState?.removeItem(
+              const duration = Duration(milliseconds: 500);
+              listKey.value.currentState?.removeItem(
                 1,
                 (context, animation) {
                   return FadeTransition(
@@ -192,13 +195,13 @@ class AnswerManyPage extends HookWidget {
                         parent: animation,
                         curve: Curves.easeOutBack,
                       )),
-                      child: _widgets.value[1],
+                      child: widgets.value[1],
                     ),
                   );
                 },
                 duration: duration,
               );
-              _listKey.value.currentState?.removeItem(
+              listKey.value.currentState?.removeItem(
                 1,
                 (context, animation) {
                   return FadeTransition(
@@ -211,14 +214,14 @@ class AnswerManyPage extends HookWidget {
                         parent: animation,
                         curve: Curves.easeOutBack,
                       )),
-                      child: _widgets.value[2],
+                      child: widgets.value[2],
                     ),
                   );
                 },
                 duration: duration,
               );
 
-              _listKey.value.currentState?.removeItem(
+              listKey.value.currentState?.removeItem(
                 1,
                 (context, animation) {
                   return FadeTransition(
@@ -231,7 +234,7 @@ class AnswerManyPage extends HookWidget {
                         parent: animation,
                         curve: Curves.easeOutBack,
                       )),
-                      child: _widgets.value[2],
+                      child: widgets.value[2],
                     ),
                   );
                 },
@@ -241,9 +244,9 @@ class AnswerManyPage extends HookWidget {
               await Future.delayed(
                   Duration(milliseconds: duration.inMilliseconds + 200));
 
-              _widgets.value[1] = AnswerManyStatement(
-                  _isStart, _questions.value[0].isiPertanyaan);
-              _widgets.value[2] = Padding(
+              widgets.value[1] = AnswerManyStatement(
+                  isStart, questions.value[0].isiPertanyaan);
+              widgets.value[2] = Padding(
                 padding: const EdgeInsets.only(
                   left: 20.0,
                   right: 20.0,
@@ -254,36 +257,36 @@ class AnswerManyPage extends HookWidget {
                   color: Colors.white,
                   textColor: accentColor,
                   onTap: () {
-                    _startActivity();
+                    startActivity();
                   },
                   leading: Container(),
                 ),
               );
 
-              _listKey.value.currentState?.insertItem(
+              listKey.value.currentState?.insertItem(
                 1,
                 duration: duration,
               );
 
-              _listKey.value.currentState?.insertItem(
+              listKey.value.currentState?.insertItem(
                 2,
                 duration: duration,
               );
             },
         []);
 
-    final _initialAnimation = useMemoized(
+    final initialAnimation = useMemoized(
         () => () async {
-              for (int i = 0; i < _widgets.value.length; i++) {
-                _listKey.value.currentState?.insertItem(
+              for (int i = 0; i < widgets.value.length; i++) {
+                listKey.value.currentState?.insertItem(
                   i,
                   duration: i == 0 || i == 2
                       ? Duration.zero
-                      : Duration(milliseconds: 500),
+                      : const Duration(milliseconds: 500),
                 );
 
                 if (i != 0 && i != 2) {
-                  await Future.delayed(Duration(
+                  await Future.delayed(const Duration(
                     milliseconds: 700,
                   ));
                 }
@@ -298,18 +301,18 @@ class AnswerManyPage extends HookWidget {
               hasuraConnect: context.read(hasuraClientProvider).state,
               id: activity.idAktivitas)
           .then((value) {
-        _questions.value = context.read(questionProvider);
+        questions.value = context.read(questionProvider);
 
-        _widgets.value = [
+        widgets.value = [
           FlipCardHeader(
-              _isStart,
-              _currentQuestion.value / _questions.value.length,
-              _questions.value[0].isiPertanyaan),
-          AnswerManyInstruction(),
+              isStart,
+              currentQuestion.value / questions.value.length,
+              questions.value[0].isiPertanyaan),
+          const AnswerManyInstruction(),
           AnswerManyQuestions(
-            isStart: _isStart,
-            answers: _answer,
-            finish: _finishQuestion,
+            isStart: isStart,
+            answers: answer,
+            finish: finishQuestion,
           ),
           Padding(
             padding: const EdgeInsets.only(
@@ -322,17 +325,17 @@ class AnswerManyPage extends HookWidget {
               color: Colors.white,
               textColor: accentColor,
               onTap: () {
-                _showQuestion();
+                showQuestion();
               },
               leading: Container(),
             ),
           ),
         ];
-        Future.delayed(Duration(milliseconds: 1000)).then((value) {
-          _isLoading.value = false;
+        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+          isLoading.value = false;
 
-          Future.delayed(Duration(milliseconds: 200)).then((value) {
-            _initialAnimation();
+          Future.delayed(const Duration(milliseconds: 200)).then((value) {
+            initialAnimation();
           });
         });
       });
@@ -340,15 +343,15 @@ class AnswerManyPage extends HookWidget {
       return;
     }, []);
 
-    return _isLoading.value
-        ? LoadingActivityPage()
+    return isLoading.value
+        ? const LoadingActivityPage()
         : Scaffold(
             backgroundColor: accentColor,
             body: SafeArea(
               child: AnimatedList(
-                key: _listKey.value,
+                key: listKey.value,
                 initialItemCount: 0,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index, animation) {
                   return FadeTransition(
                     key: Key('$index'),
@@ -358,7 +361,7 @@ class AnswerManyPage extends HookWidget {
                         end: Offset.zero,
                         begin: const Offset(0.0, -0.1),
                       )),
-                      child: _widgets.value[index],
+                      child: widgets.value[index],
                     ),
                   );
                 },

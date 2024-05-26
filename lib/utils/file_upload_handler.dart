@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
+import 'package:logger/logger.dart';
 
 import 'constants.dart';
 
@@ -38,7 +39,9 @@ Future<void> sendFile(File file, String url) async {
     ),
     onSendProgress: (int sentBytes, int totalBytes) {
       double progressPercent = sentBytes / totalBytes * 100;
-      print("permit: $progressPercent %");
+      // print("permit: $progressPercent %");
+      final Logger logger = Logger();
+      logger.d("permit: $progressPercent %");
     },
   );
 }

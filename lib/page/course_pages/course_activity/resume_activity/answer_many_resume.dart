@@ -6,7 +6,8 @@ class AnswerManyResumeComponents extends StatelessWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  AnswerManyResumeComponents({
+  const AnswerManyResumeComponents({
+    super.key,
     required this.answer,
     required this.question,
   });
@@ -31,7 +32,7 @@ class AnswerManyResumeComponents extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Color(0xFF9B6EE5).withOpacity(0.12),
+            color: const Color(0xFF9B6EE5).withOpacity(0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.all(16),
@@ -52,7 +53,7 @@ class AnswerManyResumeComponents extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: answer.length,
                 padding: const EdgeInsets.all(0),
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
@@ -64,7 +65,7 @@ class AnswerManyResumeComponents extends StatelessWidget {
                 ),
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider(
-                    color: Color(0xFF9B6EE5).withOpacity(0.4),
+                    color: const Color(0xFF9B6EE5).withOpacity(0.4),
                   );
                 },
               ),

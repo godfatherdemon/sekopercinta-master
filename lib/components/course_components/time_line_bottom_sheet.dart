@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
 
 class TimeLineBottomSheet extends StatelessWidget {
+  const TimeLineBottomSheet({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -16,7 +18,7 @@ class TimeLineBottomSheet extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(12),
@@ -32,7 +34,7 @@ class TimeLineBottomSheet extends StatelessWidget {
                   height: 4,
                   width: 52,
                   decoration: BoxDecoration(
-                    color: Color(0xFFE0E0E0),
+                    color: const Color(0xFFE0E0E0),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -41,7 +43,7 @@ class TimeLineBottomSheet extends StatelessWidget {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20.0,
@@ -86,7 +88,7 @@ class TimeLineBottomSheet extends StatelessWidget {
                                 .textTheme
                                 .titleSmall
                                 ?.copyWith(
-                                  color: Color(0xFFA2A1A1),
+                                  color: const Color(0xFFA2A1A1),
                                 ),
                           ),
                           const SizedBox(

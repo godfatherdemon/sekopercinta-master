@@ -8,8 +8,9 @@ class PopAppBar extends StatelessWidget {
   final Widget action;
   final Function onPop;
 
-  PopAppBar(
-      {required this.title,
+  const PopAppBar(
+      {super.key,
+      required this.title,
       // required this.action,
       this.action = const SizedBox(),
       // required this.onPop,
@@ -43,7 +44,7 @@ class PopAppBar extends StatelessWidget {
               ),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: primaryBlack,
                 fontWeight: FontWeight.w600,
                 fontSize: 16,

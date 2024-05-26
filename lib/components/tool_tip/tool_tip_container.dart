@@ -4,7 +4,7 @@ import 'package:sekopercinta_master/utils/constants.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class ToolTipContainer extends StatelessWidget {
-  final GlobalKey key;
+  // final GlobalKey key;
   final String title;
   final String description;
   final int step;
@@ -12,8 +12,9 @@ class ToolTipContainer extends StatelessWidget {
   final Function()? onButtonTap;
   final Widget child;
 
-  ToolTipContainer({
-    required this.key,
+  const ToolTipContainer({
+    super.key,
+    // required this.key,
     required this.title,
     required this.description,
     required this.step,

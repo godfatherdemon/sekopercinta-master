@@ -15,41 +15,67 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class ProfilePage extends HookWidget {
+  const ProfilePage(ValueNotifier<int> selectedIndex, {super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _isLoading = useState(false);
-    final _userData = useState<UserData>(context.read(userDataProvider));
+    final isLoading = useState(false);
+    final userData = useState<UserData>(context.read(userDataProvider));
 
-    final _imageKey = useState(DateTime.now().toString());
+    final imageKey = useState(DateTime.now().toString());
 
-    final _getUserData = useMemoized(
+    final getUserData = useMemoized(
         () => () async {
+              // final isAuth = context.read(authProvider.notifier).isAuth;
+              // final userDataValue = userData.value;
+
+              // if (isAuth) {
+              //   if (userDataValue.namaPengguna == null) {
+              //     isLoading.value = true;
+              //   }
+
+              //   try {
+              //     final hasuraClientState =
+              //         context.read(hasuraClientProvider).state;
+              //     await context
+              //         .read(userDataProvider.notifier)
+              //         .getUserData(hasuraClientState);
+              //     // userData.value = context.read(userDataProvider);
+              //     userData.value = userDataProvider as UserData;
+              //   } catch (error) {
+              //     isLoading.value = false;
+              //     rethrow;
+              //   }
+              //   isLoading.value = false;
+              // }
+
               if (context.read(authProvider.notifier).isAuth) {
-                if (_userData.value.namaPengguna == null) {
-                  _isLoading.value = true;
+                if (userData.value.namaPengguna == null) {
+                  isLoading.value = true;
                 }
 
                 try {
                   await context.read(userDataProvider.notifier).getUserData(
                         context.read(hasuraClientProvider).state,
                       );
-                  _userData.value = context.read(userDataProvider);
+                  // userData.value = context.read(userDataProvider);
+                  userData.value = userDataProvider as UserData;
                 } catch (error) {
-                  _isLoading.value = false;
-                  throw error;
+                  isLoading.value = false;
+                  rethrow;
                 }
-                _isLoading.value = false;
+                isLoading.value = false;
               }
             },
         []);
 
     useEffect(() {
-      _getUserData();
+      getUserData();
       return;
     }, []);
 
     return !context.read(authProvider.notifier).isAuth
-        ? LoginPage()
+        ? const LoginPage()
         : Scaffold(
             backgroundColor: backgroundColor,
             appBar: AppBar(
@@ -61,7 +87,7 @@ class ProfilePage extends HookWidget {
               ),
             ),
             body: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Stack(
@@ -87,8 +113,8 @@ class ProfilePage extends HookWidget {
                     ),
                     Column(
                       children: [
-                        _isLoading.value
-                            ? ShimmerCard(
+                        isLoading.value
+                            ? const ShimmerCard(
                                 height: 308,
                                 width: double.infinity,
                                 borderRadius: 12,
@@ -112,21 +138,20 @@ class ProfilePage extends HookWidget {
                                           ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(30),
-                                            child: _userData.value.fotoProfil
+                                            child: userData.value.fotoProfil
                                                     .toString()
                                                     .contains('http')
                                                 ? Image.network(
-                                                    '${_userData.value.fotoProfil}?v=${_imageKey.value}',
+                                                    '${userData.value.fotoProfil}?v=${imageKey.value}',
                                                     fit: BoxFit.cover,
                                                     height: 60,
                                                     width: 60,
                                                   )
                                                 : Image.asset(
-                                                    _userData.value
-                                                                .fotoProfil ==
+                                                    userData.value.fotoProfil ==
                                                             '{{default_1}}'
                                                         ? 'assets/images/img-women-a.png'
-                                                        : _userData.value
+                                                        : userData.value
                                                                     .fotoProfil ==
                                                                 '{{default_2}}'
                                                             ? 'assets/images/img-women-b.png'
@@ -145,8 +170,7 @@ class ProfilePage extends HookWidget {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  _userData
-                                                          .value.namaPengguna ??
+                                                  userData.value.namaPengguna ??
                                                       '',
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -157,7 +181,7 @@ class ProfilePage extends HookWidget {
                                                       ),
                                                 ),
                                                 Text(
-                                                  _userData.value.email,
+                                                  userData.value.email,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyLarge,
@@ -195,7 +219,7 @@ class ProfilePage extends HookWidget {
                                       const SizedBox(
                                         height: 16,
                                       ),
-                                      Divider(),
+                                      const Divider(),
                                       const SizedBox(
                                         height: 16,
                                       ),
@@ -216,8 +240,7 @@ class ProfilePage extends HookWidget {
                                               const SizedBox(
                                                 height: 14,
                                               ),
-                                              if (_userData
-                                                      .value.tanggalLahir !=
+                                              if (userData.value.tanggalLahir !=
                                                   null)
                                                 Text(
                                                   'Tgl. Lahir',
@@ -225,8 +248,7 @@ class ProfilePage extends HookWidget {
                                                       .textTheme
                                                       .bodyLarge,
                                                 ),
-                                              if (_userData
-                                                      .value.tanggalLahir !=
+                                              if (userData.value.tanggalLahir !=
                                                   null)
                                                 const SizedBox(
                                                   height: 14,
@@ -246,7 +268,7 @@ class ProfilePage extends HookWidget {
                                               const SizedBox(
                                                 height: 14,
                                               ),
-                                              if (_userData.value
+                                              if (userData.value
                                                       .pendidikanTerakhir !=
                                                   null)
                                                 Text(
@@ -255,7 +277,7 @@ class ProfilePage extends HookWidget {
                                                       .textTheme
                                                       .bodyLarge,
                                                 ),
-                                              if (_userData.value
+                                              if (userData.value
                                                       .pendidikanTerakhir !=
                                                   null)
                                                 const SizedBox(
@@ -281,7 +303,7 @@ class ProfilePage extends HookWidget {
                                               children: [
                                                 // if (_userData.value.nik != null)
                                                 Text(
-                                                  _userData.value.nik,
+                                                  userData.value.nik,
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -296,7 +318,7 @@ class ProfilePage extends HookWidget {
                                                 const SizedBox(
                                                   height: 14,
                                                 ),
-                                                if (_userData
+                                                if (userData
                                                         .value.tanggalLahir !=
                                                     null)
                                                   Text(
@@ -312,12 +334,12 @@ class ProfilePage extends HookWidget {
                                                     //     ?.copyWith(
                                                     //         color:
                                                     //             primaryVeryDarkColor),
-                                                    _userData.value
+                                                    userData.value
                                                                 .tanggalLahir !=
                                                             null
                                                         ? DateFormat(
                                                                 'dd MMMM yyyy')
-                                                            .format(_userData
+                                                            .format(userData
                                                                 .value
                                                                 .tanggalLahir!)
                                                         : 'No Date', // Provide a default value or handle the null case
@@ -332,7 +354,7 @@ class ProfilePage extends HookWidget {
                                                               primaryVeryDarkColor,
                                                         ),
                                                   ),
-                                                if (_userData
+                                                if (userData
                                                         .value.tanggalLahir !=
                                                     null)
                                                   const SizedBox(
@@ -342,7 +364,7 @@ class ProfilePage extends HookWidget {
                                                 //         .statusPernikahan !=
                                                 //     null)
                                                 Text(
-                                                  _userData.value
+                                                  userData.value
                                                           .statusPernikahan
                                                       ? 'Sudah Kawin'
                                                       : 'Belum Kawin',
@@ -362,11 +384,11 @@ class ProfilePage extends HookWidget {
                                                 const SizedBox(
                                                   height: 14,
                                                 ),
-                                                if (_userData.value
+                                                if (userData.value
                                                         .pendidikanTerakhir !=
                                                     null)
                                                   Text(
-                                                    _userData.value
+                                                    userData.value
                                                         .pendidikanTerakhir!
                                                         .toUpperCase(),
                                                     maxLines: 1,
@@ -379,7 +401,7 @@ class ProfilePage extends HookWidget {
                                                             color:
                                                                 primaryVeryDarkColor),
                                                   ),
-                                                if (_userData.value
+                                                if (userData.value
                                                         .pendidikanTerakhir !=
                                                     null)
                                                   const SizedBox(
@@ -388,7 +410,7 @@ class ProfilePage extends HookWidget {
                                                 // if (_userData.value.alamat !=
                                                 //     null)
                                                 Text(
-                                                  _userData.value.alamat,
+                                                  userData.value.alamat,
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -411,8 +433,8 @@ class ProfilePage extends HookWidget {
                         const SizedBox(
                           height: 16,
                         ),
-                        _isLoading.value
-                            ? ShimmerCard(
+                        isLoading.value
+                            ? const ShimmerCard(
                                 height: 308,
                                 width: double.infinity,
                                 borderRadius: 12,
@@ -445,11 +467,12 @@ class ProfilePage extends HookWidget {
                                         onTap: () {
                                           Navigator.of(context).push(
                                               createRoute(
-                                                  page: MyActivityPage()));
+                                                  page:
+                                                      const MyActivityPage()));
                                         },
                                         contentPadding: const EdgeInsets.all(0),
                                         title: Align(
-                                          alignment: Alignment(-1.2, 0),
+                                          alignment: const Alignment(-1.2, 0),
                                           child: Text(
                                             'Aktivitas Saya',
                                             style: Theme.of(context)
@@ -468,23 +491,24 @@ class ProfilePage extends HookWidget {
                                       const Divider(),
                                       ListTile(
                                         onTap: () async {
-                                          final isEdit =
-                                              await Navigator.of(context).push(
-                                                  createRoute(
-                                                      page: EditProfilePage()));
+                                          final isEdit = await Navigator.of(
+                                                  context)
+                                              .push(createRoute(
+                                                  page:
+                                                      const EditProfilePage()));
 
                                           if (isEdit == null) {
                                             return;
                                           }
 
-                                          _isLoading.value = true;
-                                          _imageKey.value =
+                                          isLoading.value = true;
+                                          imageKey.value =
                                               DateTime.now().toString();
-                                          _getUserData();
+                                          getUserData();
                                         },
                                         contentPadding: const EdgeInsets.all(0),
                                         title: Align(
-                                          alignment: Alignment(-1.2, 0),
+                                          alignment: const Alignment(-1.2, 0),
                                           child: Text(
                                             'Edit Profil',
                                             style: Theme.of(context)
@@ -503,13 +527,13 @@ class ProfilePage extends HookWidget {
                                       const Divider(),
                                       ListTile(
                                         onTap: () {
-                                          Navigator.of(context).push(
-                                              createRoute(
-                                                  page: ChangePasswordPage()));
+                                          Navigator.of(context).push(createRoute(
+                                              page:
+                                                  const ChangePasswordPage()));
                                         },
                                         contentPadding: const EdgeInsets.all(0),
                                         title: Align(
-                                          alignment: Alignment(-1.2, 0),
+                                          alignment: const Alignment(-1.2, 0),
                                           child: Text(
                                             'Ganti Password',
                                             style: Theme.of(context)
@@ -538,11 +562,11 @@ class ProfilePage extends HookWidget {
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               createRoute(
-                                                  page: BottomNavPage()),
+                                                  page: const BottomNavPage()),
                                               (route) => false);
                                         },
                                         title: Align(
-                                          alignment: Alignment(-1.2, 0),
+                                          alignment: const Alignment(-1.2, 0),
                                           child: Text(
                                             'Logout',
                                             style: Theme.of(context)

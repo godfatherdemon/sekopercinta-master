@@ -11,6 +11,8 @@ const ACCESS_TOKEN =
 
 class SelectLocationPage extends StatefulWidget {
   static const routeName = '/select-location-page';
+
+  const SelectLocationPage({super.key});
   @override
   _SelectLocationPageState createState() => _SelectLocationPageState();
 }
@@ -30,14 +32,14 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
 
   Future<void> _trackUserLocation() async {
     if (await Permission.location.request().isGranted) {
-      Location location = new Location();
+      Location location = Location();
 
-      bool _serviceEnabled;
+      bool serviceEnabled;
 
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled) {
+      serviceEnabled = await location.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
           return;
         }
       }
@@ -84,7 +86,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
       body: SafeArea(
         child: Column(
           children: [
-            PopAppBar(
+            const PopAppBar(
               title: 'Cari Alamat',
               isBackIcon: true,
             ),
@@ -104,7 +106,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                 suffixIcon: Container(),
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Stack(
                   // children: [
                   //   MapboxMap(

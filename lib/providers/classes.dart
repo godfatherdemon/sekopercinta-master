@@ -1,5 +1,6 @@
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/providers/lessons.dart';
 
 class Kelas {
@@ -87,7 +88,9 @@ final moduleProvider = StateProvider<String>((ref) {
 });
 
 final classWatcher = Provider<List<Kelas>>((ref) {
-  print('=====> something change');
+  // print('=====> something change');
+  final Logger logger = Logger();
+  logger.d('=====> something change');
   return ref.watch(classProvider);
 });
 
@@ -97,7 +100,9 @@ class ClassNotifier extends StateNotifier<List<Kelas>> {
   final String module;
 
   Future<void> getClasses(HasuraConnect hasuraConnect) async {
-    print('current module -----> $module');
+    // print('current module -----> $module');
+    final Logger logger = Logger();
+    logger.d('current module -----> $module');
 
     String query = """
 query MyQuery {
@@ -129,13 +134,14 @@ query MyQuery {
     final response = await hasuraConnect.query(query);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d('PRINT $responseData');
 
     final List<Kelas> loadedData = [];
 
-    (responseData['kelas'] as List<dynamic>).forEach((element) {
+    for (var element in (responseData['kelas'] as List<dynamic>)) {
       loadedData.add(Kelas.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }
@@ -153,7 +159,9 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print('update pelajar progres =====> $responseData');
+    // print('update pelajar progres =====> $responseData');
+    final Logger logger = Logger();
+    logger.d('update pelajar progres =====> $responseData');
 
     await getClasses(hasuraConnect);
   }
@@ -171,7 +179,9 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print('update kelas progres =====> $responseData');
+    // print('update kelas progres =====> $responseData');
+    final Logger logger = Logger();
+    logger.d('update kelas progres =====> $responseData');
 
     await getClasses(hasuraConnect);
   }

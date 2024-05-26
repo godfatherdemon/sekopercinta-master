@@ -6,7 +6,7 @@ Route createRoute(
     settings: RouteSettings(arguments: arguments),
     pageBuilder: (context, animation, secondaryAnimation) => page,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = isVertical ? Offset(0.0, 1.0) : Offset(1.0, 0.0);
+      var begin = isVertical ? const Offset(0.0, 1.0) : const Offset(1.0, 0.0);
       var end = Offset.zero;
       var curve = Curves.ease;
 

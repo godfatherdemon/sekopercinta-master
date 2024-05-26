@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/text_field/bordered_text_field.dart';
 import 'package:sekopercinta_master/providers/lessons.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
@@ -9,34 +10,39 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 class CourseDiscussionPage extends HookWidget {
   final String className;
 
-  CourseDiscussionPage(this.className);
+  const CourseDiscussionPage(this.className, {super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _comment = useState<String?>(null);
-    final _isLoading = useState(false);
+    final formKey = useState(GlobalKey<FormState>());
+    final comment = useState<String?>(null);
+    final isLoading = useState(false);
 
-    final _sendComment = useMemoized(
+    final sendComment = useMemoized(
         () => () async {
-              if (!_formKey.value.currentState!.validate()) {
+              final navigator = Navigator.of(context);
+              if (!formKey.value.currentState!.validate()) {
                 return;
               }
-              _formKey.value.currentState?.save();
-              print(_comment.value);
+              formKey.value.currentState?.save();
+              // print(comment.value);
+              final Logger logger = Logger();
+              logger.d(comment.value);
 
-              _isLoading.value = true;
+              isLoading.value = true;
 
               try {
                 await context.read(lessonProvider.notifier).sendComment(
                       context.read(hasuraClientProvider).state,
-                      _comment.value ??
+                      comment.value ??
                           '', // Provide an empty string as a default value
                     );
 
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                navigator.pop('edit');
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
@@ -45,7 +51,7 @@ class CourseDiscussionPage extends HookWidget {
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Form(
-          key: _formKey.value,
+          key: formKey.value,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -56,13 +62,13 @@ class CourseDiscussionPage extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                      _isLoading.value
-                          ? CircularProgressIndicator()
+                      isLoading.value
+                          ? const CircularProgressIndicator()
                           : InkWell(
-                              onTap: _sendComment,
+                              onTap: sendComment,
                               borderRadius: BorderRadius.circular(8),
                               child: Ink(
                                 decoration: BoxDecoration(
@@ -97,7 +103,7 @@ class CourseDiscussionPage extends HookWidget {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color(0xFFF5F0FC),
+                          color: const Color(0xFFF5F0FC),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         padding: const EdgeInsets.all(16),
@@ -117,7 +123,7 @@ class CourseDiscussionPage extends HookWidget {
                               height: 4,
                             ),
                             Text(
-                              '$className',
+                              className,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall
@@ -136,15 +142,16 @@ class CourseDiscussionPage extends HookWidget {
                         keyboardType: TextInputType.multiline,
                         maxLine: 7,
                         onSaved: (value) {
-                          _comment.value = value;
+                          comment.value = value;
                         },
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return 'Komentar tidak boleh kosong';
                           }
+                          return null;
                         },
                         onFieldSubmitted: (value) {
-                          _sendComment();
+                          sendComment();
                         },
                         textEditingController: TextEditingController(),
                         initialValue: '',
@@ -152,7 +159,7 @@ class CourseDiscussionPage extends HookWidget {
                         onChanged: (string) {},
                         onTap: () {},
                         // suffixIcon: Container(),
-                        suffixIcon: Icon(Icons.verified_user),
+                        suffixIcon: const Icon(Icons.verified_user),
                       ),
                     ],
                   ),

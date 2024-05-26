@@ -6,7 +6,8 @@ class EssayResumeComponents extends StatelessWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  EssayResumeComponents({
+  const EssayResumeComponents({
+    super.key,
     required this.answer,
     required this.question,
   });
@@ -15,7 +16,7 @@ class EssayResumeComponents extends StatelessWidget {
     return ListView.separated(
       shrinkWrap: true,
       itemCount: question.length,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(0),
       separatorBuilder: (BuildContext context, int index) => const SizedBox(
         height: 24,
@@ -25,7 +26,7 @@ class EssayResumeComponents extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Color(0xFFF4F7F9),
+              color: const Color(0xFFF4F7F9),
               borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.all(16),

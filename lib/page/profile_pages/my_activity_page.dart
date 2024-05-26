@@ -9,17 +9,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sekopercinta_master/utils/hasura_config.dart';
 
 class MyActivityPage extends HookWidget {
+  const MyActivityPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _posts = useState<List<Komunitas>>(context.read(myCommunityProvider));
+    final posts = useState<List<Komunitas>>(context.read(myCommunityProvider));
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _getCommunityPosts = useMemoized(
+    final getCommunityPosts = useMemoized(
         () => () async {
               try {
-                if (_posts.value.isEmpty) {
-                  _isLoading.value = true;
+                if (posts.value.isEmpty) {
+                  isLoading.value = true;
                 }
 
                 await context
@@ -27,18 +29,19 @@ class MyActivityPage extends HookWidget {
                     .getMyCommunities(
                       context.read(hasuraClientProvider).state,
                     );
-                _posts.value = context.read(myCommunityProvider);
+                // posts.value = context.read(myCommunityProvider);
+                posts.value = myCommunityProvider as List<Komunitas>;
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
-              _isLoading.value = false;
+              isLoading.value = false;
             },
         []);
 
     useEffect(() {
       if (context.read(authProvider.notifier).isAuth) {
-        _getCommunityPosts();
+        getCommunityPosts();
       }
       return;
     }, []);
@@ -56,7 +59,7 @@ class MyActivityPage extends HookWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             size: 16,
             color: primaryBlack,
@@ -112,7 +115,7 @@ class MyActivityPage extends HookWidget {
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -125,13 +128,13 @@ class MyActivityPage extends HookWidget {
                   width: 241,
                 ),
               ),
-              _isLoading.value
+              isLoading.value
                   ? ListView.separated(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(20.0),
                       itemCount: 5,
-                      itemBuilder: (context, index) => ShimmerCard(
+                      itemBuilder: (context, index) => const ShimmerCard(
                         height: 407,
                         width: double.infinity,
                         borderRadius: 10,
@@ -165,14 +168,14 @@ class MyActivityPage extends HookWidget {
                         ],
                       ),
                     )
-                  : _posts.value.isNotEmpty
+                  : posts.value.isNotEmpty
                       ? ListView.separated(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.all(20.0),
-                          itemCount: _posts.value.length,
+                          itemCount: posts.value.length,
                           itemBuilder: (context, index) =>
-                              CommunityItem(_posts.value[index]),
+                              CommunityItem(posts.value[index]),
                           separatorBuilder: (context, index) => Stack(
                             clipBehavior: Clip.none,
                             children: [

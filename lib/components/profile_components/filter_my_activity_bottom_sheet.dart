@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
 import 'package:sekopercinta_master/components/text_field/bordered_text_field.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
 
 class FilterMyActivityBottomSheet extends HookWidget {
+  const FilterMyActivityBottomSheet({super.key});
+
   @override
   Widget build(BuildContext context) {
-    String _selectedDate = '';
-    final _isLastMonth = useState(true);
-    final _filterTextEditingController = useTextEditingController();
-    final _animationController = useAnimationController(
-      duration: Duration(milliseconds: 300),
+    String selectedDate = '';
+    final isLastMonth = useState(true);
+    final filterTextEditingController = useTextEditingController();
+    final animationController = useAnimationController(
+      duration: const Duration(milliseconds: 300),
       initialValue: 0,
     );
     return Wrap(
@@ -28,7 +31,7 @@ class FilterMyActivityBottomSheet extends HookWidget {
                 height: 4,
                 width: 52,
                 decoration: BoxDecoration(
-                  color: Color(0xFFE0E0E0),
+                  color: const Color(0xFFE0E0E0),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -48,7 +51,7 @@ class FilterMyActivityBottomSheet extends HookWidget {
               Text(
                 'Pilih tanggal untuk melihat aktivitas',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Color(0xFFA2A1A1),
+                      color: const Color(0xFFA2A1A1),
                     ),
               ),
               const SizedBox(
@@ -56,11 +59,11 @@ class FilterMyActivityBottomSheet extends HookWidget {
               ),
               RadioListTile(
                 value: true,
-                groupValue: _isLastMonth.value,
+                groupValue: isLastMonth.value,
                 onChanged: (value) {
                   if (value is bool) {
-                    _isLastMonth.value = value;
-                    _animationController.reverse();
+                    isLastMonth.value = value;
+                    animationController.reverse();
                   }
                   // _isLastMonth.value = value;
                   // _animationController.reverse();
@@ -73,11 +76,11 @@ class FilterMyActivityBottomSheet extends HookWidget {
               ),
               RadioListTile(
                 value: false,
-                groupValue: _isLastMonth.value,
+                groupValue: isLastMonth.value,
                 onChanged: (value) {
                   if (value is bool) {
-                    _isLastMonth.value = value;
-                    _animationController.forward();
+                    isLastMonth.value = value;
+                    animationController.forward();
                   }
                   // _isLastMonth.value = value;
                   // _animationController.forward();
@@ -92,7 +95,7 @@ class FilterMyActivityBottomSheet extends HookWidget {
                 height: 16,
               ),
               SizeTransition(
-                sizeFactor: _animationController,
+                sizeFactor: animationController,
                 child: Column(
                   children: [
                     const SizedBox(
@@ -107,32 +110,38 @@ class FilterMyActivityBottomSheet extends HookWidget {
                           lastDate: DateTime.now(),
                         );
                         if (picked != null) {
-                          _filterTextEditingController.text =
+                          filterTextEditingController.text =
                               DateFormat('yyyy-MM-dd').format(picked);
                         }
                       },
                       child: IgnorePointer(
                         child: BorderedFormField(
                           hint: 'Pilih Tanggal',
-                          textEditingController: _filterTextEditingController,
+                          textEditingController: filterTextEditingController,
                           initialValue: '',
                           focusNode: FocusNode(),
                           maxLine: 1,
                           onChanged: (value) {
-                            print('Field value changed to: $value');
+                            // print('Field value changed to: $value');
+                            final Logger logger = Logger();
+                            logger.d('Field value changed to: $value');
                           },
                           onSaved: (value) {
-                            _selectedDate = value; // Update the selected date
-                            print('Selected Date: $_selectedDate');
-                            _isLastMonth.value = value
+                            selectedDate = value; // Update the selected date
+                            // print('Selected Date: $selectedDate');
+                            final Logger logger = Logger();
+                            logger.d('Selected Date: $selectedDate');
+                            isLastMonth.value = value
                                 .isEmpty; // Update _isLastMonth based on the selected date
                           },
                           onTap: (value) {
-                            print('Field value changed to: $value');
+                            // print('Field value changed to: $value');
+                            final Logger logger = Logger();
+                            logger.d('Field value changed to :$value');
                             // print('Field tapped');
                           },
                           onFieldSubmitted: (value) {},
-                          suffixIcon: Container(
+                          suffixIcon: SizedBox(
                             width: 32,
                             height: 32,
                             child: Center(
@@ -143,9 +152,10 @@ class FilterMyActivityBottomSheet extends HookWidget {
                             ),
                           ),
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Tanggal tidak boleh kosong';
                             }
+                            return null;
                           },
                         ),
                       ),

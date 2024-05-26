@@ -8,7 +8,8 @@ class UploadResumeComponents extends StatelessWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  UploadResumeComponents({
+  const UploadResumeComponents({
+    super.key,
     required this.answer,
     required this.question,
   });

@@ -4,6 +4,8 @@ import 'package:lottie/lottie.dart';
 import 'package:sekopercinta_master/utils/constants.dart';
 
 class LoadingActivityPage extends StatelessWidget {
+  const LoadingActivityPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(

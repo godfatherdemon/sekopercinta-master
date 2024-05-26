@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sekopercinta_master/components/course_components/activity_components/essay_question_card.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
@@ -20,7 +21,8 @@ class UploadCard extends HookWidget {
   final ValueNotifier<int> currentQuestion;
   final ValueNotifier<File> selectedFile;
 
-  UploadCard({
+  const UploadCard({
+    super.key,
     required this.nextQuestion,
     required this.prevQuestion,
     required this.saveAnswer,
@@ -29,7 +31,7 @@ class UploadCard extends HookWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final _isChangingPhoto = useState(false);
+    final isChangingPhoto = useState(false);
     return currentQuestion.value == 1
         ? EssayQuestionCard(
             nextQuestion: nextQuestion,
@@ -62,9 +64,9 @@ class UploadCard extends HookWidget {
                         ),
                         DottedBorder(
                           borderType: BorderType.RRect,
-                          radius: Radius.circular(16),
-                          dashPattern: [4, 4, 4, 4],
-                          color: Color(0xFFE75C96),
+                          radius: const Radius.circular(16),
+                          dashPattern: const [4, 4, 4, 4],
+                          color: const Color(0xFFE75C96),
                           child: InkWell(
                             onTap: () async {
                               final action = await selectPhotoHandler(context);
@@ -79,12 +81,17 @@ class UploadCard extends HookWidget {
                                     .isGranted) {
                                   final selectedFilePath =
                                       await Navigator.of(context).push(
-                                          createRoute(page: CameraPage()));
+                                          createRoute(
+                                              page: const CameraPage()));
+                                  // final selectedFilePath =
+                                  //     await Navigator.of(context).push<String>(
+                                  //   createRoute(page: const CameraPage()),
+                                  // );
 
                                   if (selectedFilePath != null) {
                                     selectedFile.value = File(selectedFilePath);
-                                    _isChangingPhoto.value =
-                                        !_isChangingPhoto.value;
+                                    isChangingPhoto.value =
+                                        !isChangingPhoto.value;
                                   }
                                 }
                               } else {
@@ -127,13 +134,15 @@ class UploadCard extends HookWidget {
                                   }
                                 }
                               }
-                              print(selectedFile.value.path);
+                              // print(selectedFile.value.path);
+                              final Logger logger = Logger();
+                              logger.d(selectedFile.value.path);
                             },
                             child: Container(
                               height: 180,
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: Color(0xFFF9F9F9),
+                                  color: const Color(0xFFF9F9F9),
                                   borderRadius: BorderRadius.circular(14),
                                   image: DecorationImage(
                                       image: FileImage(selectedFile.value),
@@ -185,7 +194,7 @@ class UploadCard extends HookWidget {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Color(0xFFF3EEFC),
+                            color: const Color(0xFFF3EEFC),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: const EdgeInsets.all(16),
@@ -229,7 +238,7 @@ class UploadCard extends HookWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.arrow_back_ios,
                                 color: Colors.white,
                               ),

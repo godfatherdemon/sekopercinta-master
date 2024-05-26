@@ -1,6 +1,7 @@
 // import 'package:flutter/foundation.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/providers/answers.dart';
 
 class Pertanyaan {
@@ -54,7 +55,9 @@ class QuestionNotifier extends StateNotifier<List<Pertanyaan>> {
       {required HasuraConnect hasuraConnect,
       required String id,
       bool isMultiChoiceMany = false}) async {
-    print(id);
+    // print(id);
+    final Logger logger = Logger();
+    logger.d(id);
 
     String docQuery = isMultiChoiceMany
         ? """
@@ -87,20 +90,24 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    // final Logger logger = Logger();
+    logger.d(responseData);
 
     List<Pertanyaan> loadedData = [];
 
-    (responseData['pertanyaan_kuis'] as List<dynamic>).forEach((element) {
+    for (var element in (responseData['pertanyaan_kuis'] as List<dynamic>)) {
       loadedData.add(Pertanyaan.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }
 
   Future<List<dynamic>> getUploadInstruction(
       HasuraConnect hasuraConnect, String id) async {
-    print(id);
+    // print(id);
+    final Logger logger = Logger();
+    logger.d(id);
 
     String docQuery = """
 query MyQuery {
@@ -114,14 +121,17 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
 
     return responseData['instruksi_aktivitas_unggah'];
   }
 
   Future<Map<String, dynamic>> getTrueFalseQuestion(
       HasuraConnect hasuraConnect, String id) async {
-    print(id);
+    // print(id);
+    final Logger logger = Logger();
+    logger.d(id);
 
     String docQuery = """
 query MyQuery {
@@ -135,14 +145,17 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData['pernyataan_aktivitas_benarsalah_by_pk']);
+    // print(responseData['pernyataan_aktivitas_benarsalah_by_pk']);
+    logger.d(responseData['pernyataan_aktivitas_benarsalah_by_pk']);
 
     return responseData['pernyataan_aktivitas_benarsalah_by_pk'];
   }
 
   Future<void> giveAnswerEssay(HasuraConnect hasuraConnect,
       List<Map<String, String>> objects, String id) async {
-    print('JAWABAN $objects');
+    // print('JAWABAN $objects');
+    final Logger logger = Logger();
+    logger.d('JAWABAN $objects');
     String doc = """
 mutation MyMutation(\$answer: [jawaban_essay_insert_input!]!) {
   insert_jawaban_essay(objects: \$answer, on_conflict: {constraint: jawaban_essay_pkey, update_columns: isi_jawaban}) {
@@ -155,12 +168,15 @@ mutation MyMutation(\$answer: [jawaban_essay_insert_input!]!) {
         await hasuraConnect.mutation(doc, variables: {'answer': objects});
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
   }
 
   Future<void> giveAnswerMany(
       HasuraConnect hasuraConnect, String answer, String id) async {
-    print(answer);
+    // print(answer);
+    final Logger logger = Logger();
+    logger.d(answer);
 
     String doc = """
 mutation MyMutation {
@@ -173,12 +189,15 @@ mutation MyMutation {
     final response = await hasuraConnect.mutation(doc);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
   }
 
   Future<void> giveAnswerMultipleChoice(HasuraConnect hasuraConnect,
       List<Map<String, String>> objects, String id) async {
-    print('JAWABAN $objects');
+    // print('JAWABAN $objects');
+    final Logger logger = Logger();
+    logger.d('JAWABAN $objects');
     String doc = """
 mutation MyMutation(\$answer: [jawaban_pilgan_insert_input!]!) {
   insert_jawaban_pilgan(objects: \$answer, on_conflict: {constraint: jawaban_pilgan_pkey, update_columns: isi_jawaban}) {
@@ -191,12 +210,15 @@ mutation MyMutation(\$answer: [jawaban_pilgan_insert_input!]!) {
         await hasuraConnect.mutation(doc, variables: {'answer': objects});
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
   }
 
   Future<void> giveAnswerTrueFalse(HasuraConnect hasuraConnect,
       List<Map<String, dynamic>> objects, String id) async {
-    print('JAWABAN $objects');
+    // print('JAWABAN $objects');
+    final Logger logger = Logger();
+    logger.d('JAWABAN $objects');
     String doc = """
 mutation MyMutation(\$answer: [jawaban_benarsalah_insert_input!]!) {
   insert_jawaban_benarsalah(objects: \$answer, on_conflict: {constraint: jawaban_benarsalah_pkey, update_columns: isi_jawaban}) {
@@ -209,6 +231,7 @@ mutation MyMutation(\$answer: [jawaban_benarsalah_insert_input!]!) {
         await hasuraConnect.mutation(doc, variables: {'answer': objects});
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
   }
 }

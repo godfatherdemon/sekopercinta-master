@@ -6,6 +6,7 @@ import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, String>((ref) {
   return AuthNotifier();
@@ -14,7 +15,7 @@ final authProvider = StateNotifierProvider<AuthNotifier, String>((ref) {
 class AuthNotifier extends StateNotifier<String> {
   AuthNotifier() : super('');
 
-  GoogleSignIn _googleSignIn = GoogleSignIn(
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId:
         '498641063782-s1f14rl2mf498ejrd57uk1htelsr7j97.apps.googleusercontent.com',
     scopes: <String>[
@@ -28,7 +29,9 @@ class AuthNotifier extends StateNotifier<String> {
 
   bool tryAutoLogin() {
     final String token = Hive.box('sekopercinta').get('token');
-    print('istri simpanan $token');
+    // print('istri simpanan $token');
+    final Logger logger = Logger();
+    logger.d('PRINT $token');
 
     // if (token == null) {
     //   return false;
@@ -70,7 +73,9 @@ class AuthNotifier extends StateNotifier<String> {
   bool isFirstTimeAccessCourse() {
     final bool isFirstTime =
         Hive.box('sekopercinta').get('first_time_access_course') ?? true;
-    print('pertama kali ga? $isFirstTime');
+    // print('pertama kali ga? $isFirstTime');
+    final Logger logger = Logger();
+    logger.d('PRINT $isFirstTime');
 
     return isFirstTime;
   }
@@ -82,7 +87,9 @@ class AuthNotifier extends StateNotifier<String> {
 
   Future<void> login(
       Map<String, String> authData, HasuraConnect hasuraConnect) async {
-    print(authData);
+    // print(authData);
+    final Logger logger = Logger();
+    logger.d(authData);
 
     String docQuery = """
 query MyQuery {
@@ -93,10 +100,12 @@ query MyQuery {
 """;
 
     final response = await hasuraConnect.query(docQuery);
-    print(response);
+    // print(response);
+    logger.d('PRINT $response');
     final responseData = response['data'];
 
-    print(responseData['signin']['accessToken']);
+    // print(responseData['signin']['accessToken']);
+    logger.d(responseData['signin']['accessToken']);
 
     final box = Hive.box('sekopercinta');
     box.put('token', responseData['signin']['accessToken']);
@@ -115,9 +124,13 @@ query MyQuery {
       final googleSignInAuthentication =
           await googleSignInAccount.authentication;
 
-      print('token google ${googleSignInAuthentication.idToken}');
+      // print('token google ${googleSignInAuthentication.idToken}');
+      final Logger logger = Logger();
+      logger.d('token google ${googleSignInAuthentication.idToken}');
 
-      var url = Uri.parse('https://sekoci.braga.co.id/api/auth/gsignin');
+      // var url = Uri.parse('https://sekoci.braga.co.id/api/auth/gsignin');
+      var url =
+          Uri.parse('https://sekopercinta.jabarprov.go.id/api/auth/gsignin');
 
       final response = await http.post(
         url,
@@ -136,9 +149,12 @@ query MyQuery {
 
       state = jsonDecode(response.body)['accessToken'];
 
-      print('response value ${response.body}');
+      // print('response value ${response.body}');
+      logger.d('response value ${response.body}');
     } catch (error) {
-      print(error.toString());
+      // print(error.toString());
+      final Logger logger = Logger();
+      logger.d(error.toString());
       Fluttertoast.showToast(
         msg: error.toString(),
       );
@@ -147,7 +163,9 @@ query MyQuery {
 
   Future<void> signUp(
       Map<String, String> authData, HasuraConnect hasuraConnect) async {
-    print(authData);
+    // print(authData);
+    final Logger logger = Logger();
+    logger.d(authData);
 
     String docMutation = """
 mutation MyMutation {
@@ -158,7 +176,8 @@ mutation MyMutation {
 """;
 
     final response = await hasuraConnect.mutation(docMutation);
-    print(response);
+    // print(response);
+    logger.d(response);
   }
 
   Future<void> changePassword(String newPassword, String oldPassword,
@@ -172,7 +191,9 @@ mutation MyMutation {
 """;
 
     final response = await hasuraConnect.mutation(docMutation);
-    print(response);
+    // print(response);
+    final Logger logger = Logger();
+    logger.d(response);
   }
 
   void logout() async {
@@ -180,7 +201,9 @@ mutation MyMutation {
     final box = Hive.box('sekopercinta');
     box.delete('token');
     if (await _googleSignIn.isSignedIn()) {
-      print('logout');
+      // print('logout');
+      final Logger logger = Logger();
+      logger.d('logout');
       _googleSignIn.signOut();
     }
   }

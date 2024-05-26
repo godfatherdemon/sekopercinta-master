@@ -6,6 +6,8 @@ import 'package:sekopercinta_master/utils/constants.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class HomeAbout extends StatelessWidget {
+  const HomeAbout({super.key});
+
   @override
   Widget build(BuildContext context) {
     final about = [
@@ -69,7 +71,7 @@ class HomeAbout extends StatelessWidget {
             ListView.separated(
               itemCount: 3,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               separatorBuilder: (context, index) => const SizedBox(
                 height: 12,

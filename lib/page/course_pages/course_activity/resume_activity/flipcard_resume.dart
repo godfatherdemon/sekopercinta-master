@@ -8,17 +8,18 @@ class FlipCardResumeComponents extends HookWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  FlipCardResumeComponents({
+  const FlipCardResumeComponents({
+    super.key,
     required this.answer,
     required this.question,
   });
   @override
   Widget build(BuildContext context) {
-    final _myTrueAnswer = useState([]);
+    final myTrueAnswer = useState([]);
     useEffect(() {
       for (int i = 0; i < answer.length; i++) {
         if (answer[i] == 'true') {
-          _myTrueAnswer.value
+          myTrueAnswer.value
               .add(context.read(questionProvider)[i].isiPertanyaan);
         }
       }
@@ -44,7 +45,7 @@ class FlipCardResumeComponents extends HookWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Color(0xFF9B6EE5).withOpacity(0.12),
+            color: const Color(0xFF9B6EE5).withOpacity(0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.all(16),
@@ -63,13 +64,13 @@ class FlipCardResumeComponents extends HookWidget {
               ),
               ListView.separated(
                 shrinkWrap: true,
-                itemCount: _myTrueAnswer.value.length,
+                itemCount: myTrueAnswer.value.length,
                 padding: const EdgeInsets.all(0),
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
-                    _myTrueAnswer.value[index],
+                    myTrueAnswer.value[index],
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: primaryVeryDarkColor,
                         ),
@@ -77,7 +78,7 @@ class FlipCardResumeComponents extends HookWidget {
                 ),
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider(
-                    color: Color(0xFF9B6EE5).withOpacity(0.4),
+                    color: const Color(0xFF9B6EE5).withOpacity(0.4),
                   );
                 },
               ),

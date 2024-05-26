@@ -9,14 +9,16 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class OnBoardingPage extends HookWidget {
+  const OnBoardingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _pageController = usePageController();
-    final _currentPage = useState(0);
+    final pageController = usePageController();
+    final currentPage = useState(0);
 
     useEffect(() {
-      _pageController.addListener(() {
-        _currentPage.value = _pageController.page!.round();
+      pageController.addListener(() {
+        currentPage.value = pageController.page!.round();
       });
       return;
     }, []);
@@ -39,8 +41,8 @@ class OnBoardingPage extends HookWidget {
             ),
             Expanded(
               child: PageView(
-                physics: BouncingScrollPhysics(),
-                controller: _pageController,
+                physics: const BouncingScrollPhysics(),
+                controller: pageController,
                 children: [
                   Column(
                     children: [
@@ -212,7 +214,7 @@ class OnBoardingPage extends HookWidget {
               ),
             ),
             PageViewSlidingIndicator(
-              controller: _pageController,
+              controller: pageController,
               pageCount: 4,
               color: accentColor,
             ),
@@ -228,10 +230,10 @@ class OnBoardingPage extends HookWidget {
                       color: accentColor.withOpacity(0.16),
                       textColor: accentColor,
                       onTap: () {
-                        if (_pageController.page?.round() != 0) {
-                          _pageController.animateToPage(
-                            _currentPage.value - 1,
-                            duration: Duration(milliseconds: 300),
+                        if (pageController.page?.round() != 0) {
+                          pageController.animateToPage(
+                            currentPage.value - 1,
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.ease,
                           );
                         }
@@ -244,10 +246,10 @@ class OnBoardingPage extends HookWidget {
                     child: FillButton(
                       text: 'Lanjut',
                       onTap: () {
-                        if (_pageController.page?.round() != 3) {
-                          _pageController.animateToPage(
-                            _currentPage.value + 1,
-                            duration: Duration(milliseconds: 300),
+                        if (pageController.page?.round() != 3) {
+                          pageController.animateToPage(
+                            currentPage.value + 1,
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.ease,
                           );
                         } else {
@@ -256,7 +258,7 @@ class OnBoardingPage extends HookWidget {
                               .setFirstTimeUsingApp();
                           Navigator.pushAndRemoveUntil(
                               context,
-                              createRoute(page: BottomNavPage()),
+                              createRoute(page: const BottomNavPage()),
                               (route) => false);
                         }
                       },

@@ -18,7 +18,7 @@ class MD2Indicator extends Decoration {
 
   @override
   _MD2Painter createBoxPainter([VoidCallback? onChanged]) {
-    return new _MD2Painter(this, onChanged!);
+    return _MD2Painter(this, onChanged!);
   }
 }
 
@@ -28,6 +28,7 @@ class _MD2Painter extends BoxPainter {
   // final double height = 50.0; // replace with your actual height
 
   // Rect rect = Rect.fromLTWH(0, 0, width, height);
+  // _MD2Painter(this.decoration, VoidCallback onChanged) : super(onChanged);
 
   _MD2Painter(this.decoration, VoidCallback onChanged)
       // : assert(decoration != null),

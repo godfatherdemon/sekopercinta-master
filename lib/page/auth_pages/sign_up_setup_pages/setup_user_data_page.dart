@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
 import 'package:sekopercinta_master/components/text_field/bordered_text_field.dart';
 import 'package:sekopercinta_master/components/text_field/drop_down_text_field.dart';
@@ -15,61 +16,64 @@ class SetupUserDataPage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
 
-  SetupUserDataPage({
+  const SetupUserDataPage({
+    super.key,
     required this.pageController,
     required this.currentPage,
   });
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _userData = useState<Map<String, dynamic>>({});
-    final _birthTextEditingController = useTextEditingController();
-    final _addressTextEditingController = useTextEditingController();
-    final _addressLatitude = useState<double?>(null);
-    final _addressLongitude = useState<double?>(null);
-    final _status = useState<String?>(null);
+    final formKey = useState(GlobalKey<FormState>());
+    final userData = useState<Map<String, dynamic>>({});
+    final birthTextEditingController = useTextEditingController();
+    final addressTextEditingController = useTextEditingController();
+    final addressLatitude = useState<double?>(null);
+    final addressLongitude = useState<double?>(null);
+    final status = useState<String?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
-              if (!_formKey.value.currentState!.validate()) {
+              if (!formKey.value.currentState!.validate()) {
                 return;
               }
 
-              _formKey.value.currentState?.save();
+              formKey.value.currentState?.save();
 
-              print(_userData.value);
+              // print(userData.value);
+              final Logger logger = Logger();
+              logger.d(userData.value);
 
-              _userData.value['alamat_geom'] = {
+              userData.value['alamat_geom'] = {
                 "type": "Point",
-                "coordinates": [_addressLongitude.value, _addressLatitude.value]
+                "coordinates": [addressLongitude.value, addressLatitude.value]
               };
 
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 await context.read(userDataProvider.notifier).setUserData(
-                      _userData.value,
+                      userData.value,
                       context.read(hasuraClientProvider).state,
                     );
 
                 currentPage.value++;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
     return Form(
-      key: _formKey.value,
+      key: formKey.value,
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -113,12 +117,13 @@ class SetupUserDataPage extends HookWidget {
                 hint: 'NIK',
                 keyboardType: TextInputType.number,
                 onSaved: (value) {
-                  _userData.value['nik'] = value;
+                  userData.value['nik'] = value;
                 },
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'NIK tidak boleh kosong';
                   }
+                  return null;
                 },
                 initialValue: '',
                 focusNode: FocusNode(),
@@ -141,15 +146,15 @@ class SetupUserDataPage extends HookWidget {
                     lastDate: DateTime.now(),
                   );
                   if (picked != null) {
-                    _birthTextEditingController.text =
+                    birthTextEditingController.text =
                         DateFormat('yyyy-MM-dd').format(picked);
                   }
                 },
                 child: IgnorePointer(
                   child: BorderedFormField(
                     hint: 'Tanggal Lahir',
-                    textEditingController: _birthTextEditingController,
-                    suffixIcon: Container(
+                    textEditingController: birthTextEditingController,
+                    suffixIcon: SizedBox(
                       width: 32,
                       height: 32,
                       child: Center(
@@ -160,19 +165,20 @@ class SetupUserDataPage extends HookWidget {
                       ),
                     ),
                     onSaved: (value) {
-                      _userData.value['tanggal_lahir'] = value;
+                      userData.value['tanggal_lahir'] = value;
                     },
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return 'Tanggal lahir tidak boleh kosong';
                       }
+                      return null;
                     },
                     initialValue: '',
                     focusNode: FocusNode(),
                     onFieldSubmitted: (string) {},
                     maxLine: 999,
                     onChanged: (string) {},
-                    onTap: _submit,
+                    onTap: submit,
                   ),
                 ),
               ),
@@ -181,11 +187,11 @@ class SetupUserDataPage extends HookWidget {
               ),
               DropDownTextField(
                 // value: _status,
-                value: ValueNotifier<String>(_status.value ?? ''),
+                value: ValueNotifier<String>(status.value ?? ''),
                 hint: 'Status Pernikahan',
-                listString: ['Belum Kawin', 'Sudah Kawin'],
+                listString: const ['Belum Kawin', 'Sudah Kawin'],
                 onSaved: (value) {
-                  _userData.value['status_pernikahan'] = value == 'Sudah Kawin';
+                  userData.value['status_pernikahan'] = value == 'Sudah Kawin';
                 },
                 validator: (value) {
                   if (value == null) {
@@ -198,15 +204,16 @@ class SetupUserDataPage extends HookWidget {
               ),
               BorderedFormField(
                 hint: 'Alamat Anda',
-                textEditingController: _addressTextEditingController,
+                textEditingController: addressTextEditingController,
                 keyboardType: TextInputType.multiline,
                 onSaved: (value) {
-                  _userData.value['alamat'] = value;
+                  userData.value['alamat'] = value;
                 },
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return 'Alamat tidak boleh kosong';
                   }
+                  return null;
                 },
                 initialValue: '',
                 focusNode: FocusNode(),
@@ -222,18 +229,18 @@ class SetupUserDataPage extends HookWidget {
               GestureDetector(
                 onTap: () async {
                   var selectedAddress = await Navigator.of(context).push(
-                    createRoute(page: SearchAddressPage()),
+                    createRoute(page: const SearchAddressPage()),
                   );
 
                   if (selectedAddress != null) {
-                    if (_addressTextEditingController.text.isEmpty) {
-                      _addressTextEditingController.text =
+                    if (addressTextEditingController.text.isEmpty) {
+                      addressTextEditingController.text =
                           selectedAddress.addressLine;
                     }
 
-                    _addressLatitude.value =
+                    addressLatitude.value =
                         selectedAddress.coordinates.latitude;
-                    _addressLongitude.value =
+                    addressLongitude.value =
                         selectedAddress.coordinates.longitude;
                   }
                 },
@@ -242,14 +249,14 @@ class SetupUserDataPage extends HookWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6),
                       child: FadeInImage(
-                        image: (_addressLatitude.value == null ||
-                                _addressLongitude.value == null)
-                            ? NetworkImage(
+                        image: (addressLatitude.value == null ||
+                                addressLongitude.value == null)
+                            ? const NetworkImage(
                                 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/107.61889487477076,-6.902195184720948,15,0,0/400x400?access_token=pk.eyJ1IjoiYXJheWhhbiIsImEiOiJjazdoMmNpYmkwNXlwM25xa3ZzN3Rhc2p5In0.KsW5-BlR0oim5P5D0IB9sw')
                             : NetworkImage(
-                                'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${_addressLongitude.value},${_addressLatitude.value},15,0,0/400x400?access_token=pk.eyJ1IjoiYXJheWhhbiIsImEiOiJjazdoMmNpYmkwNXlwM25xa3ZzN3Rhc2p5In0.KsW5-BlR0oim5P5D0IB9sw'),
-                        placeholder:
-                            AssetImage('assets/images/bg-pattern-icon.png'),
+                                'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${addressLongitude.value},${addressLatitude.value},15,0,0/400x400?access_token=pk.eyJ1IjoiYXJheWhhbiIsImEiOiJjazdoMmNpYmkwNXlwM25xa3ZzN3Rhc2p5In0.KsW5-BlR0oim5P5D0IB9sw'),
+                        placeholder: const AssetImage(
+                            'assets/images/bg-pattern-icon.png'),
                         height: 120,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -269,7 +276,7 @@ class SetupUserDataPage extends HookWidget {
                               color: primaryColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.add_location_outlined,
                               color: Colors.white,
                             ),
@@ -286,12 +293,12 @@ class SetupUserDataPage extends HookWidget {
               Row(
                 children: [
                   Icon(
-                    (_addressLatitude.value == null ||
-                            _addressLongitude.value == null)
+                    (addressLatitude.value == null ||
+                            addressLongitude.value == null)
                         ? Icons.error_outline
                         : Icons.check_circle_outline_rounded,
-                    color: (_addressLatitude.value == null ||
-                            _addressLongitude.value == null)
+                    color: (addressLatitude.value == null ||
+                            addressLongitude.value == null)
                         ? primaryBlack
                         : accentColor,
                     size: 16,
@@ -300,15 +307,15 @@ class SetupUserDataPage extends HookWidget {
                     width: 4,
                   ),
                   Text(
-                    (_addressLatitude.value == null ||
-                            _addressLongitude.value == null)
+                    (addressLatitude.value == null ||
+                            addressLongitude.value == null)
                         ? 'Belum ditambahkan pada peta'
                         : 'Telah ditambahkan pada peta',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: (_addressLatitude.value == null ||
-                              _addressLongitude.value == null)
+                      color: (addressLatitude.value == null ||
+                              addressLongitude.value == null)
                           ? primaryBlack
                           : accentColor,
                     ),
@@ -320,8 +327,8 @@ class SetupUserDataPage extends HookWidget {
               ),
               FillButton(
                 text: 'Lanjutkan',
-                onTap: _submit,
-                isLoading: _isLoading.value,
+                onTap: submit,
+                isLoading: isLoading.value,
                 leading: Container(),
               ),
               const SizedBox(

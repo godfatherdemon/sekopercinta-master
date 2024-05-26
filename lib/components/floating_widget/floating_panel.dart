@@ -22,7 +22,8 @@ class FloatBoxPanel extends StatefulWidget {
   final Function onPressed;
   final ScrollController scrollController;
 
-  FloatBoxPanel({
+  const FloatBoxPanel({
+    super.key,
     required this.child,
     required this.positionTop,
     required this.positionLeft,
@@ -79,7 +80,7 @@ class _FloatBoxState extends State<FloatBoxPanel> {
 
     widget.scrollController.position.isScrollingNotifier.addListener(() {
       if (!widget.scrollController.position.isScrollingNotifier.value) {
-        timer = Timer(Duration(milliseconds: 500), () {
+        timer = Timer(const Duration(milliseconds: 500), () {
           setState(() {
             // _panelState = PanelState.open;
 
@@ -194,7 +195,7 @@ class _FloatBoxState extends State<FloatBoxPanel> {
       curve: widget.dockAnimCurve,
 
       // Animated Container is used for easier animation of container height;
-      child: Container(
+      child: SizedBox(
         width: _widgetWidth,
         height: _widgetHeight,
         child: GestureDetector(

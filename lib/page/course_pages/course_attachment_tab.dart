@@ -8,33 +8,50 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sekopercinta_master/utils/hasura_config.dart';
 
 class CourseAttachmentTab extends HookWidget {
+  const CourseAttachmentTab({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _attachments =
+    final attachments =
         useState<List<Lampiran>>(context.read(attachmentProvider));
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _getAttachments = useMemoized(
+    final getAttachments = useMemoized(
         () => () async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
+
+                // final lessonId = context.read(lessonProvider).idPelajaran;
+                // final hasuraClient = context.read(hasuraClientProvider).state;
+
+                // final attachmentNotifier =
+                //     context.read(attachmentProvider.notifier);
 
                 await context.read(attachmentProvider.notifier).getAttachments(
                       context.read(lessonProvider).idPelajaran,
                       context.read(hasuraClientProvider).state,
                     );
-                _attachments.value = context.read(attachmentProvider);
+
+                // await context.read(attachmentProvider.notifier).getAttachments(
+                //       lessonId,
+                //       hasuraClient,
+                //     );
+
+                // attachments.value = context.read(attachmentProvider);
+                attachments.value = attachmentProvider as List<Lampiran>;
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
+              } finally {
+                isLoading.value = false;
               }
-              _isLoading.value = false;
+              // isLoading.value = false;
             },
         []);
 
     useEffect(() {
-      _getAttachments();
+      getAttachments();
 
       return;
     }, []);
@@ -42,7 +59,7 @@ class CourseAttachmentTab extends HookWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -68,25 +85,25 @@ class CourseAttachmentTab extends HookWidget {
             const SizedBox(
               height: 18,
             ),
-            _isLoading.value
+            isLoading.value
                 ? ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: 10,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
                     itemBuilder: (context, index) {
-                      return ShimmerCard(
+                      return const ShimmerCard(
                           height: 80, width: double.infinity, borderRadius: 12);
                     },
                   )
                 : ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(0),
-                    itemCount: _attachments.value.length,
-                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: attachments.value.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
@@ -109,12 +126,12 @@ class CourseAttachmentTab extends HookWidget {
                                   height: 56,
                                   width: 56,
                                   decoration: BoxDecoration(
-                                    color: Color(0xFFF0EDEB),
+                                    color: const Color(0xFFF0EDEB),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Center(
                                     child: Image.asset(
-                                      'assets/images/ic-${_attachments.value[index].jenisLampiran}.png',
+                                      'assets/images/ic-${attachments.value[index].jenisLampiran}.png',
                                       width: 32,
                                     ),
                                   ),
@@ -128,7 +145,7 @@ class CourseAttachmentTab extends HookWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _attachments.value[index].namaLampiran,
+                                        attachments.value[index].namaLampiran,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
@@ -158,7 +175,7 @@ class CourseAttachmentTab extends HookWidget {
                       );
                     },
                   ),
-            if (_attachments.value.isEmpty)
+            if (attachments.value.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Center(
@@ -178,7 +195,7 @@ class CourseAttachmentTab extends HookWidget {
                         'Tidak ada Lampiran',
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Color(0xFF4F4F4F),
+                                  color: const Color(0xFF4F4F4F),
                                 ),
                       ),
                       const SizedBox(
@@ -188,7 +205,7 @@ class CourseAttachmentTab extends HookWidget {
                         'Kelas ini tidak memiliki lampiran untuk Anda unduh.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Color(0xFF4F4F4F),
+                              color: const Color(0xFF4F4F4F),
                             ),
                       ),
                     ],

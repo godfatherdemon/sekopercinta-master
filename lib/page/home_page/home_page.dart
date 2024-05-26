@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   // final ValueNotifier<int> _activeIndex;
   // HomePage(this._activeIndex);
 
-  HomePage(ValueNotifier<int> selectedIndex);
+  const HomePage(ValueNotifier<int> selectedIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +16,18 @@ class HomePage extends StatelessWidget {
       backgroundColor: backgroundColor,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [HomeHeader()];
+          return [const HomeHeader()];
         },
-        body: SingleChildScrollView(
+        body: const SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
             children: [
               // if (context.read(authProvider).isAuth) HomeProgress(_activeIndex),
-              const SizedBox(
+              SizedBox(
                 height: 25,
               ),
               HomeAbout(),
-              const SizedBox(
+              SizedBox(
                 height: 36,
               ),
               HomeInspiration(),

@@ -10,7 +10,8 @@ class DropDownTextField extends HookWidget {
   final Function(String?) validator;
   // final Function(String?) validator = myValidator;
 
-  DropDownTextField({
+  const DropDownTextField({
+    super.key,
     required this.value,
     required this.hint,
     required this.listString,
@@ -21,10 +22,10 @@ class DropDownTextField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: DropdownButtonFormField<String>(
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             fontFamily: 'Biennale',
             fontWeight: FontWeight.w500,
@@ -33,13 +34,13 @@ class DropDownTextField extends HookWidget {
           isExpanded: true,
           decoration: InputDecoration(
             border: OutlineInputBorder(
-              borderSide: BorderSide(),
+              borderSide: const BorderSide(),
               borderRadius: BorderRadius.circular(4),
             ),
             contentPadding:
-                EdgeInsets.only(left: 16, bottom: 8, top: 8, right: 16),
+                const EdgeInsets.only(left: 16, bottom: 8, top: 8, right: 16),
             labelText: hint,
-            labelStyle: TextStyle(
+            labelStyle: const TextStyle(
               fontSize: 14,
               fontFamily: 'Biennale',
             ),
@@ -63,7 +64,7 @@ class DropDownTextField extends HookWidget {
                       value: value,
                       child: Text(
                         value,
-                        style: TextStyle(color: Color(0xFF585858)),
+                        style: const TextStyle(color: Color(0xFF585858)),
                       ),
                     );
                   },

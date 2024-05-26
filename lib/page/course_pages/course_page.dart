@@ -21,7 +21,7 @@ class CourseTipKeys {
 
 class CoursePage extends StatelessWidget {
   final ValueNotifier<int> _activeIndex;
-  CoursePage(this._activeIndex);
+  const CoursePage(this._activeIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +30,20 @@ class CoursePage extends StatelessWidget {
         : Scaffold(
             backgroundColor: backgroundColor,
             body: ShowCaseWidget(
-              builder: Builder(builder: (context) => CoursePageContent()),
+              builder: Builder(builder: (context) => const CoursePageContent()),
             ),
           );
   }
 }
 
 class CoursePageContent extends HookWidget {
+  const CoursePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _scrollController = useScrollController();
+    final scrollController = useScrollController();
 
-    final _refresh = useMemoized(
+    final refresh = useMemoized(
         () => () async {
               await context
                   .read(classProvider.notifier)
@@ -65,16 +67,16 @@ class CoursePageContent extends HookWidget {
           ),
           Positioned.fill(
             child: RefreshIndicator(
-              onRefresh: _refresh,
+              onRefresh: refresh,
               child: SingleChildScrollView(
-                controller: _scrollController,
-                physics: BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
+                child: const Padding(
+                  padding: EdgeInsets.all(20.0),
                   child: Column(
                     children: [
                       CourseProfile(),
-                      const SizedBox(
+                      SizedBox(
                         height: 16,
                       ),
                       CourseList(),
@@ -87,7 +89,7 @@ class CoursePageContent extends HookWidget {
           FloatingButtonFacilitator(
             width: 96,
             height: 114,
-            scrollController: _scrollController,
+            scrollController: scrollController,
             child: ToolTipContainer(
               title: 'Fasilitator Anda',
               description: 'Hubungi Fasilitator untuk memperoleh bantuan',
@@ -107,13 +109,13 @@ class CoursePageContent extends HookWidget {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(12),
                     topLeft: Radius.circular(12),
                   ),
                 ),
-                builder: (context) => FacilitatorBottomSheet(),
+                builder: (context) => const FacilitatorBottomSheet(),
               );
             },
           ),

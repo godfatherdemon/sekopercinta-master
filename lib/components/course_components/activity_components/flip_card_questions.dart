@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 // import 'package:flutter_tindercard/flutter_tindercard.dart';
 // import 'package:flutter_tindercard_plus/flutter_tindercard_plus.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sekopercinta_master/providers/questions.dart';
+// import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
+// import 'package:sekopercinta_master/providers/questions.dart';
 
 class FlipCardQuestions extends HookWidget {
   final ValueNotifier<bool> isStart;
   final Function(bool) saveAnswer;
 
-  FlipCardQuestions(this.isStart, this.saveAnswer);
+  const FlipCardQuestions(this.isStart, this.saveAnswer, {super.key});
   @override
   Widget build(BuildContext context) {
-    print(isStart.value);
-    final indexHolder = useState(0);
+    // print(isStart.value);
+    final Logger logger = Logger();
+    logger.d(isStart.value);
+    // final indexHolder = useState(0);
 
-    final questions =
-        useState<List<Pertanyaan>>(context.read(questionProvider));
+    // final questions =
+    //     useState<List<Pertanyaan>>(context.read(questionProvider));
 
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       transitionBuilder: (child, animation) =>
-          SizeTransition(child: child, sizeFactor: animation),
+          SizeTransition(sizeFactor: animation, child: child),
       //   child: isStart.value
       //       ? Container(
       //           key: ValueKey<bool>(true),

@@ -8,7 +8,8 @@ class FloatingButtonFacilitator extends StatelessWidget {
   final double height;
   final ScrollController scrollController;
 
-  FloatingButtonFacilitator({
+  const FloatingButtonFacilitator({
+    super.key,
     required this.onTap,
     required this.child,
     required this.width,
@@ -29,8 +30,8 @@ class FloatingButtonFacilitator extends StatelessWidget {
       panelOpenOffset: 10.0,
       width: width,
       height: height,
-      child: child,
       onPressed: onTap,
+      child: child,
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:sekopercinta_master/utils/constants.dart';
 class ExitActivityBottomSheet extends StatelessWidget {
   final String activityName;
 
-  ExitActivityBottomSheet(this.activityName);
+  const ExitActivityBottomSheet(this.activityName, {super.key});
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -21,7 +21,7 @@ class ExitActivityBottomSheet extends StatelessWidget {
                 height: 4,
                 width: 52,
                 decoration: BoxDecoration(
-                  color: Color(0xFFE0E0E0),
+                  color: const Color(0xFFE0E0E0),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -41,7 +41,7 @@ class ExitActivityBottomSheet extends StatelessWidget {
               Text(
                 'Apakah Anda yakin akan keluar dari aktivitas “$activityName” ?',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Color(0xFFA2A1A1),
+                      color: const Color(0xFFA2A1A1),
                     ),
               ),
               const SizedBox(

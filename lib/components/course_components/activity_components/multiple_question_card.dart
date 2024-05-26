@@ -13,7 +13,8 @@ class MultipleQuestionCard extends HookWidget {
   final ValueNotifier<int> currentQuestion;
   final bool isMultiChoiceMany;
 
-  MultipleQuestionCard({
+  const MultipleQuestionCard({
+    super.key,
     required this.nextQuestion,
     required this.prevQuestion,
     required this.saveAnswer,
@@ -22,7 +23,7 @@ class MultipleQuestionCard extends HookWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final _answers = useState<List<Answer>>(!isMultiChoiceMany
+    final answers = useState<List<Answer>>(!isMultiChoiceMany
         ? context.read(answersProvider)
         : context.read(questionProvider)[currentQuestion.value].pilihanJawaban);
     return Column(
@@ -41,20 +42,20 @@ class MultipleQuestionCard extends HookWidget {
               padding: const EdgeInsets.all(16),
               child: ListView.separated(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(0),
-                itemCount: _answers.value.length + 1,
+                itemCount: answers.value.length + 1,
                 separatorBuilder: (BuildContext context, int index) =>
                     const SizedBox(
                   height: 12,
                 ),
-                itemBuilder: (context, index) => index < _answers.value.length
+                itemBuilder: (context, index) => index < answers.value.length
                     ? FillButton(
-                        text: _answers.value[index].tampilanJawaban,
+                        text: answers.value[index].tampilanJawaban,
                         color: accentColor.withOpacity(0.12),
                         textColor: accentColor,
                         onTap: () {
-                          saveAnswer(_answers.value[index].isiJawaban);
+                          saveAnswer(answers.value[index].isiJawaban);
                           nextQuestion(true);
                         },
                         leading: Container(),
@@ -86,7 +87,7 @@ class MultipleQuestionCard extends HookWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.arrow_back_ios,
                           color: Colors.white,
                         ),

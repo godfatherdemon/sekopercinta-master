@@ -20,44 +20,45 @@ class SetupProfilePage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
 
-  SetupProfilePage({
+  const SetupProfilePage({
+    super.key,
     required this.pageController,
     required this.currentPage,
   });
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _userData = useState<Map<String, dynamic>>({});
-    final _selectedProfile = useState<int?>(null);
-    final _selectedProfileFile = useState<File?>(null);
+    final formKey = useState(GlobalKey<FormState>());
+    final userData = useState<Map<String, dynamic>>({});
+    final selectedProfile = useState<int?>(null);
+    final selectedProfileFile = useState<File?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
               try {
-                if (!_formKey.value.currentState!.validate()) {
+                if (!formKey.value.currentState!.validate()) {
                   return;
                 }
 
-                _formKey.value.currentState?.save();
+                formKey.value.currentState?.save();
 
-                if (_selectedProfile.value == null) {
+                if (selectedProfile.value == null) {
                   Fluttertoast.showToast(
                     msg: 'Mohon pilih foto profile',
                   );
                   return;
                 }
 
-                _isLoading.value = true;
+                isLoading.value = true;
 
-                if (_selectedProfile.value != 0) {
-                  _userData.value['foto_profil'] =
-                      '{{default_${_selectedProfile.value}}}';
+                if (selectedProfile.value != 0) {
+                  userData.value['foto_profil'] =
+                      '{{default_${selectedProfile.value}}}';
                 } else {
-                  if (_selectedProfileFile.value != null) {
+                  if (selectedProfileFile.value != null) {
                     await context.read(userDataProvider.notifier).uploadProfile(
-                          _selectedProfileFile.value!,
+                          selectedProfileFile.value!,
                           context.read(hasuraClientProvider).state,
                         );
                   } else {
@@ -69,22 +70,22 @@ class SetupProfilePage extends HookWidget {
                 }
 
                 await context.read(userDataProvider.notifier).setUserData(
-                      _userData.value,
+                      userData.value,
                       context.read(hasuraClientProvider).state,
                     );
 
-                Navigator.of(context).push(
-                    createRoute(page: SetupFinishPage(), isVertical: true));
+                Navigator.of(context).push(createRoute(
+                    page: const SetupFinishPage(), isVertical: true));
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Form(
-        key: _formKey.value,
+        key: formKey.value,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Column(
@@ -138,12 +139,13 @@ class SetupProfilePage extends HookWidget {
                 child: BorderedFormField(
                   hint: 'Nama',
                   onSaved: (value) {
-                    _userData.value['nama_pengguna'] = value;
+                    userData.value['nama_pengguna'] = value;
                   },
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return 'Nama tidak boleh kosong';
                     }
+                    return null;
                   },
                   textEditingController: TextEditingController(),
                   initialValue: '',
@@ -207,15 +209,15 @@ class SetupProfilePage extends HookWidget {
                         if (action == 'camera') {
                           if (await Permission.camera.request().isGranted) {
                             final selectedFilePath = await Navigator.of(context)
-                                .push(createRoute(page: CameraPage()));
+                                .push(createRoute(page: const CameraPage()));
 
                             if (selectedFilePath != null) {
-                              _selectedProfile.value = 0;
-                              _selectedProfileFile.value =
+                              selectedProfile.value = 0;
+                              selectedProfileFile.value =
                                   File(selectedFilePath);
                             } else {
-                              if (_selectedProfileFile.value != null) {
-                                _selectedProfile.value = 0;
+                              if (selectedProfileFile.value != null) {
+                                selectedProfile.value = 0;
                               }
                             }
                           }
@@ -263,16 +265,16 @@ class SetupProfilePage extends HookWidget {
                                 return;
                               }
 
-                              _selectedProfile.value = 0;
-                              _selectedProfileFile.value = file;
+                              selectedProfile.value = 0;
+                              selectedProfileFile.value = file;
                             } else {
                               // Handle the case where filePath is null
                               // (This might happen if the user canceled the file selection)
                             }
                           } else {
                             // Handle the case where result is null or files is empty
-                            if (_selectedProfileFile.value != null) {
-                              _selectedProfile.value = 0;
+                            if (selectedProfileFile.value != null) {
+                              selectedProfile.value = 0;
                             }
                           }
                         }
@@ -281,17 +283,17 @@ class SetupProfilePage extends HookWidget {
                       child: AnimatedContainer(
                         width: 88,
                         height: 88,
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: _selectedProfile.value == 0
+                            color: selectedProfile.value == 0
                                 ? accentColor
-                                : Color(0xFFE7E4E2),
+                                : const Color(0xFFE7E4E2),
                           ),
-                          image: _selectedProfileFile.value != null
+                          image: selectedProfileFile.value != null
                               ? DecorationImage(
-                                  image: FileImage(_selectedProfileFile.value!),
+                                  image: FileImage(selectedProfileFile.value!),
                                   fit: BoxFit.cover)
                               : null,
                         ),
@@ -315,21 +317,21 @@ class SetupProfilePage extends HookWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        _selectedProfile.value = 1;
+                        selectedProfile.value = 1;
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: 88,
                         height: 88,
                         decoration: BoxDecoration(
-                          color: _selectedProfile.value == 1
+                          color: selectedProfile.value == 1
                               ? accentColor.withOpacity(0.5)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: _selectedProfile.value == 1
+                            color: selectedProfile.value == 1
                                 ? accentColor
-                                : Color(0xFFE7E4E2),
+                                : const Color(0xFFE7E4E2),
                           ),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -349,21 +351,21 @@ class SetupProfilePage extends HookWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        _selectedProfile.value = 2;
+                        selectedProfile.value = 2;
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: 88,
                         height: 88,
                         decoration: BoxDecoration(
-                          color: _selectedProfile.value == 2
+                          color: selectedProfile.value == 2
                               ? accentColor.withOpacity(0.5)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: _selectedProfile.value == 2
+                            color: selectedProfile.value == 2
                                 ? accentColor
-                                : Color(0xFFE7E4E2),
+                                : const Color(0xFFE7E4E2),
                           ),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -383,21 +385,21 @@ class SetupProfilePage extends HookWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        _selectedProfile.value = 3;
+                        selectedProfile.value = 3;
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         width: 88,
                         height: 88,
                         decoration: BoxDecoration(
-                          color: _selectedProfile.value == 3
+                          color: selectedProfile.value == 3
                               ? accentColor.withOpacity(0.5)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: _selectedProfile.value == 3
+                            color: selectedProfile.value == 3
                                 ? accentColor
-                                : Color(0xFFE7E4E2),
+                                : const Color(0xFFE7E4E2),
                           ),
                         ),
                         padding: const EdgeInsets.all(12),
@@ -425,8 +427,8 @@ class SetupProfilePage extends HookWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: FillButton(
                   text: 'Lanjutkan',
-                  isLoading: _isLoading.value,
-                  onTap: _submit,
+                  isLoading: isLoading.value,
+                  onTap: submit,
                   leading: Container(),
                 ),
               ),
@@ -443,7 +445,7 @@ class SetupProfilePage extends HookWidget {
                     currentPage.value--;
                     pageController.animateToPage(
                       currentPage.value,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.ease,
                     );
                   },

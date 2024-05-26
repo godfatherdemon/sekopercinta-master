@@ -17,93 +17,151 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class SignUpPage extends HookWidget {
+  const SignUpPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _signUpData = useState<Map<String, String>>({});
-    final _passTextEditingController = useTextEditingController();
+    final formKey = useState(GlobalKey<FormState>());
+    final signUpData = useState<Map<String, String>>({});
+    final passTextEditingController = useTextEditingController();
 
-    final _passFocusNode = useFocusNode();
-    final _passFocusNode2 = useFocusNode();
-    final _isLoading = useState(false);
+    final passFocusNode = useFocusNode();
+    final passFocusNode2 = useFocusNode();
+    final isLoading = useState(false);
 
-    final _isLoadingGoogleSignIn = useState(false);
+    // final isLoadingGoogleSignIn = useState(false);
 
-    final _googleSignIn = useMemoized(
+    // final googleSignIn = useMemoized(
+    //   () => () async {
+    //     final navigator = Navigator.of(context);
+
+    //     final authNotifier = context.read(authProvider.notifier);
+    //     // final authNotifier = context.read(authProvider);
+
+    //     final authState = context.read(authProvider);
+    //     final userDataNotifier = context.read(userDataProvider.notifier);
+    //     final hasuraClientState = context.read(hasuraClientProvider).state;
+    //     // isLoadingGoogleSignIn.value = true;
+
+    //     try {
+    //       // await context.read(authProvider.notifier).googleSignIn();
+    //       isLoadingGoogleSignIn.value = true;
+    //       await authNotifier.googleSignIn();
+
+    //       // if (context.read(authProvider).isEmpty) {
+    //       //   isLoadingGoogleSignIn.value = false;
+    //       //   return;
+    //       // }
+
+    //       // if (authNotifier.isEmpty) {
+    //       //   isLoadingGoogleSignIn.value = false;
+    //       //   return;
+    //       // }
+
+    //       if (authState.isEmpty) {
+    //         isLoadingGoogleSignIn.value = false;
+    //         return;
+    //       }
+
+    //       // await context.read(userDataProvider.notifier).getUserData(
+    //       //       context.read(hasuraClientProvider).state,
+    //       //     );
+
+    //       await userDataNotifier.getUserData(hasuraClientState);
+
+    //       isLoadingGoogleSignIn.value = false;
+
+    //       // final userData = context.read(userDataProvider);
+    //       final userData = userDataProvider;
+    //       if (userData.name == null) {
+    //         // Navigator.pushReplacement(
+    //         //   context,
+    //         //   createRoute(page: const SignUpSetupPage()),
+    //         // );
+    //         navigator.pushReplacement(
+    //           createRoute(page: const SignUpSetupPage()),
+    //         );
+
+    //         // Navigator.of(context).pushReplacement(createRoute(
+    //         //   page: const SignUpSetupPage(),
+    //         //   isVertical: true,
+    //         // ));
+    //       } else {
+    //         // Navigator.pushAndRemoveUntil(
+    //         //   context,
+    //         //   createRoute(page: const BottomNavPage()),
+    //         //   (route) => false,
+    //         // );
+    //         navigator.pushAndRemoveUntil(
+    //           createRoute(page: const BottomNavPage()),
+    //           (route) => false,
+    //         );
+    //       }
+    //       // if (context.read(userDataProvider).namaPengguna == null) {
+    //       //   Navigator.pushReplacement(
+    //       //       context, createRoute(page: const SignUpSetupPage()));
+    //       // } else {
+    //       //   Navigator.pushAndRemoveUntil(context,
+    //       //       createRoute(page: const BottomNavPage()), (route) => false);
+    //       // }
+    //     } catch (error) {
+    //       isLoadingGoogleSignIn.value = false;
+    //       rethrow;
+    //     }
+
+    //     // Navigator.pushReplacement(
+    //     //     context, createRoute(page: SignUpSetupPage()));
+    //   },
+    // );
+
+    final submit = useMemoized(
       () => () async {
-        _isLoadingGoogleSignIn.value = true;
-
-        try {
-          await context.read(authProvider.notifier).googleSignIn();
-
-          if (context.read(authProvider).isEmpty) {
-            _isLoadingGoogleSignIn.value = false;
-            return;
-          }
-
-          await context.read(userDataProvider.notifier).getUserData(
-                context.read(hasuraClientProvider).state,
-              );
-
-          _isLoadingGoogleSignIn.value = false;
-
-          if (context.read(userDataProvider).namaPengguna == null) {
-            Navigator.pushReplacement(
-                context, createRoute(page: SignUpSetupPage()));
-          } else {
-            Navigator.pushAndRemoveUntil(
-                context, createRoute(page: BottomNavPage()), (route) => false);
-          }
-        } catch (error) {
-          _isLoadingGoogleSignIn.value = false;
-          throw error;
-        }
-
-        // Navigator.pushReplacement(
-        //     context, createRoute(page: SignUpSetupPage()));
-      },
-    );
-
-    final _submit = useMemoized(
-      () => () async {
-        if (!_formKey.value.currentState!.validate()) {
+        final navigator = Navigator.of(context);
+        if (!formKey.value.currentState!.validate()) {
           return;
         }
 
-        _formKey.value.currentState?.save();
+        formKey.value.currentState?.save();
 
-        _isLoading.value = true;
+        isLoading.value = true;
 
         try {
           await context.read(authProvider.notifier).signUp(
-                _signUpData.value,
+                signUpData.value,
                 context.read(hasuraClientProvider).state,
               );
 
-          Navigator.of(context).pushReplacement(createRoute(
-              page: OnBoardingSignUpPage(), arguments: _signUpData.value));
+          // Navigator.of(context).pushReplacement(createRoute(
+          //     page: const OnBoardingSignUpPage(), arguments: signUpData.value));
+          navigator.pushReplacement(
+            createRoute(
+              page: const OnBoardingSignUpPage(),
+              arguments: signUpData.value,
+            ),
+          );
         } catch (error) {
-          _isLoading.value = false;
-          throw error;
+          isLoading.value = false;
+          rethrow;
         }
       },
+      [formKey.value, signUpData.value],
     );
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            PopAppBar(
+            const PopAppBar(
               title: 'Daftar',
               isBackIcon: true,
             ),
             Expanded(
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Form(
-                    key: _formKey.value,
+                    key: formKey.value,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -122,18 +180,19 @@ class SignUpPage extends HookWidget {
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Email tidak boleh kosong';
                             }
+                            return null;
                           },
                           onSaved: (value) {
-                            _signUpData.value['email'] = value;
+                            signUpData.value['email'] = value;
                           },
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_passFocusNode);
+                            FocusScope.of(context).requestFocus(passFocusNode);
                           },
                           // textEditingController: TextEditingController(),
-                          textEditingController: _passTextEditingController,
+                          textEditingController: passTextEditingController,
                           initialValue: '',
                           focusNode: FocusNode(),
                           maxLine: 999,
@@ -148,26 +207,26 @@ class SignUpPage extends HookWidget {
                           hint: 'Buat Password',
                           obscureText: true,
                           maxLine: 1,
-                          focusNode: _passFocusNode,
-                          textEditingController: _passTextEditingController,
+                          focusNode: passFocusNode,
+                          textEditingController: passTextEditingController,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Password tidak boleh kosong';
                             }
                             if (value.length < 8) {
                               return 'Password harus 8 huruf atau lebih';
                             }
+                            return null;
                           },
                           onSaved: (value) {
-                            _signUpData.value['password'] = value;
+                            signUpData.value['password'] = value;
                           },
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context)
-                                .requestFocus(_passFocusNode2);
+                            FocusScope.of(context).requestFocus(passFocusNode2);
                           },
                           initialValue: '',
                           onChanged: (string) {},
-                          onTap: _submit,
+                          onTap: () {},
                           // onTap: null,
                           suffixIcon: Container(),
                         ),
@@ -178,38 +237,39 @@ class SignUpPage extends HookWidget {
                           hint: 'Ulangi Password',
                           obscureText: true,
                           maxLine: 1,
-                          focusNode: _passFocusNode2,
+                          focusNode: passFocusNode2,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Password tidak boleh kosong';
                             }
-                            if (value != _passTextEditingController.text) {
+                            if (value != passTextEditingController.text) {
                               return 'Password tidak sesuai';
                             }
                             if (value.length < 8) {
                               return 'Password harus 8 huruf atau lebih';
                             }
+                            return null;
                           },
                           onFieldSubmitted: (value) {
-                            _submit();
+                            submit();
                           },
-                          textEditingController: _passTextEditingController,
+                          textEditingController: passTextEditingController,
                           initialValue: '',
                           onChanged: (string) {},
                           onSaved: (string) {},
-                          onTap: _submit,
+                          onTap: submit,
                           suffixIcon: Container(),
                         ),
                         const SizedBox(
                           height: 32,
                         ),
-                        _isLoading.value
-                            ? Center(
+                        isLoading.value
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : FillButton(
                                 text: 'Daftar Sekarang',
-                                onTap: _submit,
+                                onTap: submit,
                                 leading: Container(),
                               ),
                         const SizedBox(
@@ -231,7 +291,7 @@ class SignUpPage extends HookWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                               ),
-                              TextSpan(text: 'serta '),
+                              const TextSpan(text: 'serta '),
                               TextSpan(
                                 text: 'Kebijakan Privasi ',
                                 style: Theme.of(context)
@@ -242,7 +302,7 @@ class SignUpPage extends HookWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                               ),
-                              TextSpan(text: 'Sekoper Cinta'),
+                              const TextSpan(text: 'Sekoper Cinta'),
                             ],
                           ),
                         ),
@@ -265,8 +325,8 @@ class SignUpPage extends HookWidget {
                                     ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.of(context).push(
-                                        createRoute(page: SignInEmailPage()));
+                                    Navigator.of(context).push(createRoute(
+                                        page: const SignInEmailPage()));
                                   },
                               ),
                             ],
@@ -289,16 +349,16 @@ class SignUpPage extends HookWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        _isLoadingGoogleSignIn.value
-                            ? Center(child: CircularProgressIndicator())
-                            : BorderedButton(
-                                text: 'Masuk dengan Google',
-                                leading: Image.asset(
-                                  'assets/images/ic-google.png',
-                                  width: 20,
-                                ),
-                                onTap: _googleSignIn,
-                              ),
+                        // isLoadingGoogleSignIn.value
+                        //     ? const Center(child: CircularProgressIndicator())
+                        //     : BorderedButton(
+                        //         text: 'Masuk dengan Google',
+                        //         leading: Image.asset(
+                        //           'assets/images/ic-google.png',
+                        //           width: 20,
+                        //         ),
+                        //         onTap: googleSignIn,
+                        //       ),
                       ],
                     ),
                   ),

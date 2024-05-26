@@ -9,35 +9,36 @@ class VideoPage extends HookWidget {
   final String id;
   final List<ProgresAktivita> progressAktivitas;
 
-  VideoPage({
+  const VideoPage({
+    super.key,
     required this.id,
     required this.progressAktivitas,
   });
   @override
   Widget build(BuildContext context) {
-    final _data = useState<String?>(null);
-    final _isLoading = useState<bool>(false);
+    final data = useState<String?>(null);
+    final isLoading = useState<bool>(false);
 
     useEffect(() {
-      _isLoading.value = true;
+      isLoading.value = true;
       context
           .read(activityProvider.notifier)
           .getActivityContent(context.read(hasuraClientProvider).state, id)
           .then((value) {
-        _data.value = value;
-        _isLoading.value = false;
+        data.value = value;
+        isLoading.value = false;
       });
       return;
     }, []);
 
-    return _isLoading.value
-        ? Center(
+    return isLoading.value
+        ? const Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           )
         : FullScreenVideo(
-            url: _data.value!,
+            url: data.value!,
             id: id,
             progressAktivitas: progressAktivitas,
           );

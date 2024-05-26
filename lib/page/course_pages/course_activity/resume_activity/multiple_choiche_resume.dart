@@ -7,30 +7,31 @@ class MultipleChoiceResume extends HookWidget {
   final List<Pertanyaan> question;
   final List<String> answer;
 
-  MultipleChoiceResume({
+  const MultipleChoiceResume({
+    super.key,
     required this.answer,
     required this.question,
   });
   @override
   Widget build(BuildContext context) {
-    final _answerNA = useState<int>(0);
-    final _rightAnswer = useState<int>(0);
-    final _wrongAnswer = useState<int>(0);
-    final _totalScore = useState(0.0);
+    final answerNA = useState<int>(0);
+    final rightAnswer = useState<int>(0);
+    final wrongAnswer = useState<int>(0);
+    final totalScore = useState(0.0);
     useEffect(() {
       if (question[0].kunciJawabanPilgans.isNotEmpty) {
         for (int i = 0; i < answer.length; i++) {
           if (answer[i] == '-') {
-            _answerNA.value++;
+            answerNA.value++;
           }
           if (answer[i] == question[i].kunciJawabanPilgans[0].isiJawaban) {
-            _rightAnswer.value++;
+            rightAnswer.value++;
           } else {
-            _wrongAnswer.value++;
+            wrongAnswer.value++;
           }
         }
 
-        _totalScore.value = (_rightAnswer.value / answer.length) * 100;
+        totalScore.value = (rightAnswer.value / answer.length) * 100;
       }
 
       return;
@@ -78,7 +79,7 @@ class MultipleChoiceResume extends HookWidget {
                           height: 4,
                         ),
                         Text(
-                          '${_totalScore.value.toStringAsFixed(0)}',
+                          totalScore.value.toStringAsFixed(0),
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
@@ -121,7 +122,7 @@ class MultipleChoiceResume extends HookWidget {
                             height: 4,
                           ),
                           Text(
-                            '${_rightAnswer.value}',
+                            '${rightAnswer.value}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -161,7 +162,7 @@ class MultipleChoiceResume extends HookWidget {
                             height: 4,
                           ),
                           Text(
-                            '${_wrongAnswer.value}',
+                            '${wrongAnswer.value}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -201,7 +202,7 @@ class MultipleChoiceResume extends HookWidget {
                             height: 4,
                           ),
                           Text(
-                            '${_answerNA.value}',
+                            '${answerNA.value}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium

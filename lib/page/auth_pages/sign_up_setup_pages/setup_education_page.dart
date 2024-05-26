@@ -10,40 +10,41 @@ class SetupEducationPage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
 
-  SetupEducationPage({
+  const SetupEducationPage({
+    super.key,
     required this.pageController,
     required this.currentPage,
   });
   @override
   Widget build(BuildContext context) {
-    final _education = useState<String?>(null);
+    final education = useState<String?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 await context.read(userDataProvider.notifier).setUserData(
-                  {'pendidikan_terakhir': _education.value},
+                  {'pendidikan_terakhir': education.value},
                   context.read(hasuraClientProvider).state,
                 );
 
                 currentPage.value++;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -84,11 +85,11 @@ class SetupEducationPage extends HookWidget {
               height: 24,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'sd'
+                  color: education.value == 'sd'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -105,9 +106,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'sd',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -115,11 +116,11 @@ class SetupEducationPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'smp'
+                  color: education.value == 'smp'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -136,9 +137,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'smp',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -146,11 +147,11 @@ class SetupEducationPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'sma'
+                  color: education.value == 'sma'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -167,9 +168,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'sma',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -177,11 +178,11 @@ class SetupEducationPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'smk'
+                  color: education.value == 'smk'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -198,9 +199,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'smk',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -208,11 +209,11 @@ class SetupEducationPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'pt'
+                  color: education.value == 'pt'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -229,9 +230,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'pt',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -239,11 +240,11 @@ class SetupEducationPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color: _education.value == 'do'
+                  color: education.value == 'do'
                       ? accentColor
                       : Colors.transparent,
                 ),
@@ -260,9 +261,9 @@ class SetupEducationPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: 'do',
-                groupValue: _education.value,
+                groupValue: education.value,
                 onChanged: (String? value) {
-                  _education.value = value;
+                  education.value = value;
                 },
               ),
             ),
@@ -271,8 +272,8 @@ class SetupEducationPage extends HookWidget {
             ),
             FillButton(
               text: 'Lanjutkan',
-              onTap: _submit,
-              isLoading: _isLoading.value,
+              onTap: submit,
+              isLoading: isLoading.value,
               leading: Container(),
             ),
             const SizedBox(
@@ -286,7 +287,7 @@ class SetupEducationPage extends HookWidget {
                 currentPage.value--;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               },

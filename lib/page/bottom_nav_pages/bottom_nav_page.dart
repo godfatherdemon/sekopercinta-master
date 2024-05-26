@@ -12,41 +12,43 @@ class BottomNavPage extends HookWidget {
   static const routeName = '/tab-page';
 
   const BottomNavPage({super.key});
+  // const BottomNavPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _selectedIndex = useState(0);
+    final selectedIndex = useState(0);
 
-    final _onItemTapped = useMemoized(
+    final onItemTapped = useMemoized(
       () => (int index) {
-        _selectedIndex.value = index;
+        selectedIndex.value = index;
       },
       [],
     );
 
-    final List<Widget> _pages = <Widget>[
-      HomePage(_selectedIndex),
-      CourseVocationPage(_selectedIndex),
-      CoursePage(_selectedIndex),
-      SocialPage(_selectedIndex),
-      ProfilePage(),
+    final List<Widget> pages = <Widget>[
+      HomePage(selectedIndex),
+      CourseVocationPage(selectedIndex),
+      CoursePage(selectedIndex),
+      SocialPage(selectedIndex),
+      ProfilePage(selectedIndex),
     ];
 
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 12,
-        child: Container(
+        child: SizedBox(
           height: 80,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               InkWell(
-                onTap: () => _onItemTapped(0),
+                onTap: () => onItemTapped(0),
+                // onTap: () => selectedIndex.value,
                 borderRadius: BorderRadius.circular(30),
                 child: Tooltip(
                   message: 'Beranda',
-                  child: Container(
+                  child: SizedBox(
                     width: 60,
                     height: 60,
                     child: Column(
@@ -56,7 +58,7 @@ class BottomNavPage extends HookWidget {
                         ColorFiltered(
                           colorFilter: ColorFilter.mode(
                             Colors.grey,
-                            _selectedIndex.value == 0
+                            selectedIndex.value == 0
                                 ? BlendMode.dst
                                 : BlendMode.srcIn,
                           ),
@@ -72,10 +74,10 @@ class BottomNavPage extends HookWidget {
                           'Beranda',
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: _selectedIndex.value == 0
+                            fontWeight: selectedIndex.value == 0
                                 ? FontWeight.w600
                                 : FontWeight.w400,
-                            color: _selectedIndex.value == 0
+                            color: selectedIndex.value == 0
                                 ? accentColor
                                 : Colors.grey,
                           ),
@@ -86,11 +88,12 @@ class BottomNavPage extends HookWidget {
                 ),
               ),
               InkWell(
-                onTap: () => _onItemTapped(1),
+                onTap: () => onItemTapped(1),
+                // onTap: () => selectedIndex.value,
                 borderRadius: BorderRadius.circular(30),
                 child: Tooltip(
                   message: 'Vokasi',
-                  child: Container(
+                  child: SizedBox(
                     width: 60,
                     height: 60,
                     child: Column(
@@ -100,7 +103,7 @@ class BottomNavPage extends HookWidget {
                         ColorFiltered(
                           colorFilter: ColorFilter.mode(
                             Colors.grey,
-                            _selectedIndex.value == 1
+                            selectedIndex.value == 1
                                 ? BlendMode.dst
                                 : BlendMode.srcIn,
                           ),
@@ -116,10 +119,10 @@ class BottomNavPage extends HookWidget {
                           'Vokasi',
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: _selectedIndex.value == 1
+                            fontWeight: selectedIndex.value == 1
                                 ? FontWeight.w600
                                 : FontWeight.w400,
-                            color: _selectedIndex.value == 1
+                            color: selectedIndex.value == 1
                                 ? accentColor
                                 : Colors.grey,
                           ),
@@ -130,11 +133,12 @@ class BottomNavPage extends HookWidget {
                 ),
               ),
               InkWell(
-                onTap: () => _onItemTapped(2),
+                onTap: () => onItemTapped(2),
+                // onTap: () => selectedIndex.value,
                 borderRadius: BorderRadius.circular(30),
                 child: Tooltip(
                   message: 'Kelas',
-                  child: Container(
+                  child: SizedBox(
                     width: 60,
                     height: 60,
                     child: Column(
@@ -144,7 +148,7 @@ class BottomNavPage extends HookWidget {
                         ColorFiltered(
                           colorFilter: ColorFilter.mode(
                             Colors.grey,
-                            _selectedIndex.value == 2
+                            selectedIndex.value == 2
                                 ? BlendMode.dst
                                 : BlendMode.srcIn,
                           ),
@@ -160,10 +164,10 @@ class BottomNavPage extends HookWidget {
                           'Dasar',
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: _selectedIndex.value == 2
+                            fontWeight: selectedIndex.value == 2
                                 ? FontWeight.w600
                                 : FontWeight.w400,
-                            color: _selectedIndex.value == 2
+                            color: selectedIndex.value == 2
                                 ? accentColor
                                 : Colors.grey,
                           ),
@@ -174,11 +178,12 @@ class BottomNavPage extends HookWidget {
                 ),
               ),
               InkWell(
-                onTap: () => _onItemTapped(3),
+                onTap: () => onItemTapped(3),
+                // onTap: () => selectedIndex.value,
                 borderRadius: BorderRadius.circular(30),
                 child: Tooltip(
                   message: 'Sosial',
-                  child: Container(
+                  child: SizedBox(
                     width: 60,
                     height: 60,
                     child: Column(
@@ -188,7 +193,7 @@ class BottomNavPage extends HookWidget {
                         ColorFiltered(
                           colorFilter: ColorFilter.mode(
                             Colors.grey,
-                            _selectedIndex.value == 3
+                            selectedIndex.value == 3
                                 ? BlendMode.dst
                                 : BlendMode.srcIn,
                           ),
@@ -204,10 +209,10 @@ class BottomNavPage extends HookWidget {
                           'Sosial',
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: _selectedIndex.value == 3
+                            fontWeight: selectedIndex.value == 3
                                 ? FontWeight.w600
                                 : FontWeight.w400,
-                            color: _selectedIndex.value == 3
+                            color: selectedIndex.value == 3
                                 ? accentColor
                                 : Colors.grey,
                           ),
@@ -218,11 +223,12 @@ class BottomNavPage extends HookWidget {
                 ),
               ),
               InkWell(
-                onTap: () => _onItemTapped(4),
+                onTap: () => onItemTapped(4),
+                // onTap: () => selectedIndex.value,
                 borderRadius: BorderRadius.circular(30),
                 child: Tooltip(
                   message: 'Profilku',
-                  child: Container(
+                  child: SizedBox(
                     width: 60,
                     height: 60,
                     child: Column(
@@ -232,7 +238,7 @@ class BottomNavPage extends HookWidget {
                         ColorFiltered(
                           colorFilter: ColorFilter.mode(
                             Colors.grey,
-                            _selectedIndex.value == 4
+                            selectedIndex.value == 4
                                 ? BlendMode.dst
                                 : BlendMode.srcIn,
                           ),
@@ -248,10 +254,10 @@ class BottomNavPage extends HookWidget {
                           'Profilku',
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: _selectedIndex.value == 4
+                            fontWeight: selectedIndex.value == 4
                                 ? FontWeight.w600
                                 : FontWeight.w400,
-                            color: _selectedIndex.value == 4
+                            color: selectedIndex.value == 4
                                 ? accentColor
                                 : Colors.grey,
                           ),
@@ -262,10 +268,17 @@ class BottomNavPage extends HookWidget {
                 ),
               ),
             ],
+            // children: [
+            //   buildNavItem(0, 'Beranda', 'assets/images/ic-menu-home.png'),
+            //   buildNavItem(1, 'Vokasi', 'assets/images/ic-menu-vocation.png'),
+            //   buildNavItem(2, 'Dasar', 'assets/images/ic-menu-sekoci.png'),
+            //   buildNavItem(3, 'Sosial', 'assets/images/ic-menu-social.png'),
+            //   buildNavItem(4, 'Profilku', 'assets/images/ic-menu-profile.png'),
+            // ],
           ),
         ),
       ),
-      body: _pages[_selectedIndex.value],
+      body: pages[selectedIndex.value],
     );
   }
 }

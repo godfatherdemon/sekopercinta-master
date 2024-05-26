@@ -6,14 +6,14 @@ import 'package:sekopercinta_master/utils/constants.dart';
 class CourseIntroductionTab extends StatelessWidget {
   final Pelajaran? lesson;
 
-  CourseIntroductionTab(this.lesson);
+  const CourseIntroductionTab(this.lesson, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,7 +34,7 @@ class CourseIntroductionTab extends StatelessWidget {
               height: 12,
             ),
             lesson == null
-                ? ShimmerCard(
+                ? const ShimmerCard(
                     height: 300,
                     width: double.infinity,
                     borderRadius: 0,
@@ -67,7 +67,7 @@ class CourseIntroductionTab extends StatelessWidget {
               height: 12,
             ),
             lesson != null
-                ? ShimmerCard(
+                ? const ShimmerCard(
                     height: 300, width: double.infinity, borderRadius: 0)
                 : Text(
                     lesson!.pokokBahasanPelajaran,

@@ -8,7 +8,8 @@ class ShimmerCard extends StatelessWidget {
   final Color color;
   final Color highlightColor;
 
-  ShimmerCard({
+  const ShimmerCard({
+    super.key,
     required this.height,
     required this.width,
     required this.borderRadius,
@@ -25,7 +26,7 @@ class ShimmerCard extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-          color: Color(0xFFE3E7EA),
+          color: const Color(0xFFE3E7EA),
         ),
       ),
     );

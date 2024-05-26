@@ -33,16 +33,16 @@ class MentorPage extends HookWidget {
                 ),
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
                   ),
                 ),
-                flexibleSpace: FlexibleSpaceBar(
+                flexibleSpace: const FlexibleSpaceBar(
                   background: SafeArea(
                     child: Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           height: 70,
                         ),
                         Text(
@@ -54,11 +54,11 @@ class MentorPage extends HookWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 40,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
                           child: Divider(
                             color: Colors.white,
                           ),
@@ -71,7 +71,7 @@ class MentorPage extends HookWidget {
             ];
           },
           body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
                 Padding(
@@ -82,7 +82,7 @@ class MentorPage extends HookWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -92,7 +92,7 @@ class MentorPage extends HookWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Sambutan Master of Trainer',
                                 style: TextStyle(
                                   color: accentColor,
@@ -105,7 +105,7 @@ class MentorPage extends HookWidget {
                               GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).push(createRoute(
-                                      page: FullScreenVideo(
+                                      page: const FullScreenVideo(
                                     url:
                                         'https://webgeocreate.s3.ap-southeast-1.amazonaws.com/sekoper-cinta/home-assets/mastertrainer_mawarpohan.mp4',
                                     id: '',
@@ -153,7 +153,7 @@ class MentorPage extends HookWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -163,7 +163,7 @@ class MentorPage extends HookWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Master of Trainer Sekopercinta',
                                 style: TextStyle(
                                   color: accentColor,
@@ -172,10 +172,10 @@ class MentorPage extends HookWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: mentor.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio: 5 / 6,
                                   crossAxisSpacing: 12,
@@ -192,7 +192,7 @@ class MentorPage extends HookWidget {
                                     Text(
                                       mentor[index].name,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),

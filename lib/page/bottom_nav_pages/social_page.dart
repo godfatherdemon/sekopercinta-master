@@ -13,36 +13,37 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class SocialPage extends HookWidget {
   final ValueNotifier<int> _activeIndex;
-  SocialPage(this._activeIndex);
+  const SocialPage(this._activeIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _posts = useState<List<Komunitas>>(context.read(communitiesProvider));
+    final posts = useState<List<Komunitas>>(context.read(communitiesProvider));
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _getCommunityPosts = useMemoized(
+    final getCommunityPosts = useMemoized(
         () => () async {
               try {
-                if (_posts.value.isEmpty) {
-                  _isLoading.value = true;
+                if (posts.value.isEmpty) {
+                  isLoading.value = true;
                 }
 
                 await context.read(communitiesProvider.notifier).getCommunities(
                       context.read(hasuraClientProvider).state,
                     );
-                _posts.value = context.read(communitiesProvider);
+                // posts.value = context.read(communitiesProvider);
+                posts.value = communitiesProvider as List<Komunitas>;
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
-              _isLoading.value = false;
+              isLoading.value = false;
             },
         []);
 
     useEffect(() {
       if (context.read(authProvider.notifier).isAuth) {
-        _getCommunityPosts();
+        getCommunityPosts();
       }
       return;
     }, []);
@@ -60,24 +61,24 @@ class SocialPage extends HookWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(
+              child: const Icon(
                 Icons.add,
                 color: Colors.white,
               ),
               onPressed: () async {
                 final result = await Navigator.of(context)
-                    .push(createRoute(page: AddPostPage()));
+                    .push(createRoute(page: const AddPostPage()));
 
                 if (result != null) {
                   if (result) {
-                    _getCommunityPosts();
+                    getCommunityPosts();
                   }
                 }
               },
             ),
             body: SafeArea(
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -90,13 +91,13 @@ class SocialPage extends HookWidget {
                         width: 241,
                       ),
                     ),
-                    _isLoading.value
+                    isLoading.value
                         ? ListView.separated(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: const EdgeInsets.all(20.0),
                             itemCount: 5,
-                            itemBuilder: (context, index) => ShimmerCard(
+                            itemBuilder: (context, index) => const ShimmerCard(
                               height: 407,
                               width: double.infinity,
                               borderRadius: 10,
@@ -130,14 +131,14 @@ class SocialPage extends HookWidget {
                               ],
                             ),
                           )
-                        : _posts.value.isNotEmpty
+                        : posts.value.isNotEmpty
                             ? ListView.separated(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 padding: const EdgeInsets.all(20.0),
-                                itemCount: _posts.value.length,
+                                itemCount: posts.value.length,
                                 itemBuilder: (context, index) =>
-                                    CommunityItem(_posts.value[index]),
+                                    CommunityItem(posts.value[index]),
                                 separatorBuilder: (context, index) => Stack(
                                   clipBehavior: Clip.none,
                                   children: [

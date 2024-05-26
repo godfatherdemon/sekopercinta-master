@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
 import 'package:sekopercinta_master/components/text_field/bordered_text_field.dart';
@@ -19,31 +20,33 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 
 class EditProfilePage extends HookWidget {
+  const EditProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
-    final _userData = useState<UserData>(context.read(userDataProvider));
-    final _editedUserData = useState<Map<String, dynamic>>({});
+    final formKey = useState(GlobalKey<FormState>());
+    final userData = useState<UserData>(context.read(userDataProvider));
+    final editedUserData = useState<Map<String, dynamic>>({});
 
-    final _birthTextEditingController = useTextEditingController(
+    final birthTextEditingController = useTextEditingController(
       // text: DateFormat('dd MMMM yyyy').format(_userData.value.tanggalLahir));
-      text: _userData.value.tanggalLahir != null
-          ? DateFormat('dd MMMM yyyy').format(_userData.value.tanggalLahir!)
+      text: userData.value.tanggalLahir != null
+          ? DateFormat('dd MMMM yyyy').format(userData.value.tanggalLahir!)
           : '', // Provide a default value or handle the null case
     );
 
-    final _addressTextEditingController =
-        useTextEditingController(text: _userData.value.alamat);
+    final addressTextEditingController =
+        useTextEditingController(text: userData.value.alamat);
 
-    final _status = useState<String>(
-        _userData.value.statusPernikahan ? 'Sudah Kawin' : 'Belum Kawin');
+    final status = useState<String>(
+        userData.value.statusPernikahan ? 'Sudah Kawin' : 'Belum Kawin');
 
     // final _addressLatitude = useState<double>(_userData.value.alamatGeom != null
     //     ? _userData.value.alamatGeom.coordinates.last
     //     : null);
 
-    final _addressLatitude = useState<double>(
-      _userData.value.alamatGeom?.coordinates.last ?? 0.0,
+    final addressLatitude = useState<double>(
+      userData.value.alamatGeom?.coordinates.last ?? 0.0,
     );
 
     // final _addressLongitude = useState<double>(
@@ -51,57 +54,97 @@ class EditProfilePage extends HookWidget {
     //         ? _userData.value.alamatGeom.coordinates.first
     //         : null);
 
-    final _addressLongitude = useState<double>(
-      _userData.value.alamatGeom?.coordinates.first ?? 0.0,
+    final addressLongitude = useState<double>(
+      userData.value.alamatGeom?.coordinates.first ?? 0.0,
     );
 
     // final _selectedProfileFile = useState<File>(null);
-    final _selectedProfileFile = useState<File?>(null);
+    final selectedProfileFile = useState<File?>(null);
     // final _selectedProfileFile = useState<File>(File('default_file_path'));
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
-              if (!_formKey.value.currentState!.validate()) {
+              final formKeyValue = formKey.value;
+              final selectedProfileFileValue = selectedProfileFile.value;
+              final hasuraClientState =
+                  context.read(hasuraClientProvider).state;
+              final userDataNotifier = context.read(userDataProvider.notifier);
+              final navigator = Navigator.of(context);
+
+              if (!formKeyValue.currentState!.validate()) {
                 return;
               }
 
-              _formKey.value.currentState?.save();
-              _isLoading.value = true;
+              formKeyValue.currentState?.save();
+              isLoading.value = true;
 
               try {
-                if (_selectedProfileFile.value != null) {
-                  // await context.read(userDataProvider.notifier).uploadProfile(
-                  //       _selectedProfileFile.value,
-                  //       context.read(hasuraClientProvider).state,
-                  //     );
-                  await context.read(userDataProvider.notifier).uploadProfile(
-                        _selectedProfileFile.value!,
-                        context.read(hasuraClientProvider).state,
-                      );
+                if (selectedProfileFileValue != null) {
+                  await userDataNotifier.uploadProfile(
+                    selectedProfileFileValue,
+                    hasuraClientState,
+                  );
                 }
 
-                print(_userData.value);
+                final Logger logger = Logger();
+                logger.d(userData.value);
 
-                _editedUserData.value['alamat_geom'] = {
+                editedUserData.value['alamat_geom'] = {
                   "type": "Point",
-                  "coordinates": [
-                    _addressLongitude.value,
-                    _addressLatitude.value
-                  ]
+                  "coordinates": [addressLongitude.value, addressLatitude.value]
                 };
 
-                await context.read(userDataProvider.notifier).setUserData(
-                      _editedUserData.value,
-                      context.read(hasuraClientProvider).state,
-                    );
+                await userDataNotifier.setUserData(
+                  editedUserData.value,
+                  hasuraClientState,
+                );
 
-                Navigator.of(context).pop('edit');
+                // Navigator.of(context).pop('edit');
+                navigator.pop('edit');
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
+
+              // if (!formKey.value.currentState!.validate()) {
+              //   return;
+              // }
+
+              // formKey.value.currentState?.save();
+              // isLoading.value = true;
+
+              // try {
+              //   if (selectedProfileFile.value != null) {
+              //     // await context.read(userDataProvider.notifier).uploadProfile(
+              //     //       _selectedProfileFile.value,
+              //     //       context.read(hasuraClientProvider).state,
+              //     //     );
+              //     await context.read(userDataProvider.notifier).uploadProfile(
+              //           selectedProfileFile.value!,
+              //           context.read(hasuraClientProvider).state,
+              //         );
+              //   }
+
+              //   // print(userData.value);
+              //   final Logger logger = Logger();
+              //   logger.d(userData.value);
+
+              //   editedUserData.value['alamat_geom'] = {
+              //     "type": "Point",
+              //     "coordinates": [addressLongitude.value, addressLatitude.value]
+              //   };
+
+              //   await context.read(userDataProvider.notifier).setUserData(
+              //         editedUserData.value,
+              //         context.read(hasuraClientProvider).state,
+              //       );
+
+              //   Navigator.of(context).pop('edit');
+              // } catch (error) {
+              //   isLoading.value = false;
+              //   rethrow;
             },
         []);
 
@@ -118,7 +161,7 @@ class EditProfilePage extends HookWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             size: 16,
             color: primaryBlack,
@@ -126,9 +169,9 @@ class EditProfilePage extends HookWidget {
         ),
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Form(
-          key: _formKey.value,
+          key: formKey.value,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Stack(
@@ -172,25 +215,25 @@ class EditProfilePage extends HookWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(40),
-                                      child: _selectedProfileFile.value == null
-                                          ? _userData.value.fotoProfil!
+                                      child: selectedProfileFile.value == null
+                                          ? userData.value.fotoProfil!
                                                   .contains('http')
                                               ? Image.network(
                                                   // _userData.value.fotoProfil,
                                                   // fit: BoxFit.cover,
                                                   // height: 80,
                                                   // width: 80,
-                                                  _userData.value.fotoProfil ??
+                                                  userData.value.fotoProfil ??
                                                       'https://placeholder.com/80x80', // replace with your default image URL
                                                   fit: BoxFit.cover,
                                                   height: 80,
                                                   width: 80,
                                                 )
                                               : Image.asset(
-                                                  _userData.value.fotoProfil ==
+                                                  userData.value.fotoProfil ==
                                                           '{{default_1}}'
                                                       ? 'assets/images/img-women-a.png'
-                                                      : _userData.value
+                                                      : userData.value
                                                                   .fotoProfil ==
                                                               '{{default_2}}'
                                                           ? 'assets/images/img-women-b.png'
@@ -204,7 +247,7 @@ class EditProfilePage extends HookWidget {
                                               // fit: BoxFit.cover,
                                               // height: 80,
                                               // width: 80,
-                                              _selectedProfileFile.value ??
+                                              selectedProfileFile.value ??
                                                   File(
                                                       'path_to_default_image'), // replace with your default image file
                                               fit: BoxFit.cover,
@@ -232,10 +275,11 @@ class EditProfilePage extends HookWidget {
                                             final selectedFilePath =
                                                 await Navigator.of(context)
                                                     .push(createRoute(
-                                                        page: CameraPage()));
+                                                        page:
+                                                            const CameraPage()));
 
                                             if (selectedFilePath != null) {
-                                              _selectedProfileFile.value =
+                                              selectedProfileFile.value =
                                                   File(selectedFilePath);
                                             }
                                           }
@@ -250,21 +294,6 @@ class EditProfilePage extends HookWidget {
                                               'jpeg'
                                             ],
                                           );
-
-                                          // if (result != null) {
-                                          //   File file =
-                                          //       File(result.files.single.path);
-
-                                          //   if (file.lengthSync() > 2097152) {
-                                          //     Fluttertoast.showToast(
-                                          //       msg:
-                                          //           'File harus kurang dari 2 Mb',
-                                          //     );
-                                          //     return;
-                                          //   }
-
-                                          //   _selectedProfileFile.value = file;
-                                          // }
 
                                           if (result != null &&
                                               result.files.isNotEmpty) {
@@ -282,7 +311,7 @@ class EditProfilePage extends HookWidget {
                                                 return;
                                               }
 
-                                              _selectedProfileFile.value = file;
+                                              selectedProfileFile.value = file;
                                             }
                                           }
                                         }
@@ -311,16 +340,17 @@ class EditProfilePage extends HookWidget {
                             ),
                             BorderedFormField(
                               hint: 'NIK',
-                              initialValue: _userData.value.nik,
+                              initialValue: userData.value.nik,
                               keyboardType: TextInputType.number,
                               textEditingController: TextEditingController(),
                               onSaved: (value) {
-                                _editedUserData.value['nik'] = value;
+                                editedUserData.value['nik'] = value;
                               },
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (value!.isEmpty) {
                                   return 'NIK tidak boleh kosong';
                                 }
+                                return null;
                               },
                               focusNode: FocusNode(),
                               onFieldSubmitted: (string) {},
@@ -335,14 +365,15 @@ class EditProfilePage extends HookWidget {
                             BorderedFormField(
                               hint: 'Nama',
                               // initialValue: _userData.value.namaPengguna,
-                              initialValue: _userData.value.namaPengguna ?? '',
+                              initialValue: userData.value.namaPengguna ?? '',
                               onSaved: (value) {
-                                _editedUserData.value['nama_pengguna'] = value;
+                                editedUserData.value['nama_pengguna'] = value;
                               },
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (value!.isEmpty) {
                                   return 'Nama tidak boleh kosong';
                                 }
+                                return null;
                               },
                               focusNode: FocusNode(),
                               onFieldSubmitted: (string) {},
@@ -364,7 +395,7 @@ class EditProfilePage extends HookWidget {
                                   lastDate: DateTime.now(),
                                 );
                                 if (picked != null) {
-                                  _birthTextEditingController.text =
+                                  birthTextEditingController.text =
                                       DateFormat('yyyy-MM-dd').format(picked);
                                 }
                               },
@@ -372,8 +403,8 @@ class EditProfilePage extends HookWidget {
                                 child: BorderedFormField(
                                   hint: 'Tanggal Lahir',
                                   textEditingController:
-                                      _birthTextEditingController,
-                                  suffixIcon: Container(
+                                      birthTextEditingController,
+                                  suffixIcon: SizedBox(
                                     width: 32,
                                     height: 32,
                                     child: Center(
@@ -384,13 +415,14 @@ class EditProfilePage extends HookWidget {
                                     ),
                                   ),
                                   onSaved: (value) {
-                                    _editedUserData.value['tanggal_lahir'] =
+                                    editedUserData.value['tanggal_lahir'] =
                                         value;
                                   },
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value!.isEmpty) {
                                       return 'Tanggal lahir tidak boleh kosong';
                                     }
+                                    return null;
                                   },
                                   initialValue: '',
                                   focusNode: FocusNode(),
@@ -405,11 +437,11 @@ class EditProfilePage extends HookWidget {
                               height: 12,
                             ),
                             DropDownTextField(
-                              value: _status,
+                              value: status,
                               hint: 'Status Pernikahan',
-                              listString: ['Belum Kawin', 'Sudah Kawin'],
+                              listString: const ['Belum Kawin', 'Sudah Kawin'],
                               onSaved: (value) {
-                                _editedUserData.value['status_pernikahan'] =
+                                editedUserData.value['status_pernikahan'] =
                                     value == 'Sudah Kawin';
                               },
                               validator: (value) {
@@ -425,11 +457,10 @@ class EditProfilePage extends HookWidget {
                               height: 12,
                             ),
                             DropDownTextField(
-                              value: useState(_userData
-                                  .value.pendidikanTerakhir!
+                              value: useState(userData.value.pendidikanTerakhir!
                                   .toUpperCase()),
                               hint: 'Tingkat Pendidikan',
-                              listString: [
+                              listString: const [
                                 'SD',
                                 'SMP',
                                 'SMA',
@@ -438,7 +469,7 @@ class EditProfilePage extends HookWidget {
                                 'DO'
                               ],
                               onSaved: (value) {
-                                _editedUserData.value['pendidikan_terakhir'] =
+                                editedUserData.value['pendidikan_terakhir'] =
                                     value?.toLowerCase();
                               },
                               validator: (value) {
@@ -453,14 +484,15 @@ class EditProfilePage extends HookWidget {
                             BorderedFormField(
                               hint: 'Alamat',
                               textEditingController:
-                                  _addressTextEditingController,
+                                  addressTextEditingController,
                               onSaved: (value) {
-                                _editedUserData.value['alamat'] = value;
+                                editedUserData.value['alamat'] = value;
                               },
                               validator: (value) {
-                                if (value.isEmpty) {
+                                if (value!.isEmpty) {
                                   return 'Alamat tidak boleh kosong';
                                 }
+                                return null;
                               },
                               initialValue: '',
                               focusNode: FocusNode(),
@@ -477,19 +509,19 @@ class EditProfilePage extends HookWidget {
                               onTap: () async {
                                 var selectedAddress =
                                     await Navigator.of(context).push(
-                                  createRoute(page: SearchAddressPage()),
+                                  createRoute(page: const SearchAddressPage()),
                                 );
 
                                 if (selectedAddress != null) {
-                                  if (_addressTextEditingController
+                                  if (addressTextEditingController
                                       .text.isEmpty) {
-                                    _addressTextEditingController.text =
+                                    addressTextEditingController.text =
                                         selectedAddress.addressLine;
                                   }
 
-                                  _addressLatitude.value =
+                                  addressLatitude.value =
                                       selectedAddress.coordinates.latitude;
-                                  _addressLongitude.value =
+                                  addressLongitude.value =
                                       selectedAddress.coordinates.longitude;
                                 }
                               },
@@ -512,8 +544,8 @@ class EditProfilePage extends HookWidget {
                                     // ),
                                     child: FadeInImage(
                                       image: NetworkImage(
-                                          'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${_addressLongitude.value},${_addressLatitude.value},15,0,0/400x400?access_token=pk.eyJ1IjoiYXJheWhhbiIsImEiOiJjazdoMmNpYmkwNXlwM25xa3ZzN3Rhc2p5In0.KsW5-BlR0oim5P5D0IB9sw'),
-                                      placeholder: AssetImage(
+                                          'https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${addressLongitude.value},${addressLatitude.value},15,0,0/400x400?access_token=pk.eyJ1IjoiYXJheWhhbiIsImEiOiJjazdoMmNpYmkwNXlwM25xa3ZzN3Rhc2p5In0.KsW5-BlR0oim5P5D0IB9sw'),
+                                      placeholder: const AssetImage(
                                           'assets/images/bg-pattern-icon.png'),
                                       height: 120,
                                       width: double.infinity,
@@ -535,7 +567,7 @@ class EditProfilePage extends HookWidget {
                                             borderRadius:
                                                 BorderRadius.circular(8),
                                           ),
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.add_location_outlined,
                                             color: Colors.white,
                                           ),
@@ -555,8 +587,8 @@ class EditProfilePage extends HookWidget {
                     ),
                     FillButton(
                       text: 'Simpan',
-                      isLoading: _isLoading.value,
-                      onTap: _submit,
+                      isLoading: isLoading.value,
+                      onTap: submit,
                       leading: Container(),
                     ),
                   ],

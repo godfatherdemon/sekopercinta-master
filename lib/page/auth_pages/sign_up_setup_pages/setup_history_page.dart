@@ -11,44 +11,45 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 class SetupHistoryPage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
-  late final String? selectedProgramYear;
+  final String? selectedProgramYear;
 
-  SetupHistoryPage({
+  const SetupHistoryPage({
+    super.key,
     required this.pageController,
     required this.currentPage,
     this.selectedProgramYear,
   });
   @override
   Widget build(BuildContext context) {
-    final _isDoneProgram = useState<bool>(false);
-    final _programYear = useState<String?>(null);
+    final isDoneProgram = useState<bool>(false);
+    final programYear = useState<String?>(null);
 
-    final _isLoading = useState(false);
+    final isLoading = useState(false);
 
-    final _submit = useMemoized(
+    final submit = useMemoized(
         () => () async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 await context.read(userDataProvider.notifier).setUserData(
-                  {'pernah_ikut_tahun': _programYear.value},
+                  {'pernah_ikut_tahun': programYear.value},
                   context.read(hasuraClientProvider).state,
                 );
 
                 currentPage.value++;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               } catch (error) {
-                _isLoading.value = false;
-                throw error;
+                isLoading.value = false;
+                rethrow;
               }
             },
         []);
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -89,12 +90,11 @@ class SetupHistoryPage extends HookWidget {
               height: 24,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
-                  color:
-                      _isDoneProgram.value ? accentColor : Colors.transparent,
+                  color: isDoneProgram.value ? accentColor : Colors.transparent,
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -109,9 +109,9 @@ class SetupHistoryPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: true,
-                groupValue: _isDoneProgram.value,
+                groupValue: isDoneProgram.value,
                 onChanged: (bool? value) {
-                  _isDoneProgram.value = value!;
+                  isDoneProgram.value = value!;
                 },
               ),
             ),
@@ -119,12 +119,12 @@ class SetupHistoryPage extends HookWidget {
               height: 16,
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.08),
                 border: Border.all(
                   color:
-                      !_isDoneProgram.value ? accentColor : Colors.transparent,
+                      !isDoneProgram.value ? accentColor : Colors.transparent,
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -139,25 +139,25 @@ class SetupHistoryPage extends HookWidget {
                       ?.copyWith(color: accentColor),
                 ),
                 value: false,
-                groupValue: _isDoneProgram.value,
+                groupValue: isDoneProgram.value,
                 onChanged: (bool? value) {
-                  _isDoneProgram.value = value!;
+                  isDoneProgram.value = value!;
                 },
               ),
             ),
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return FadeTransition(
                   opacity: animation,
                   child: SizeTransition(
-                    child: child,
                     sizeFactor: animation,
                     axis: Axis.vertical,
+                    child: child,
                   ),
                 );
               },
-              child: _isDoneProgram.value
+              child: isDoneProgram.value
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -179,15 +179,15 @@ class SetupHistoryPage extends HookWidget {
                           height: 16,
                         ),
                         DropDownTextField(
-                          value:
-                              ValueNotifier<String>(_programYear.value ?? ''),
+                          value: ValueNotifier<String>(programYear.value ?? ''),
                           hint: 'Tahun Angkatan',
                           listString: [
                             for (var i = 2018; i < DateTime.now().year; i += 1)
                               i.toString()
                           ],
                           onSaved: (String? value) {
-                            selectedProgramYear = value;
+                            // selectedProgramYear = value;
+                            selectedProgramYear;
                           },
                           validator: (String? value) {},
                         ),
@@ -196,27 +196,27 @@ class SetupHistoryPage extends HookWidget {
                         ),
                       ],
                     )
-                  : SizedBox(
+                  : const SizedBox(
                       height: 109,
                     ),
             ),
             FillButton(
               text: 'Lanjutkan',
-              isLoading: _isLoading.value,
+              isLoading: isLoading.value,
               onTap: () {
-                if (_isDoneProgram.value) {
-                  if (_programYear.value == null) {
+                if (isDoneProgram.value) {
+                  if (programYear.value == null) {
                     Fluttertoast.showToast(
                       msg: 'Mohon pilih tahun angkatan anda',
                     );
                     return;
                   }
-                  _submit();
+                  submit();
                 } else {
                   currentPage.value++;
                   pageController.animateToPage(
                     currentPage.value,
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.ease,
                   );
                 }
@@ -234,7 +234,7 @@ class SetupHistoryPage extends HookWidget {
                 currentPage.value--;
                 pageController.animateToPage(
                   currentPage.value,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.ease,
                 );
               },

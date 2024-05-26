@@ -16,14 +16,14 @@ import 'course_activity/activity_briefing_page.dart';
 class CourseActiveTab extends HookWidget {
   final Pelajaran? lesson;
 
-  CourseActiveTab(this.lesson);
+  const CourseActiveTab(this.lesson, {super.key});
   @override
   Widget build(BuildContext context) {
-    final _activity = useProvider(activityProvider);
+    final activity = useProvider(activityProvider);
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,33 +54,33 @@ class CourseActiveTab extends HookWidget {
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: 10,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
                     itemBuilder: (context, index) {
-                      return ShimmerCard(
+                      return const ShimmerCard(
                           height: 80, width: double.infinity, borderRadius: 12);
                     },
                   )
                 : ListView.separated(
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(0),
-                    itemCount: _activity.length,
-                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: activity.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 20,
                     ),
                     itemBuilder: (context, index) {
-                      final activityType = _activity[index].jenisAktivitas;
+                      final activityType = activity[index].jenisAktivitas;
                       return Card(
                         elevation: 5,
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         shadowColor: index == 0
                             ? secondaryColor.withOpacity(0.24)
-                            : _activity[index - 1].progresAktivitas.isEmpty
+                            : activity[index - 1].progresAktivitas.isEmpty
                                 ? Colors.transparent
-                                : _activity[index - 1]
+                                : activity[index - 1]
                                             .progresAktivitas[0]
                                             .progres <
                                         1
@@ -91,22 +91,20 @@ class CourseActiveTab extends HookWidget {
                           side: BorderSide(
                               color: index == 0
                                   ? Colors.transparent
-                                  : _activity[index - 1]
-                                          .progresAktivitas
-                                          .isEmpty
-                                      ? Color(0xFFF0EDEB)
-                                      : _activity[index - 1]
+                                  : activity[index - 1].progresAktivitas.isEmpty
+                                      ? const Color(0xFFF0EDEB)
+                                      : activity[index - 1]
                                                   .progresAktivitas[0]
                                                   .progres <
                                               1
-                                          ? Color(0xFFF0EDEB)
+                                          ? const Color(0xFFF0EDEB)
                                           : Colors.transparent),
                         ),
                         color: index == 0
                             ? primaryWhite
-                            : _activity[index - 1].progresAktivitas.isEmpty
+                            : activity[index - 1].progresAktivitas.isEmpty
                                 ? brokenWhite
-                                : _activity[index - 1]
+                                : activity[index - 1]
                                             .progresAktivitas[0]
                                             .progres <
                                         1
@@ -115,13 +113,13 @@ class CourseActiveTab extends HookWidget {
                         child: InkWell(
                           onTap: () async {
                             if (index > 0) {
-                              if (_activity[index - 1]
+                              if (activity[index - 1]
                                   .progresAktivitas
                                   .isEmpty) {
                                 return;
                               }
 
-                              if (_activity[index - 1]
+                              if (activity[index - 1]
                                       .progresAktivitas[0]
                                       .progres <
                                   1) {
@@ -132,31 +130,31 @@ class CourseActiveTab extends HookWidget {
                               case 'video':
                                 await Navigator.of(context).push(createRoute(
                                     page: VideoPage(
-                                  id: _activity[index].idAktivitas,
+                                  id: activity[index].idAktivitas,
                                   progressAktivitas:
-                                      _activity[index].progresAktivitas,
+                                      activity[index].progresAktivitas,
                                 )));
                                 break;
                               case 'audio':
                                 await Navigator.of(context).push(createRoute(
                                     page: AudioPage(
-                                  id: _activity[index].idAktivitas,
-                                  title: _activity[index].namaAktivitas,
+                                  id: activity[index].idAktivitas,
+                                  title: activity[index].namaAktivitas,
                                   progressAktivitas:
-                                      _activity[index].progresAktivitas,
+                                      activity[index].progresAktivitas,
                                 )));
                                 break;
                               case 'article':
                                 await Navigator.of(context).push(createRoute(
                                     page: DocumentActivityPage(
-                                  id: _activity[index].idAktivitas,
-                                  aktivitas: _activity[index],
+                                  id: activity[index].idAktivitas,
+                                  aktivitas: activity[index],
                                 )));
                                 break;
                               default:
                                 Navigator.of(context).push(createRoute(
                                   page: ActivityBriefingPage(
-                                    activity: _activity[index],
+                                    activity: activity[index],
                                   ),
                                 ));
                                 break;
@@ -182,20 +180,21 @@ class CourseActiveTab extends HookWidget {
                                           borderRadius:
                                               BorderRadius.circular(12),
                                         )
-                                      : _activity[index - 1]
+                                      : activity[index - 1]
                                               .progresAktivitas
                                               .isEmpty
                                           ? BoxDecoration(
-                                              color: Color(0xFFE7E4E2),
+                                              color: const Color(0xFFE7E4E2),
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                             )
-                                          : _activity[index - 1]
+                                          : activity[index - 1]
                                                       .progresAktivitas[0]
                                                       .progres <
                                                   1
                                               ? BoxDecoration(
-                                                  color: Color(0xFFE7E4E2),
+                                                  color:
+                                                      const Color(0xFFE7E4E2),
                                                   borderRadius:
                                                       BorderRadius.circular(12),
                                                 )
@@ -249,7 +248,7 @@ class CourseActiveTab extends HookWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _activity[index].namaAktivitas,
+                                        activity[index].namaAktivitas,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
@@ -260,10 +259,12 @@ class CourseActiveTab extends HookWidget {
                                         height: 4,
                                       ),
                                       Text(
-                                        (_activity[index]
+                                        (activity[index]
                                                 .sumberAktivitas
                                                 .isNotEmpty)
-                                            ? '${_activity[index].sumberAktivitas[0].durasiKonten}'
+                                            ? activity[index]
+                                                .sumberAktivitas[0]
+                                                .durasiKonten
                                             : 'Aktivitas ${activityType.capitalizeFirstOfEach}',
                                         style: Theme.of(context)
                                             .textTheme
@@ -272,10 +273,10 @@ class CourseActiveTab extends HookWidget {
                                       const SizedBox(
                                         height: 4,
                                       ),
-                                      if (_activity[index]
+                                      if (activity[index]
                                           .progresAktivitas
                                           .isNotEmpty)
-                                        _activity[index]
+                                        activity[index]
                                                     .progresAktivitas[0]
                                                     .progres ==
                                                 1
@@ -310,7 +311,7 @@ class CourseActiveTab extends HookWidget {
                                                       child:
                                                           LinearProgressIndicator(
                                                         minHeight: 4,
-                                                        value: _activity[index]
+                                                        value: activity[index]
                                                             .progresAktivitas[0]
                                                             .progres,
                                                         backgroundColor:
@@ -318,7 +319,7 @@ class CourseActiveTab extends HookWidget {
                                                                 .withOpacity(
                                                                     0.2),
                                                         valueColor:
-                                                            AlwaysStoppedAnimation(
+                                                            const AlwaysStoppedAnimation(
                                                                 primaryDarkColor),
                                                       ),
                                                     ),
@@ -327,20 +328,20 @@ class CourseActiveTab extends HookWidget {
                                                     width: 22,
                                                   ),
                                                   Text(
-                                                    '${(_activity[index].progresAktivitas[0].progres * 100).toStringAsFixed(0)} %',
+                                                    '${(activity[index].progresAktivitas[0].progres * 100).toStringAsFixed(0)} %',
                                                   ),
                                                 ],
                                               ),
-                                      if (_activity[index]
+                                      if (activity[index]
                                           .progresAktivitas
                                           .isEmpty)
                                         Text(
                                           index == 0
                                               ? 'Mulai Pelajaran Sekarang'
-                                              : _activity[index - 1]
+                                              : activity[index - 1]
                                                           .progresAktivitas
                                                           .isNotEmpty &&
-                                                      _activity[index - 1]
+                                                      activity[index - 1]
                                                               .progresAktivitas[
                                                                   0]
                                                               .progres ==
@@ -353,10 +354,10 @@ class CourseActiveTab extends HookWidget {
                                               ?.copyWith(
                                                 color: index == 0
                                                     ? accentColor
-                                                    : _activity[index - 1]
+                                                    : activity[index - 1]
                                                                 .progresAktivitas
                                                                 .isNotEmpty &&
-                                                            _activity[index - 1]
+                                                            activity[index - 1]
                                                                     .progresAktivitas[
                                                                         0]
                                                                     .progres ==

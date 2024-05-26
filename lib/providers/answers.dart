@@ -1,5 +1,6 @@
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 
 class Answer {
   Answer({
@@ -25,7 +26,9 @@ class AnswersNotifier extends StateNotifier<List<Answer>> {
   AnswersNotifier() : super([]);
 
   Future<void> getAnswers(HasuraConnect hasuraConnect, String id) async {
-    print(id);
+    // print(id);
+    final Logger logger = Logger();
+    logger.d(id);
 
     String docQuery = """
 query MyQuery {
@@ -39,14 +42,15 @@ query MyQuery {
     final response = await hasuraConnect.query(docQuery);
     final responseData = response['data'];
 
-    print(responseData);
+    // print(responseData);
+    logger.d(responseData);
 
     List<Answer> loadedData = [];
 
-    (responseData['pilihan_jawaban_pilgan'] as List<dynamic>)
-        .forEach((element) {
+    for (var element
+        in (responseData['pilihan_jawaban_pilgan'] as List<dynamic>)) {
       loadedData.add(Answer.fromJson(element));
-    });
+    }
 
     state = loadedData;
   }

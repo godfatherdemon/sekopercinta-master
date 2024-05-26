@@ -1,5 +1,8 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:logger/logger.dart';
 import 'package:sekopercinta_master/components/custom_button/fill_button.dart';
 import 'package:sekopercinta_master/components/shimmer_componenet/shimmer_card.dart';
 import 'package:sekopercinta_master/providers/facilitator.dart';
@@ -9,22 +12,26 @@ import 'package:sekopercinta_master/utils/hasura_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FacilitatorBottomSheet extends HookWidget {
+  const FacilitatorBottomSheet({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _isLoading = useState(false);
-    final _facilitator = useState(context.read(facilitatorProvider));
+    final isLoading = useState(false);
+    final facilitator = useState(context.read(facilitatorProvider));
 
     useEffect(() {
-      if (_facilitator.value.isEmpty) {
-        _isLoading.value = true;
+      if (facilitator.value.isEmpty) {
+        isLoading.value = true;
       }
-      print('load');
+      // print('load');
+      final Logger logger = Logger();
+      logger.d('load');
       context
           .read(facilitatorProvider.notifier)
           .getFacilitator(context.read(hasuraClientProvider).state)
           .then((_) {
-        _isLoading.value = false;
-        _facilitator.value = context.read(facilitatorProvider);
+        isLoading.value = false;
+        facilitator.value = context.read(facilitatorProvider);
       });
 
       return;
@@ -41,7 +48,7 @@ class FacilitatorBottomSheet extends HookWidget {
         ),
         Expanded(
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(12),
@@ -57,7 +64,7 @@ class FacilitatorBottomSheet extends HookWidget {
                   height: 4,
                   width: 52,
                   decoration: BoxDecoration(
-                    color: Color(0xFFE0E0E0),
+                    color: const Color(0xFFE0E0E0),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -65,13 +72,13 @@ class FacilitatorBottomSheet extends HookWidget {
                   height: 20,
                 ),
                 Expanded(
-                  child: _isLoading.value
-                      ? Center(
+                  child: isLoading.value
+                      ? const Center(
                           child: CircularProgressIndicator(),
                         )
-                      : _facilitator.value.isNotEmpty
+                      : facilitator.value.isNotEmpty
                           ? SingleChildScrollView(
-                              physics: BouncingScrollPhysics(),
+                              physics: const BouncingScrollPhysics(),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 20.0,
@@ -106,15 +113,16 @@ class FacilitatorBottomSheet extends HookWidget {
                                                 .textTheme
                                                 .titleSmall
                                                 ?.copyWith(
-                                                  color: Color(0xFFA2A1A1),
+                                                  color:
+                                                      const Color(0xFFA2A1A1),
                                                 ),
                                           ),
                                           const SizedBox(
                                             height: 24,
                                           ),
-                                          _facilitator.value[0].namaLengkap ==
+                                          facilitator.value[0].namaLengkap ==
                                                   null
-                                              ? ShimmerCard(
+                                              ? const ShimmerCard(
                                                   height: 70,
                                                   width: double.infinity,
                                                   borderRadius: 12)
@@ -135,7 +143,7 @@ class FacilitatorBottomSheet extends HookWidget {
                                                             12.0),
                                                     child: Row(
                                                       children: [
-                                                        _facilitator.value[0]
+                                                        facilitator.value[0]
                                                                     .urlFoto ==
                                                                 null
                                                             ? Container(
@@ -163,7 +171,7 @@ class FacilitatorBottomSheet extends HookWidget {
                                                                             12),
                                                                 child: Image
                                                                     .network(
-                                                                  _facilitator
+                                                                  facilitator
                                                                       .value[0]
                                                                       .urlFoto,
                                                                   width: 56,
@@ -182,7 +190,7 @@ class FacilitatorBottomSheet extends HookWidget {
                                                                     .start,
                                                             children: [
                                                               Text(
-                                                                _facilitator
+                                                                facilitator
                                                                     .value[0]
                                                                     .namaLengkap,
                                                                 style: Theme.of(
@@ -201,13 +209,13 @@ class FacilitatorBottomSheet extends HookWidget {
                                                                 height: 4,
                                                               ),
                                                               Text(
-                                                                'Fasilitator daerah ${_facilitator.value[0].namaWilayah}',
+                                                                'Fasilitator daerah ${facilitator.value[0].namaWilayah}',
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
                                                                     .bodyLarge
                                                                     ?.copyWith(
-                                                                      color: Color(
+                                                                      color: const Color(
                                                                           0xFFA2A1A1),
                                                                     ),
                                                               ),
@@ -348,7 +356,7 @@ class FacilitatorBottomSheet extends HookWidget {
                                             text: 'Hubungi Sekarang',
                                             onTap: () {
                                               launchUrl(
-                                                  "tel:${_facilitator.value[0].nomorKontak}"
+                                                  "tel:${facilitator.value[0].nomorKontak}"
                                                       as Uri);
                                             },
                                             leading: Container(),

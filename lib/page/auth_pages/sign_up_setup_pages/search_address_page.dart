@@ -8,16 +8,18 @@ import 'package:sekopercinta_master/utils/page_transition_builder.dart';
 import 'package:yandex_geocoder/yandex_geocoder.dart';
 
 class SearchAddressPage extends HookWidget {
+  const SearchAddressPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _searchTextEditingController = useTextEditingController();
-    final _locations = useState<List<Address>>([]);
-    final _isLoading = useState(false);
+    final searchTextEditingController = useTextEditingController();
+    final locations = useState<List<Address>>([]);
+    final isLoading = useState(false);
 
-    final _searchLocation = useMemoized(
+    final searchLocation = useMemoized(
         () => (String address) async {
               try {
-                _isLoading.value = true;
+                isLoading.value = true;
 
                 // var addresses =
                 //     await Geocoder.local.findAddressesFromQuery(address);
@@ -28,10 +30,10 @@ class SearchAddressPage extends HookWidget {
                 //   }
                 //   _locations.value = addresses;
               } catch (error) {
-                _locations.value = [];
+                locations.value = [];
               }
 
-              _isLoading.value = false;
+              isLoading.value = false;
             },
         []);
 
@@ -39,7 +41,7 @@ class SearchAddressPage extends HookWidget {
       body: SafeArea(
         child: Column(
           children: [
-            PopAppBar(
+            const PopAppBar(
               title: 'Cari Alamat',
               isBackIcon: true,
             ),
@@ -50,23 +52,25 @@ class SearchAddressPage extends HookWidget {
                   children: [
                     TextField(
                       cursorColor: Colors.black,
-                      controller: _searchTextEditingController,
+                      controller: searchTextEditingController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryGrey, width: 1),
+                          borderSide:
+                              const BorderSide(color: primaryGrey, width: 1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: accentColor, width: 1),
+                          borderSide:
+                              const BorderSide(color: accentColor, width: 1),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        contentPadding: EdgeInsets.only(
+                        contentPadding: const EdgeInsets.only(
                             left: 12, bottom: 5, top: 5, right: 12),
                         hintText: 'Cari Alamat',
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                       ),
                       onChanged: (value) {
-                        _searchLocation(value);
+                        searchLocation(value);
                       },
                     ),
                     const SizedBox(
@@ -75,7 +79,7 @@ class SearchAddressPage extends HookWidget {
                     ListTile(
                       onTap: () async {
                         var address = await Navigator.of(context).push(
-                          createRoute(page: SelectLocationPage()),
+                          createRoute(page: const SelectLocationPage()),
                         );
 
                         if (address == null) {
@@ -84,11 +88,11 @@ class SearchAddressPage extends HookWidget {
 
                         Navigator.of(context).pop(address);
                       },
-                      leading: Icon(
+                      leading: const Icon(
                         Icons.map_outlined,
                         color: primaryBlack,
                       ),
-                      trailing: Icon(
+                      trailing: const Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: primaryBlack,
                       ),
@@ -99,8 +103,8 @@ class SearchAddressPage extends HookWidget {
                     ),
                     const Divider(),
                     Expanded(
-                      child: _isLoading.value
-                          ? Center(child: CircularProgressIndicator())
+                      child: isLoading.value
+                          ? const Center(child: CircularProgressIndicator())
                           : ListView.separated(
                               itemBuilder: (context, index) {
                                 return ListTile(
@@ -116,9 +120,9 @@ class SearchAddressPage extends HookWidget {
                                     //     _locations.value[index].addressLine;
 
                                     Navigator.of(context)
-                                        .pop(_locations.value[index]);
+                                        .pop(locations.value[index]);
                                   },
-                                  leading: Container(
+                                  leading: const SizedBox(
                                     height: 40,
                                     child: Icon(
                                       Icons.location_on_outlined,
@@ -141,8 +145,9 @@ class SearchAddressPage extends HookWidget {
                                   //   ),
                                 );
                               },
-                              separatorBuilder: (context, index) => Divider(),
-                              itemCount: _locations.value.length,
+                              separatorBuilder: (context, index) =>
+                                  const Divider(),
+                              itemCount: locations.value.length,
                             ),
                     ),
                   ],

@@ -10,7 +10,8 @@ class EssayQuestionCard extends HookWidget {
   final Function(String) saveAnswer;
   final ValueNotifier<int> currentQuestion;
 
-  EssayQuestionCard({
+  const EssayQuestionCard({
+    super.key,
     required this.nextQuestion,
     required this.prevQuestion,
     required this.saveAnswer,
@@ -18,9 +19,9 @@ class EssayQuestionCard extends HookWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final _formKey = useState(GlobalKey<FormState>());
+    final formKey = useState(GlobalKey<FormState>());
     return Form(
-      key: _formKey.value,
+      key: formKey.value,
       child: Column(
         children: [
           const SizedBox(
@@ -53,9 +54,10 @@ class EssayQuestionCard extends HookWidget {
                         saveAnswer(value);
                       },
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return 'Jawaban tidak boleh kosong';
                         }
+                        return null;
                       },
                       textEditingController: TextEditingController(),
                       initialValue: '',
@@ -92,7 +94,7 @@ class EssayQuestionCard extends HookWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.arrow_back_ios,
                             color: Colors.white,
                           ),
@@ -124,10 +126,10 @@ class EssayQuestionCard extends HookWidget {
                   color: Colors.white,
                   textColor: accentColor,
                   onTap: () {
-                    if (!_formKey.value.currentState!.validate()) {
+                    if (!formKey.value.currentState!.validate()) {
                       return;
                     }
-                    _formKey.value.currentState?.save();
+                    formKey.value.currentState?.save();
                     nextQuestion();
                   },
                   leading: Container(),

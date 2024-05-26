@@ -9,7 +9,7 @@ class ContributorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: gradientA,
         ),
         child: NestedScrollView(
@@ -30,16 +30,16 @@ class ContributorPage extends StatelessWidget {
                 ),
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
                   ),
                 ),
-                flexibleSpace: FlexibleSpaceBar(
+                flexibleSpace: const FlexibleSpaceBar(
                   background: SafeArea(
                     child: Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           height: 70,
                         ),
                         Text(
@@ -51,11 +51,11 @@ class ContributorPage extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 40,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
                           child: Divider(
                             color: Colors.white,
                           ),
@@ -68,7 +68,7 @@ class ContributorPage extends StatelessWidget {
             ];
           },
           body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
                 Padding(
@@ -79,7 +79,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -89,7 +89,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Pemerintah',
                                 style: TextStyle(
                                   color: accentColor,
@@ -106,7 +106,7 @@ class ContributorPage extends StatelessWidget {
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    Text(
+                                    const Text(
                                       'Ministry of Gender Equality and Family',
                                       textAlign: TextAlign.center,
                                     ),
@@ -115,10 +115,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: governmentContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio: 1 / 1,
                                 ),
@@ -149,7 +149,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -159,7 +159,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Akademisi',
                                 style: TextStyle(
                                   color: accentColor,
@@ -168,10 +168,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: academyContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3),
                                 itemBuilder: (context, index) => Column(
                                   children: [
@@ -197,7 +197,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -207,7 +207,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Media',
                                 style: TextStyle(
                                   color: accentColor,
@@ -216,10 +216,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: mediaContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3),
                                 itemBuilder: (context, index) => Column(
                                   children: [
@@ -244,7 +244,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -254,7 +254,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Bisnis',
                                 style: TextStyle(
                                   color: accentColor,
@@ -263,10 +263,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: businessContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3),
                                 itemBuilder: (context, index) => Column(
                                   children: [
@@ -292,7 +292,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -302,7 +302,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Komunitas',
                                 style: TextStyle(
                                   color: accentColor,
@@ -311,10 +311,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: communityContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   childAspectRatio: 11 / 12,
                                 ),
@@ -342,7 +342,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -352,7 +352,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Komunitas',
                                 style: TextStyle(
                                   color: accentColor,
@@ -361,10 +361,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: communityContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   childAspectRatio: 11 / 12,
                                 ),
@@ -392,7 +392,7 @@ class ContributorPage extends StatelessWidget {
                         height: 16,
                       ),
                       Card(
-                        color: Color(0xFFF4F7F9),
+                        color: const Color(0xFFF4F7F9),
                         shadowColor: backgroundColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -402,7 +402,7 @@ class ContributorPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Partnership',
                                 style: TextStyle(
                                   color: accentColor,
@@ -411,10 +411,10 @@ class ContributorPage extends StatelessWidget {
                               ),
                               GridView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: partnerContributors.length,
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   childAspectRatio: 11 / 12,
                                 ),

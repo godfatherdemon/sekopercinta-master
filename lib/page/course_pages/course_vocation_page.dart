@@ -16,7 +16,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CourseVocationPage extends StatelessWidget {
   final ValueNotifier<int> _activeIndex;
-  CourseVocationPage(this._activeIndex);
+  const CourseVocationPage(this._activeIndex, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +25,20 @@ class CourseVocationPage extends StatelessWidget {
         : Scaffold(
             backgroundColor: backgroundColor,
             body: ShowCaseWidget(
-              builder: Builder(builder: (context) => CoursePageContent()),
+              builder: Builder(builder: (context) => const CoursePageContent()),
             ),
           );
   }
 }
 
 class CoursePageContent extends HookWidget {
+  const CoursePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final _scrollController = useScrollController();
+    final scrollController = useScrollController();
 
-    final _refresh = useMemoized(
+    final refresh = useMemoized(
         () => () async {
               await context
                   .read(classProvider.notifier)
@@ -44,8 +46,8 @@ class CoursePageContent extends HookWidget {
             },
         []);
 
-    final _isLoading = useState(true);
-    final _classes = useProvider(classWatcher);
+    final isLoading = useState(true);
+    final classes = useProvider(classWatcher);
 
     useEffect(() {
       Future.delayed(Duration.zero).then((_) {
@@ -55,7 +57,7 @@ class CoursePageContent extends HookWidget {
             .read(classProvider.notifier)
             .getClasses(context.read(hasuraClientProvider).state)
             .then((_) {
-          _isLoading.value = false;
+          isLoading.value = false;
         });
       });
       return;
@@ -77,24 +79,25 @@ class CoursePageContent extends HookWidget {
           ),
           Positioned.fill(
             child: RefreshIndicator(
-              onRefresh: _refresh,
+              onRefresh: refresh,
               child: SingleChildScrollView(
-                controller: _scrollController,
-                physics: BouncingScrollPhysics(),
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      CourseProfile(),
+                      const CourseProfile(),
                       const SizedBox(
                         height: 16,
                       ),
-                      _isLoading.value
+                      isLoading.value
                           ? ListView.separated(
                               shrinkWrap: true,
                               padding: const EdgeInsets.all(0),
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) => ShimmerCard(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) =>
+                                  const ShimmerCard(
                                 height: 272,
                                 width: double.infinity,
                                 borderRadius: 10,
@@ -121,12 +124,12 @@ class CoursePageContent extends HookWidget {
                           : ListView.separated(
                               shrinkWrap: true,
                               padding: const EdgeInsets.all(0),
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: _classes.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: classes.length,
                               itemBuilder: (context, index) =>
                                   CourseListVocationItem(
-                                      _classes[index],
-                                      _classes[index == 0 ? 0 : index - 1],
+                                      classes[index],
+                                      classes[index == 0 ? 0 : index - 1],
                                       index),
                               separatorBuilder: (context, index) => Stack(
                                 clipBehavior: Clip.none,
@@ -155,7 +158,7 @@ class CoursePageContent extends HookWidget {
           FloatingButtonFacilitator(
             width: 96,
             height: 114,
-            scrollController: _scrollController,
+            scrollController: scrollController,
             child: ToolTipContainer(
               title: 'Fasilitator Anda',
               description: 'Hubungi Fasilitator untuk memperoleh bantuan',
@@ -175,13 +178,13 @@ class CoursePageContent extends HookWidget {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(12),
                     topLeft: Radius.circular(12),
                   ),
                 ),
-                builder: (context) => FacilitatorBottomSheet(),
+                builder: (context) => const FacilitatorBottomSheet(),
               );
             },
           ),
