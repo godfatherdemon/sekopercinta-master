@@ -9,8 +9,10 @@ class EssayQuestionCard extends HookWidget {
   final Function prevQuestion;
   final Function(String) saveAnswer;
   final ValueNotifier<int> currentQuestion;
+  final TextEditingController answerTextEditingController =
+      TextEditingController();
 
-  const EssayQuestionCard({
+  EssayQuestionCard({
     super.key,
     required this.nextQuestion,
     required this.prevQuestion,
@@ -46,26 +48,56 @@ class EssayQuestionCard extends HookWidget {
                     const SizedBox(
                       height: 12,
                     ),
-                    BorderedFormField(
-                      hint: 'Menurut saya ... ',
+                    // BorderedFormField(
+                    //   hint: 'Menurut saya ... ',
+                    //   keyboardType: TextInputType.multiline,
+                    //   maxLine: 7,
+                    //   onSaved: (value) {
+                    //     saveAnswer(value);
+                    //   },
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return 'Jawaban tidak boleh kosong';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   textEditingController: TextEditingController(),
+                    //   initialValue: '',
+                    //   focusNode: FocusNode(),
+                    //   onFieldSubmitted: (string) {},
+                    //   onChanged: (string) {},
+                    //   onTap: () {},
+                    //   suffixIcon: Container(),
+                    // ),
+                    TextFormField(
+                      controller: answerTextEditingController,
+                      decoration: InputDecoration(
+                        hintText: 'Menurut saya ...',
+                        border: const OutlineInputBorder(),
+                        suffixIcon:
+                            Container(), // Add any specific widget if needed
+                      ),
                       keyboardType: TextInputType.multiline,
-                      maxLine: 7,
+                      maxLines: 7, // To allow multiline input
                       onSaved: (value) {
-                        saveAnswer(value);
+                        saveAnswer(value!);
                       },
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Jawaban tidak boleh kosong';
                         }
                         return null;
                       },
-                      textEditingController: TextEditingController(),
-                      initialValue: '',
                       focusNode: FocusNode(),
-                      onFieldSubmitted: (string) {},
-                      onChanged: (string) {},
-                      onTap: () {},
-                      suffixIcon: Container(),
+                      onFieldSubmitted: (value) {
+                        // Implement any specific logic on field submission if needed
+                      },
+                      onChanged: (value) {
+                        // Implement any specific logic on field change if needed
+                      },
+                      onTap: () {
+                        // Implement any specific logic on field tap if needed
+                      },
                     ),
                     const SizedBox(
                       height: 8,

@@ -22,7 +22,7 @@ class AddPostPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final formKey = useState(GlobalKey<FormState>());
-    final postDescription = useState<String?>(null);
+    var postDescription = useState<String?>(null);
     final isLoading = useState(false);
     final selectedFile = useState<File?>(null);
 
@@ -294,28 +294,57 @@ class AddPostPage extends HookWidget {
                       const SizedBox(
                         height: 12,
                       ),
-                      BorderedFormField(
-                        hint: 'Tulis deskripsi post....',
+                      // BorderedFormField(
+                      //   hint: 'Tulis deskripsi post....',
+                      //   keyboardType: TextInputType.multiline,
+                      //   maxLine: 7,
+                      //   onSaved: (value) {
+                      //     postDescription.value = value;
+                      //   },
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return 'Deskripsi post tidak boleh kosong';
+                      //     }
+                      //     return null;
+                      //   },
+                      //   onFieldSubmitted: (value) {
+                      //     addPost();
+                      //   },
+                      //   textEditingController: TextEditingController(),
+                      //   initialValue: '',
+                      //   focusNode: FocusNode(),
+                      //   onChanged: (string) {},
+                      //   onTap: () {},
+                      //   suffixIcon: const Icon(Icons.verified_user),
+                      // ),
+                      TextFormField(
+                        // controller: _postDescriptionController,
+                        decoration: const InputDecoration(
+                          hintText: 'Tulis deskripsi post....',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.verified_user),
+                        ),
                         keyboardType: TextInputType.multiline,
-                        maxLine: 7,
+                        maxLines: 7,
+                        focusNode: FocusNode(),
+                        onFieldSubmitted: (value) {
+                          addPost();
+                        },
+                        onChanged: (string) {
+                          // Handle value changes if needed
+                        },
+                        onTap: () {
+                          // Handle tap event if needed
+                        },
                         onSaved: (value) {
-                          postDescription.value = value;
+                          postDescription = value as ValueNotifier<String?>;
                         },
                         validator: (value) {
-                          if (value!.isEmpty) {
+                          if (value == null || value.isEmpty) {
                             return 'Deskripsi post tidak boleh kosong';
                           }
                           return null;
                         },
-                        onFieldSubmitted: (value) {
-                          addPost();
-                        },
-                        textEditingController: TextEditingController(),
-                        initialValue: '',
-                        focusNode: FocusNode(),
-                        onChanged: (string) {},
-                        onTap: () {},
-                        suffixIcon: const Icon(Icons.verified_user),
                       ),
                     ],
                   ),

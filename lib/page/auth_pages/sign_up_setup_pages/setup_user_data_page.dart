@@ -33,6 +33,8 @@ class SetupUserDataPage extends HookWidget {
 
     final isLoading = useState(false);
 
+    final nikController = TextEditingController();
+
     final submit = useMemoized(
         () => () async {
               if (!formKey.value.currentState!.validate()) {
@@ -113,26 +115,49 @@ class SetupUserDataPage extends HookWidget {
               const SizedBox(
                 height: 24,
               ),
-              BorderedFormField(
-                hint: 'NIK',
+              // BorderedFormField(
+              //   hint: 'NIK',
+              //   keyboardType: TextInputType.number,
+              //   onSaved: (value) {
+              //     userData.value['nik'] = value;
+              //   },
+              //   validator: (value) {
+              //     if (value!.isEmpty) {
+              //       return 'NIK tidak boleh kosong';
+              //     }
+              //     return null;
+              //   },
+              //   initialValue: '',
+              //   focusNode: FocusNode(),
+              //   onFieldSubmitted: (string) {},
+              //   maxLine: 999,
+              //   textEditingController: TextEditingController(),
+              //   onChanged: (string) {},
+              //   onTap: () {},
+              //   suffixIcon: Container(),
+              // ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'NIK',
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.number,
-                onSaved: (value) {
-                  userData.value['nik'] = value;
-                },
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'NIK tidak boleh kosong';
                   }
                   return null;
                 },
-                initialValue: '',
+                onSaved: (value) {
+                  userData.value['nik'] = value;
+                },
                 focusNode: FocusNode(),
                 onFieldSubmitted: (string) {},
-                maxLine: 999,
-                textEditingController: TextEditingController(),
+                maxLines: 1,
+                controller: nikController,
                 onChanged: (string) {},
                 onTap: () {},
-                suffixIcon: Container(),
+                // suffixIcon: Container(),
               ),
               const SizedBox(
                 height: 20,
@@ -151,77 +176,154 @@ class SetupUserDataPage extends HookWidget {
                   }
                 },
                 child: IgnorePointer(
-                  child: BorderedFormField(
-                    hint: 'Tanggal Lahir',
-                    textEditingController: birthTextEditingController,
-                    suffixIcon: SizedBox(
-                      width: 32,
-                      height: 32,
-                      child: Center(
-                        child: Image.asset(
-                          'assets/images/ic-calendar.png',
-                          width: 24,
+                  // child: BorderedFormField(
+                  //   hint: 'Tanggal Lahir',
+                  //   textEditingController: birthTextEditingController,
+                  //   suffixIcon: SizedBox(
+                  //     width: 32,
+                  //     height: 32,
+                  //     child: Center(
+                  //       child: Image.asset(
+                  //         'assets/images/ic-calendar.png',
+                  //         width: 24,
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   onSaved: (value) {
+                  //     userData.value['tanggal_lahir'] = value;
+                  //   },
+                  //   validator: (value) {
+                  //     if (value!.isEmpty) {
+                  //       return 'Tanggal lahir tidak boleh kosong';
+                  //     }
+                  //     return null;
+                  //   },
+                  //   initialValue: '',
+                  //   focusNode: FocusNode(),
+                  //   onFieldSubmitted: (string) {},
+                  //   maxLine: 999,
+                  //   onChanged: (string) {},
+                  //   onTap: submit,
+                  // ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Tanggal Lahir',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/ic-calendar.png',
+                            width: 24,
+                          ),
                         ),
                       ),
                     ),
-                    onSaved: (value) {
-                      userData.value['tanggal_lahir'] = value;
-                    },
+                    controller: birthTextEditingController,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Tanggal lahir tidak boleh kosong';
                       }
                       return null;
                     },
-                    initialValue: '',
+                    onSaved: (value) {
+                      userData.value['tanggal_lahir'] = value!;
+                    },
                     focusNode: FocusNode(),
-                    onFieldSubmitted: (string) {},
-                    maxLine: 999,
-                    onChanged: (string) {},
-                    onTap: submit,
+                    onFieldSubmitted: (value) {},
+                    maxLines: 1,
+                    onChanged: (value) {},
+                    onTap: () {
+                      submit();
+                    },
                   ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              DropDownTextField(
-                // value: _status,
-                value: ValueNotifier<String>(status.value ?? ''),
-                hint: 'Status Pernikahan',
-                listString: const ['Belum Kawin', 'Sudah Kawin'],
-                onSaved: (value) {
-                  userData.value['status_pernikahan'] = value == 'Sudah Kawin';
+              // DropDownTextField(
+              //   // value: _status,
+              //   value: ValueNotifier<String>(status.value ?? ''),
+              //   hint: 'Status Pernikahan',
+              //   listString: const ['Belum Kawin', 'Sudah Kawin'],
+              //   onSaved: (value) {
+              //     userData.value['status_pernikahan'] = value == 'Sudah Kawin';
+              //   },
+              //   validator: (value) {
+              //     if (value == null) {
+              //       return 'Status pernikahan tidak boleh kosong';
+              //     }
+              //   },
+              // ),
+              DropdownButtonFormField(
+                items: const ['Belum Kawin', 'Sudah Kawin'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  status.value = value;
                 },
-                validator: (value) {
+                onSaved: (String? newValue) {
+                  userData.value['status_pernikahan'] =
+                      newValue == 'Sudah Kawin';
+                },
+                validator: (String? value) {
                   if (value == null) {
                     return 'Status pernikahan tidak boleh kosong';
                   }
+                  return null;
                 },
               ),
               const SizedBox(
                 height: 20,
               ),
-              BorderedFormField(
-                hint: 'Alamat Anda',
-                textEditingController: addressTextEditingController,
+              // BorderedFormField(
+              //   hint: 'Alamat Anda',
+              //   textEditingController: addressTextEditingController,
+              //   keyboardType: TextInputType.multiline,
+              //   onSaved: (value) {
+              //     userData.value['alamat'] = value;
+              //   },
+              //   validator: (value) {
+              //     if (value!.isEmpty) {
+              //       return 'Alamat tidak boleh kosong';
+              //     }
+              //     return null;
+              //   },
+              //   initialValue: '',
+              //   focusNode: FocusNode(),
+              //   onFieldSubmitted: (string) {},
+              //   maxLine: 999,
+              //   onChanged: (string) {},
+              //   onTap: () {},
+              //   suffixIcon: Container(),
+              // ),
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: 'Alamat Anda',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: Container(),
+                ),
+                controller: addressTextEditingController,
                 keyboardType: TextInputType.multiline,
-                onSaved: (value) {
-                  userData.value['alamat'] = value;
-                },
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Alamat tidak boleh kosong';
                   }
                   return null;
                 },
-                initialValue: '',
+                onSaved: (value) {
+                  userData.value['alamat'] = value!;
+                },
                 focusNode: FocusNode(),
-                onFieldSubmitted: (string) {},
-                maxLine: 999,
-                onChanged: (string) {},
+                onFieldSubmitted: (value) {},
+                maxLines: null, // Allow multiple lines
+                onChanged: (value) {},
                 onTap: () {},
-                suffixIcon: Container(),
               ),
               const SizedBox(
                 height: 20,

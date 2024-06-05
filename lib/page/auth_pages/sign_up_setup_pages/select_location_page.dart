@@ -92,18 +92,46 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: BorderedFormField(
-                hint: 'Alamat Terpilih',
-                textEditingController: _searchTextEditingController,
-                initialValue: '',
+              // child: BorderedFormField(
+              //   hint: 'Alamat Terpilih',
+              //   textEditingController: _searchTextEditingController,
+              //   initialValue: '',
+              //   focusNode: FocusNode(),
+              //   onFieldSubmitted: (string) {},
+              //   maxLine: 999,
+              //   onChanged: (string) {},
+              //   onSaved: (string) {},
+              //   onTap: () {},
+              //   validator: (string) {},
+              //   suffixIcon: Container(),
+              // ),
+              child: TextFormField(
+                controller: _searchTextEditingController,
+                decoration: InputDecoration(
+                  hintText: 'Alamat Terpilih',
+                  border: OutlineInputBorder(),
+                  suffixIcon: Container(),
+                ),
                 focusNode: FocusNode(),
-                onFieldSubmitted: (string) {},
-                maxLine: 999,
-                onChanged: (string) {},
-                onSaved: (string) {},
-                onTap: () {},
-                validator: (string) {},
-                suffixIcon: Container(),
+                maxLines: null,
+                onFieldSubmitted: (string) {
+                  // Handle field submission if needed
+                },
+                onChanged: (string) {
+                  // Handle value change if needed
+                },
+                onSaved: (string) {
+                  // Handle saving the form if needed
+                },
+                onTap: () {
+                  // Handle tap event if needed
+                },
+                validator: (string) {
+                  if (string == null || string.isEmpty) {
+                    return 'Alamat tidak boleh kosong';
+                  }
+                  return null;
+                },
               ),
             ),
             const Expanded(

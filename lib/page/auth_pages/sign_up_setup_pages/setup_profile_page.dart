@@ -19,8 +19,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class SetupProfilePage extends HookWidget {
   final PageController pageController;
   final ValueNotifier<int> currentPage;
+  final TextEditingController _nameTextEditingController =
+      TextEditingController();
 
-  const SetupProfilePage({
+  SetupProfilePage({
     super.key,
     required this.pageController,
     required this.currentPage,
@@ -136,25 +138,53 @@ class SetupProfilePage extends HookWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: BorderedFormField(
-                  hint: 'Nama',
+                // child: BorderedFormField(
+                //   hint: 'Nama',
+                //   onSaved: (value) {
+                //     userData.value['nama_pengguna'] = value;
+                //   },
+                //   validator: (value) {
+                //     if (value!.isEmpty) {
+                //       return 'Nama tidak boleh kosong';
+                //     }
+                //     return null;
+                //   },
+                //   textEditingController: TextEditingController(),
+                //   initialValue: '',
+                //   focusNode: FocusNode(),
+                //   onFieldSubmitted: (string) {},
+                //   maxLine: 999,
+                //   onChanged: (string) {},
+                //   onTap: () {},
+                //   suffixIcon: Container(),
+                // ),
+                child: TextFormField(
+                  controller: _nameTextEditingController,
+                  decoration: InputDecoration(
+                    hintText: 'Nama',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Container(),
+                  ),
+                  focusNode: FocusNode(),
+                  maxLines: null,
+                  onFieldSubmitted: (string) {
+                    // Handle field submission if needed
+                  },
+                  onChanged: (string) {
+                    // Handle value change if needed
+                  },
                   onSaved: (value) {
-                    userData.value['nama_pengguna'] = value;
+                    userData.value['nama_pengguna'] = value ?? '';
+                  },
+                  onTap: () {
+                    // Handle tap event if needed
                   },
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'Nama tidak boleh kosong';
                     }
                     return null;
                   },
-                  textEditingController: TextEditingController(),
-                  initialValue: '',
-                  focusNode: FocusNode(),
-                  onFieldSubmitted: (string) {},
-                  maxLine: 999,
-                  onChanged: (string) {},
-                  onTap: () {},
-                  suffixIcon: Container(),
                 ),
               ),
               const SizedBox(

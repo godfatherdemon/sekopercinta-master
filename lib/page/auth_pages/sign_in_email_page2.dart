@@ -57,9 +57,9 @@ class SignInEmailPage2 extends HookWidget {
     final navigatorKey = useMemoized(() => GlobalKey<NavigatorState>());
 
     final submit = useCallback(() async {
-      if (!formKey.value.currentState!.validate()) {
-        return;
-      }
+      // if (!formKey.value.currentState!.validate()) {
+      //   return;
+      // }
 
       formKey.value.currentState?.save();
 
@@ -71,7 +71,11 @@ class SignInEmailPage2 extends HookWidget {
               context.read(hasuraClientProvider).state,
             );
 
-        navigatorKey.currentState!.pushAndRemoveUntil(
+        // navigatorKey.currentState!.pushAndRemoveUntil(
+        //   createRoute(page: const BottomNavPage()),
+        //   (route) => false,
+        // );
+        Navigator.of(context).pushAndRemoveUntil(
           createRoute(page: const BottomNavPage()),
           (route) => false,
         );
@@ -241,7 +245,62 @@ class SignInEmailPage2 extends HookWidget {
                             ),
                             contentPadding: const EdgeInsets.only(
                                 left: 12, bottom: 12, top: 12, right: 12),
-                            labelText: 'hint',
+                            labelText: 'email',
+                            labelStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            suffixIcon: const Text(''),
+                          ),
+                          onFieldSubmitted: (value) {
+                            submit();
+                          },
+                          onChanged: (value) {},
+                          // onSaved: onSaved,
+                          onSaved: (newValue) {
+                            loginData.value['email'] = newValue!;
+                          },
+                          validator: (newValue) {
+                            if (newValue!.isEmpty) {
+                              return 'email tidak boleh kosong';
+                            }
+                            return null;
+                          },
+                          // validator:
+                          //     validator as String? Function(String?)? ?? (String? value) => null,
+                        ),
+
+                        TextFormField(
+                          // onTap: onTap,
+                          onTap: () {},
+                          cursorColor: Colors.black,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                          decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFBDBDBD), width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: accentColor, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 12, bottom: 12, top: 12, right: 12),
+                            labelText: 'password',
                             labelStyle: const TextStyle(
                               fontSize: 14,
                             ),
@@ -250,13 +309,16 @@ class SignInEmailPage2 extends HookWidget {
                           onFieldSubmitted: (value) {},
                           onChanged: (value) {},
                           // onSaved: onSaved,
-                          onSaved: (newValue) {},
+                          onSaved: (newValue) {
+                            loginData.value['password'] = newValue!;
+                          },
                           validator: (value) {
                             return null;
                           },
                           // validator:
                           //     validator as String? Function(String?)? ?? (String? value) => null,
                         ),
+
                         isLoading.value
                             ? const Center(
                                 child: CircularProgressIndicator(),

@@ -175,8 +175,44 @@ class SignUpPage extends HookWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        BorderedFormField(
-                          hint: 'Email',
+                        // BorderedFormField(
+                        TextFormField(
+                          // hint: 'Email',
+                          onTap: () {},
+                          cursorColor: Colors.black,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                          decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFBDBDBD), width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: accentColor, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 12, bottom: 12, top: 12, right: 12),
+                            labelText: 'email',
+                            labelStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            suffixIcon: const Text(''),
+                          ),
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           validator: (value) {
@@ -186,57 +222,82 @@ class SignUpPage extends HookWidget {
                             return null;
                           },
                           onSaved: (value) {
-                            signUpData.value['email'] = value;
+                            signUpData.value['email'] = value!;
                           },
                           onFieldSubmitted: (value) {
                             FocusScope.of(context).requestFocus(passFocusNode);
                           },
                           // textEditingController: TextEditingController(),
-                          textEditingController: passTextEditingController,
+                          // textEditingController: passTextEditingController,
                           initialValue: '',
                           focusNode: FocusNode(),
-                          maxLine: 999,
+                          // maxLine: 999,
                           onChanged: (string) {},
-                          onTap: () {},
-                          suffixIcon: Container(),
+                          // suffixIcon: Container(),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        BorderedFormField(
-                          hint: 'Buat Password',
+                        // BorderedFormField(
+                        //   hint: 'Buat Password',
+                        //   obscureText: true,
+                        //   maxLine: 1,
+                        //   focusNode: passFocusNode,
+                        //   textEditingController: passTextEditingController,
+                        //   validator: (value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'Password tidak boleh kosong';
+                        //     }
+                        //     if (value.length < 8) {
+                        //       return 'Password harus 8 huruf atau lebih';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onSaved: (value) {
+                        //     signUpData.value['password'] = value;
+                        //   },
+                        //   onFieldSubmitted: (value) {
+                        //     FocusScope.of(context).requestFocus(passFocusNode2);
+                        //   },
+                        //   initialValue: '',
+                        //   onChanged: (string) {},
+                        //   onTap: () {},
+                        //   // onTap: null,
+                        //   suffixIcon: Container(),
+                        // ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFBDBDBD), width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: accentColor, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 12, bottom: 12, top: 12, right: 12),
+                            labelText: 'password',
+                            labelStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            suffixIcon: const Text(''),
+                          ),
                           obscureText: true,
-                          maxLine: 1,
-                          focusNode: passFocusNode,
-                          textEditingController: passTextEditingController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Password tidak boleh kosong';
-                            }
-                            if (value.length < 8) {
-                              return 'Password harus 8 huruf atau lebih';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            signUpData.value['password'] = value;
-                          },
-                          onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(passFocusNode2);
-                          },
-                          initialValue: '',
-                          onChanged: (string) {},
-                          onTap: () {},
-                          // onTap: null,
-                          suffixIcon: Container(),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        BorderedFormField(
-                          hint: 'Ulangi Password',
-                          obscureText: true,
-                          maxLine: 1,
+                          maxLines: 1,
                           focusNode: passFocusNode2,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -253,12 +314,102 @@ class SignUpPage extends HookWidget {
                           onFieldSubmitted: (value) {
                             submit();
                           },
-                          textEditingController: passTextEditingController,
-                          initialValue: '',
-                          onChanged: (string) {},
+                          controller: passTextEditingController,
+                          onChanged: (value) {
+                            signUpData.value['password'] = value;
+                          },
                           onSaved: (string) {},
                           onTap: submit,
-                          suffixIcon: Container(),
+                          // If you need a suffix icon, you can add it like this:
+                          // suffixIcon: const Icon(Icons.visibility_off), // or any other widget
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        // BorderedFormField(
+                        //   hint: 'Ulangi Password',
+                        //   obscureText: true,
+                        //   maxLine: 1,
+                        //   focusNode: passFocusNode2,
+                        //   validator: (value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'Password tidak boleh kosong';
+                        //     }
+                        //     if (value != passTextEditingController.text) {
+                        //       return 'Password tidak sesuai';
+                        //     }
+                        //     if (value.length < 8) {
+                        //       return 'Password harus 8 huruf atau lebih';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onFieldSubmitted: (value) {
+                        //     submit();
+                        //   },
+                        //   textEditingController: passTextEditingController,
+                        //   initialValue: '',
+                        //   onChanged: (string) {},
+                        //   onSaved: (string) {},
+                        //   onTap: submit,
+                        //   suffixIcon: Container(),
+                        // ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFBDBDBD), width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: accentColor, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                                left: 12, bottom: 12, top: 12, right: 12),
+                            labelText: 'ulangi password',
+                            labelStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            suffixIcon: const Text(''),
+                          ),
+                          obscureText: true,
+                          maxLines: 1,
+                          focusNode: passFocusNode2,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Password tidak boleh kosong';
+                            }
+                            if (value != passTextEditingController.text) {
+                              return 'Password tidak sesuai';
+                            }
+                            if (value.length < 8) {
+                              return 'Password harus 8 huruf atau lebih';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {
+                            submit();
+                          },
+                          controller: passTextEditingController,
+                          onChanged: (value) {
+                            signUpData.value['password'] = value;
+                          },
+                          onSaved: (string) {},
+                          onTap: submit,
+                          // If you need a suffix icon, you can add it like this:
+                          // suffixIcon: const Icon(Icons.visibility_off), // or any other widget
                         ),
                         const SizedBox(
                           height: 32,

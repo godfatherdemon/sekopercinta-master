@@ -105,43 +105,84 @@ class AnswerManyQuestions extends HookWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          BorderedFormField(
-                            hint: 'Jawaban',
-                            textEditingController: answerTextEditingController,
+                          // BorderedFormField(
+                          //   hint: 'Jawaban',
+                          //   textEditingController: answerTextEditingController,
+                          //   onSaved: (value) async {
+                          //     answers.value.add(value);
+                          //     // print(answers.value);
+                          //     final Logger logger = Logger();
+                          //     logger.d(answers.value);
+                          //     // await Future.delayed(Duration(milliseconds: 200));
+                          //     listKey.value.currentState?.insertItem(
+                          //       0,
+                          //       duration: const Duration(milliseconds: 300),
+                          //     );
+
+                          //     answerTextEditingController.text = '';
+                          //   },
+                          //   validator: (value) {
+                          //     if (answers.value.contains(value)) {
+                          //       return 'Jawaban tidak boleh ada yang sama';
+                          //     }
+                          //     if (value!.isEmpty) {
+                          //       return 'Jawaban tidak boleh kosong';
+                          //     }
+                          //     return null;
+                          //   },
+                          //   initialValue: '',
+                          //   focusNode: FocusNode(),
+                          //   onFieldSubmitted: (string) {},
+                          //   maxLine: 999,
+                          //   onChanged: (string) {},
+                          //   onTap: () {
+                          //     // print('BorderedFormField tapped!');
+                          //     final Logger logger = Logger();
+                          //     logger.d('BorderedFormField tapped!');
+                          //   },
+                          //   suffixIcon: Container(),
+                          // )
+                          TextFormField(
+                            controller: answerTextEditingController,
+                            decoration: InputDecoration(
+                              hintText: 'Jawaban',
+                              border: const OutlineInputBorder(),
+                              suffixIcon:
+                                  Container(), // Add any specific widget if needed
+                            ),
                             onSaved: (value) async {
-                              answers.value.add(value);
-                              // print(answers.value);
+                              answers.value
+                                  .add(value!); // Ensure non-null value
                               final Logger logger = Logger();
                               logger.d(answers.value);
-                              // await Future.delayed(Duration(milliseconds: 200));
                               listKey.value.currentState?.insertItem(
                                 0,
                                 duration: const Duration(milliseconds: 300),
                               );
-
-                              answerTextEditingController.text = '';
+                              answerTextEditingController.clear();
                             },
                             validator: (value) {
                               if (answers.value.contains(value)) {
                                 return 'Jawaban tidak boleh ada yang sama';
                               }
-                              if (value!.isEmpty) {
+                              if (value == null || value.isEmpty) {
                                 return 'Jawaban tidak boleh kosong';
                               }
                               return null;
                             },
-                            initialValue: '',
                             focusNode: FocusNode(),
-                            onFieldSubmitted: (string) {},
-                            maxLine: 999,
-                            onChanged: (string) {},
-                            onTap: () {
-                              // print('BorderedFormField tapped!');
-                              final Logger logger = Logger();
-                              logger.d('BorderedFormField tapped!');
+                            maxLines: null, // To allow multiple lines
+                            onFieldSubmitted: (value) {
+                              // Implement any specific logic on field submission if needed
                             },
-                            suffixIcon: Container(),
-                          )
+                            onChanged: (value) {
+                              // Implement any specific logic on field change if needed
+                            },
+                            onTap: () {
+                              final Logger logger = Logger();
+                              logger.d('TextFormField tapped!');
+                            },
+                          ),
                         ],
                       ),
                     ),

@@ -137,30 +137,30 @@ class CourseDiscussionPage extends HookWidget {
                       const SizedBox(
                         height: 24,
                       ),
-                      BorderedFormField(
-                        hint: 'Tulis komentar Anda....',
-                        keyboardType: TextInputType.multiline,
-                        maxLine: 7,
-                        onSaved: (value) {
-                          comment.value = value;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Komentar tidak boleh kosong';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (value) {
-                          sendComment();
-                        },
-                        textEditingController: TextEditingController(),
-                        initialValue: '',
-                        focusNode: FocusNode(),
-                        onChanged: (string) {},
-                        onTap: () {},
-                        // suffixIcon: Container(),
-                        suffixIcon: const Icon(Icons.verified_user),
-                      ),
+                      // BorderedFormField(
+                      //   hint: 'Tulis komentar Anda....',
+                      //   keyboardType: TextInputType.multiline,
+                      //   maxLine: 7,
+                      //   onSaved: (value) {
+                      //     comment.value = value;
+                      //   },
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return 'Komentar tidak boleh kosong';
+                      //     }
+                      //     return null;
+                      //   },
+                      //   onFieldSubmitted: (value) {
+                      //     sendComment();
+                      //   },
+                      //   textEditingController: TextEditingController(),
+                      //   initialValue: '',
+                      //   focusNode: FocusNode(),
+                      //   onChanged: (string) {},
+                      //   onTap: () {},
+                      //   // suffixIcon: Container(),
+                      //   suffixIcon: const Icon(Icons.verified_user),
+                      // ),
                     ],
                   ),
                 ),

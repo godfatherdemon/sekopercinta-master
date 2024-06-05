@@ -114,50 +114,56 @@ class FilterMyActivityBottomSheet extends HookWidget {
                               DateFormat('yyyy-MM-dd').format(picked);
                         }
                       },
-                      child: IgnorePointer(
-                        child: BorderedFormField(
-                          hint: 'Pilih Tanggal',
-                          textEditingController: filterTextEditingController,
-                          initialValue: '',
-                          focusNode: FocusNode(),
-                          maxLine: 1,
-                          onChanged: (value) {
-                            // print('Field value changed to: $value');
-                            final Logger logger = Logger();
-                            logger.d('Field value changed to: $value');
-                          },
-                          onSaved: (value) {
-                            selectedDate = value; // Update the selected date
-                            // print('Selected Date: $selectedDate');
-                            final Logger logger = Logger();
-                            logger.d('Selected Date: $selectedDate');
-                            isLastMonth.value = value
-                                .isEmpty; // Update _isLastMonth based on the selected date
-                          },
-                          onTap: (value) {
-                            // print('Field value changed to: $value');
-                            final Logger logger = Logger();
-                            logger.d('Field value changed to :$value');
-                            // print('Field tapped');
-                          },
-                          onFieldSubmitted: (value) {},
-                          suffixIcon: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: Center(
-                              child: Image.asset(
-                                'assets/images/ic-calendar.png',
-                                width: 24,
+                      child: Column(
+                        children: [
+                          IgnorePointer(
+                            child: BorderedFormField(
+                              hint: 'Pilih Tanggal',
+                              textEditingController:
+                                  filterTextEditingController,
+                              initialValue: '',
+                              focusNode: FocusNode(),
+                              maxLine: 1,
+                              onChanged: (value) {
+                                // print('Field value changed to: $value');
+                                final Logger logger = Logger();
+                                logger.d('Field value changed to: $value');
+                              },
+                              onSaved: (value) {
+                                selectedDate =
+                                    value; // Update the selected date
+                                // print('Selected Date: $selectedDate');
+                                final Logger logger = Logger();
+                                logger.d('Selected Date: $selectedDate');
+                                isLastMonth.value = value
+                                    .isEmpty; // Update _isLastMonth based on the selected date
+                              },
+                              onTap: (value) {
+                                // print('Field value changed to: $value');
+                                final Logger logger = Logger();
+                                logger.d('Field value changed to :$value');
+                                // print('Field tapped');
+                              },
+                              onFieldSubmitted: (value) {},
+                              suffixIcon: SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/images/ic-calendar.png',
+                                    width: 24,
+                                  ),
+                                ),
                               ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Tanggal tidak boleh kosong';
+                                }
+                                return null;
+                              },
                             ),
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Tanggal tidak boleh kosong';
-                            }
-                            return null;
-                          },
-                        ),
+                        ],
                       ),
                     ),
                     const SizedBox(
