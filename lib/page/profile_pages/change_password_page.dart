@@ -106,10 +106,36 @@ class ChangePasswordPage extends HookWidget {
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
                             children: [
-                              BorderedFormField(
-                                hint: 'Password lama',
+                              // BorderedFormField(
+                              //   hint: 'Password lama',
+                              //   obscureText: true,
+                              //   maxLine: 1,
+                              //   validator: (value) {
+                              //     if (value!.isEmpty) {
+                              //       return 'Password lama tidak boleh kosong';
+                              //     }
+                              //     return null;
+                              //   },
+                              //   onSaved: (value) {
+                              //     oldPassword.value = value;
+                              //   },
+                              //   initialValue: '',
+                              //   focusNode: FocusNode(),
+                              //   onFieldSubmitted: (string) {},
+                              //   onChanged: (string) {},
+                              //   onTap: () {},
+                              //   // suffixIcon: Container(),
+                              //   suffixIcon: const Icon(Icons.verified_user),
+                              //   textEditingController: TextEditingController(),
+                              // ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  hintText: 'Password lama',
+                                  border: OutlineInputBorder(),
+                                  suffixIcon: Icon(Icons.verified_user),
+                                ),
                                 obscureText: true,
-                                maxLine: 1,
+                                maxLines: 1,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Password lama tidak boleh kosong';
@@ -117,26 +143,51 @@ class ChangePasswordPage extends HookWidget {
                                   return null;
                                 },
                                 onSaved: (value) {
-                                  oldPassword.value = value;
+                                  oldPassword.value = value!;
                                 },
-                                initialValue: '',
                                 focusNode: FocusNode(),
-                                onFieldSubmitted: (string) {},
-                                onChanged: (string) {},
+                                onFieldSubmitted: (value) {},
+                                onChanged: (value) {},
                                 onTap: () {},
-                                // suffixIcon: Container(),
-                                suffixIcon: const Icon(Icons.verified_user),
-                                textEditingController: TextEditingController(),
+                                controller: TextEditingController(),
                               ),
+
                               const SizedBox(
                                 height: 12,
                               ),
-                              BorderedFormField(
-                                hint: 'Password baru',
-                                textEditingController:
-                                    passTextEditingController,
+                              // BorderedFormField(
+                              //   hint: 'Password baru',
+                              //   textEditingController:
+                              //       passTextEditingController,
+                              //   obscureText: true,
+                              //   maxLine: 1,
+                              //   validator: (value) {
+                              //     if (value!.isEmpty) {
+                              //       return 'Password baru tidak boleh kosong';
+                              //     }
+                              //     if (value.length < 8) {
+                              //       return 'Password harus 8 huruf atau lebih';
+                              //     }
+                              //     return null;
+                              //   },
+                              //   onSaved: (value) {
+                              //     newPassword.value = value;
+                              //   },
+                              //   initialValue: '',
+                              //   focusNode: FocusNode(),
+                              //   onFieldSubmitted: (string) {},
+                              //   onChanged: (string) {},
+                              //   onTap: () {},
+                              //   suffixIcon: Container(),
+                              // ),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Password baru',
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: Container(),
+                                ),
                                 obscureText: true,
-                                maxLine: 1,
+                                maxLines: 1,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Password baru tidak boleh kosong';
@@ -147,15 +198,15 @@ class ChangePasswordPage extends HookWidget {
                                   return null;
                                 },
                                 onSaved: (value) {
-                                  newPassword.value = value;
+                                  newPassword.value = value!;
                                 },
-                                initialValue: '',
                                 focusNode: FocusNode(),
-                                onFieldSubmitted: (string) {},
-                                onChanged: (string) {},
+                                onFieldSubmitted: (value) {},
+                                onChanged: (value) {},
                                 onTap: () {},
-                                suffixIcon: Container(),
+                                controller: passTextEditingController,
                               ),
+
                               const SizedBox(
                                 height: 8,
                               ),
@@ -191,10 +242,40 @@ class ChangePasswordPage extends HookWidget {
                               const SizedBox(
                                 height: 12,
                               ),
-                              BorderedFormField(
-                                hint: 'Konfirmasi password baru',
+                              // BorderedFormField(
+                              //   hint: 'Konfirmasi password baru',
+                              //   obscureText: true,
+                              //   maxLine: 1,
+                              //   validator: (value) {
+                              //     if (value!.isEmpty) {
+                              //       return 'Password tidak boleh kosong';
+                              //     }
+                              //     if (value != passTextEditingController.text) {
+                              //       return 'Password tidak sesuai';
+                              //     }
+                              //     if (value.length < 8) {
+                              //       return 'Password harus 8 huruf atau lebih';
+                              //     }
+                              //     return null;
+                              //   },
+                              //   textEditingController:
+                              //       passTextEditingController,
+                              //   initialValue: '',
+                              //   focusNode: FocusNode(),
+                              //   onFieldSubmitted: (string) {},
+                              //   onChanged: (string) {},
+                              //   onSaved: (string) {},
+                              //   suffixIcon: Container(),
+                              //   onTap: () {},
+                              // ),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Konfirmasi password baru',
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: Container(),
+                                ),
                                 obscureText: true,
-                                maxLine: 1,
+                                maxLines: 1,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Password tidak boleh kosong';
@@ -207,14 +288,11 @@ class ChangePasswordPage extends HookWidget {
                                   }
                                   return null;
                                 },
-                                textEditingController:
-                                    passTextEditingController,
-                                initialValue: '',
+                                controller: passTextEditingController,
                                 focusNode: FocusNode(),
-                                onFieldSubmitted: (string) {},
-                                onChanged: (string) {},
-                                onSaved: (string) {},
-                                suffixIcon: Container(),
+                                onFieldSubmitted: (value) {},
+                                onChanged: (value) {},
+                                onSaved: (value) {},
                                 onTap: () {},
                               ),
                             ],

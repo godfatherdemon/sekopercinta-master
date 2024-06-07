@@ -8,11 +8,20 @@ import 'package:sekopercinta_master/utils/constants.dart';
 
 class FilterMyActivityBottomSheet extends HookWidget {
   const FilterMyActivityBottomSheet({super.key});
+  // final TextEditingController _filterTextEditingController =
+  //     TextEditingController();
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // String selectedDate = '';
+  // ValueNotifier<bool> isLastMonth = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _filterTextEditingController =
+        TextEditingController();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    ValueNotifier<bool> isLastMonth = ValueNotifier<bool>(false);
     String selectedDate = '';
-    final isLastMonth = useState(true);
+    // final isLastMonth = useState(true);
     final filterTextEditingController = useTextEditingController();
     final animationController = useAnimationController(
       duration: const Duration(milliseconds: 300),
@@ -117,44 +126,39 @@ class FilterMyActivityBottomSheet extends HookWidget {
                       child: Column(
                         children: [
                           IgnorePointer(
-                            child: BorderedFormField(
-                              hint: 'Pilih Tanggal',
-                              textEditingController:
-                                  filterTextEditingController,
-                              initialValue: '',
+                            child: TextFormField(
+                              controller: _filterTextEditingController,
+                              decoration: InputDecoration(
+                                hintText: 'Pilih Tanggal',
+                                border: const OutlineInputBorder(),
+                                suffixIcon: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/images/ic-calendar.png',
+                                      width: 24,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               focusNode: FocusNode(),
-                              maxLine: 1,
+                              maxLines: 1,
                               onChanged: (value) {
-                                // print('Field value changed to: $value');
                                 final Logger logger = Logger();
                                 logger.d('Field value changed to: $value');
                               },
                               onSaved: (value) {
-                                selectedDate =
-                                    value; // Update the selected date
-                                // print('Selected Date: $selectedDate');
+                                selectedDate = value!;
                                 final Logger logger = Logger();
                                 logger.d('Selected Date: $selectedDate');
-                                isLastMonth.value = value
-                                    .isEmpty; // Update _isLastMonth based on the selected date
+                                isLastMonth.value = value.isEmpty;
                               },
-                              onTap: (value) {
-                                // print('Field value changed to: $value');
+                              onTap: () {
                                 final Logger logger = Logger();
-                                logger.d('Field value changed to :$value');
-                                // print('Field tapped');
+                                logger.d('Field tapped');
                               },
                               onFieldSubmitted: (value) {},
-                              suffixIcon: SizedBox(
-                                width: 32,
-                                height: 32,
-                                child: Center(
-                                  child: Image.asset(
-                                    'assets/images/ic-calendar.png',
-                                    width: 24,
-                                  ),
-                                ),
-                              ),
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Tanggal tidak boleh kosong';
@@ -162,12 +166,76 @@ class FilterMyActivityBottomSheet extends HookWidget {
                                 return null;
                               },
                             ),
+                            // SizedBox(height: 16),
+                            // ElevatedButton(
+                            //   onPressed: () {
+                            //     if (_formKey.currentState!.validate()) {
+                            //       _formKey.currentState!.save();
+                            //       // Implement the logic to handle the saved date
+                            //       print('Selected Date: $selectedDate');
+                            //     }
+                            //   },
+                            //   child: Text('Submit'),
+                            // ),
+
+                            // child: BorderedFormField(
+                            //   hint: 'Pilih Tanggal',
+                            //   textEditingController:
+                            //       filterTextEditingController,
+                            //   initialValue: '',
+                            //   focusNode: FocusNode(),
+                            //   maxLine: 1,
+                            //   onChanged: (value) {
+                            //     // print('Field value changed to: $value');
+                            //     final Logger logger = Logger();
+                            //     logger.d('Field value changed to: $value');
+                            //   },
+                            //   onSaved: (value) {
+                            //     selectedDate =
+                            //         value; // Update the selected date
+                            //     final Logger logger = Logger();
+                            //     logger.d('Selected Date: $selectedDate');
+                            //     isLastMonth.value = value
+                            //         .isEmpty; // Update _isLastMonth based on the selected date
+                            //   },
+                            //   onTap: (value) {
+                            //     final Logger logger = Logger();
+                            //     logger.d('Field value changed to :$value');
+                            //   },
+                            //   onFieldSubmitted: (value) {},
+                            //   suffixIcon: SizedBox(
+                            //     width: 32,
+                            //     height: 32,
+                            //     child: Center(
+                            //       child: Image.asset(
+                            //         'assets/images/ic-calendar.png',
+                            //         width: 24,
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return 'Tanggal tidak boleh kosong';
+                            //     }
+                            //     return null;
+                            //   },
+                            // ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(
                       height: 32,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          // Implement the logic to handle the saved date
+                          print('Selected Date: $selectedDate');
+                        }
+                      },
+                      child: const Text('Submit'),
                     ),
                   ],
                 ),

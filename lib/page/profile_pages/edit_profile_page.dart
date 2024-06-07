@@ -338,11 +338,35 @@ class EditProfilePage extends HookWidget {
                             const SizedBox(
                               height: 24,
                             ),
-                            BorderedFormField(
-                              hint: 'NIK',
+                            // BorderedFormField(
+                            //   hint: 'NIK',
+                            //   initialValue: userData.value.nik,
+                            //   keyboardType: TextInputType.number,
+                            //   textEditingController: TextEditingController(),
+                            //   onSaved: (value) {
+                            //     editedUserData.value['nik'] = value;
+                            //   },
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return 'NIK tidak boleh kosong';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   focusNode: FocusNode(),
+                            //   onFieldSubmitted: (string) {},
+                            //   maxLine: 999,
+                            //   onChanged: (string) {},
+                            //   onTap: () {},
+                            //   suffixIcon: Container(),
+                            // ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'NIK',
+                                border: const OutlineInputBorder(),
+                                suffixIcon: Container(),
+                              ),
                               initialValue: userData.value.nik,
                               keyboardType: TextInputType.number,
-                              textEditingController: TextEditingController(),
                               onSaved: (value) {
                                 editedUserData.value['nik'] = value;
                               },
@@ -353,18 +377,43 @@ class EditProfilePage extends HookWidget {
                                 return null;
                               },
                               focusNode: FocusNode(),
-                              onFieldSubmitted: (string) {},
-                              maxLine: 999,
-                              onChanged: (string) {},
+                              onFieldSubmitted: (value) {},
+                              maxLines: 1,
+                              onChanged: (value) {},
                               onTap: () {},
-                              suffixIcon: Container(),
+                              controller: TextEditingController(),
                             ),
+
                             const SizedBox(
                               height: 12,
                             ),
-                            BorderedFormField(
-                              hint: 'Nama',
-                              // initialValue: _userData.value.namaPengguna,
+                            // BorderedFormField(
+                            //   hint: 'Nama',
+                            //   // initialValue: _userData.value.namaPengguna,
+                            //   initialValue: userData.value.namaPengguna ?? '',
+                            //   onSaved: (value) {
+                            //     editedUserData.value['nama_pengguna'] = value;
+                            //   },
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return 'Nama tidak boleh kosong';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   focusNode: FocusNode(),
+                            //   onFieldSubmitted: (string) {},
+                            //   maxLine: 999,
+                            //   onChanged: (string) {},
+                            //   onTap: () {},
+                            //   suffixIcon: Container(),
+                            //   textEditingController: TextEditingController(),
+                            // ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Nama',
+                                border: const OutlineInputBorder(),
+                                suffixIcon: Container(),
+                              ),
                               initialValue: userData.value.namaPengguna ?? '',
                               onSaved: (value) {
                                 editedUserData.value['nama_pengguna'] = value;
@@ -376,13 +425,13 @@ class EditProfilePage extends HookWidget {
                                 return null;
                               },
                               focusNode: FocusNode(),
-                              onFieldSubmitted: (string) {},
-                              maxLine: 999,
-                              onChanged: (string) {},
+                              onFieldSubmitted: (value) {},
+                              maxLines: 1,
+                              onChanged: (value) {},
                               onTap: () {},
-                              suffixIcon: Container(),
-                              textEditingController: TextEditingController(),
+                              controller: TextEditingController(),
                             ),
+
                             const SizedBox(
                               height: 12,
                             ),
@@ -400,23 +449,56 @@ class EditProfilePage extends HookWidget {
                                 }
                               },
                               child: IgnorePointer(
-                                child: BorderedFormField(
-                                  hint: 'Tanggal Lahir',
-                                  textEditingController:
-                                      birthTextEditingController,
-                                  suffixIcon: SizedBox(
-                                    width: 32,
-                                    height: 32,
-                                    child: Center(
-                                      child: Image.asset(
-                                        'assets/images/ic-calendar.png',
-                                        width: 24,
+                                // child: BorderedFormField(
+                                //   hint: 'Tanggal Lahir',
+                                //   textEditingController:
+                                //       birthTextEditingController,
+                                //   suffixIcon: SizedBox(
+                                //     width: 32,
+                                //     height: 32,
+                                //     child: Center(
+                                //       child: Image.asset(
+                                //         'assets/images/ic-calendar.png',
+                                //         width: 24,
+                                //       ),
+                                //     ),
+                                //   ),
+                                //   onSaved: (value) {
+                                //     editedUserData.value['tanggal_lahir'] =
+                                //         value;
+                                //   },
+                                //   validator: (value) {
+                                //     if (value!.isEmpty) {
+                                //       return 'Tanggal lahir tidak boleh kosong';
+                                //     }
+                                //     return null;
+                                //   },
+                                //   initialValue: '',
+                                //   focusNode: FocusNode(),
+                                //   onFieldSubmitted: (string) {},
+                                //   maxLine: 999,
+                                //   onChanged: (string) {},
+                                //   onTap: () {},
+                                // ),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Tanggal Lahir',
+                                    border: const OutlineInputBorder(),
+                                    suffixIcon: SizedBox(
+                                      width: 32,
+                                      height: 32,
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/images/ic-calendar.png',
+                                          width: 24,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  controller: birthTextEditingController,
                                   onSaved: (value) {
                                     editedUserData.value['tanggal_lahir'] =
-                                        value;
+                                        value!;
                                   },
                                   validator: (value) {
                                     if (value!.isEmpty) {
@@ -424,11 +506,11 @@ class EditProfilePage extends HookWidget {
                                     }
                                     return null;
                                   },
-                                  initialValue: '',
                                   focusNode: FocusNode(),
-                                  onFieldSubmitted: (string) {},
-                                  maxLine: 999,
-                                  onChanged: (string) {},
+                                  onFieldSubmitted: (value) {},
+                                  maxLines:
+                                      1, // Setting maxLines to 1 for a single-line input
+                                  onChanged: (value) {},
                                   onTap: () {},
                                 ),
                               ),
@@ -481,12 +563,37 @@ class EditProfilePage extends HookWidget {
                             const SizedBox(
                               height: 12,
                             ),
-                            BorderedFormField(
-                              hint: 'Alamat',
-                              textEditingController:
-                                  addressTextEditingController,
+                            // BorderedFormField(
+                            //   hint: 'Alamat',
+                            //   textEditingController:
+                            //       addressTextEditingController,
+                            //   onSaved: (value) {
+                            //     editedUserData.value['alamat'] = value;
+                            //   },
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return 'Alamat tidak boleh kosong';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   initialValue: '',
+                            //   focusNode: FocusNode(),
+                            //   onFieldSubmitted: (string) {},
+                            //   maxLine: 999,
+                            //   onChanged: (string) {},
+                            //   onTap: () {},
+                            //   suffixIcon: Container(),
+                            // ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Alamat',
+                                border: const OutlineInputBorder(),
+                                suffixIcon:
+                                    Container(), // Empty container as suffixIcon
+                              ),
+                              controller: addressTextEditingController,
                               onSaved: (value) {
-                                editedUserData.value['alamat'] = value;
+                                editedUserData.value['alamat'] = value!;
                               },
                               validator: (value) {
                                 if (value!.isEmpty) {
@@ -494,14 +601,13 @@ class EditProfilePage extends HookWidget {
                                 }
                                 return null;
                               },
-                              initialValue: '',
                               focusNode: FocusNode(),
-                              onFieldSubmitted: (string) {},
-                              maxLine: 999,
-                              onChanged: (string) {},
+                              onFieldSubmitted: (value) {},
+                              maxLines: null, // null allows for multiline input
+                              onChanged: (value) {},
                               onTap: () {},
-                              suffixIcon: Container(),
                             ),
+
                             const SizedBox(
                               height: 12,
                             ),

@@ -52,9 +52,20 @@ class SignInEmailPage extends HookWidget {
     final formKey = useState(GlobalKey<FormState>());
     // final formKey = useMemoized(() => GlobalKey<FormState>());
     final loginData = useState<Map<String, String>>({});
-    final passFocusNode = useFocusNode();
+    // final passFocusNode = useFocusNode();
     final isLoading = useState(false);
     final navigatorKey = useMemoized(() => GlobalKey<NavigatorState>());
+    final TextEditingController emailTextEditingController =
+        TextEditingController();
+    final GlobalKey<FormState> formKey0 = GlobalKey<FormState>();
+    final FocusNode emailFocusNode = FocusNode();
+    final FocusNode passFocusNode0 = FocusNode();
+    // Map<String, String> loginData = {};
+    // ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
+    TextEditingController();
+    final TextEditingController passwordTextEditingController =
+        TextEditingController();
+    final FocusNode passwordFocusNode = FocusNode();
 
     final submit = useCallback(() async {
       if (!formKey.value.currentState!.validate()) {
@@ -153,13 +164,18 @@ class SignInEmailPage extends HookWidget {
                         const SizedBox(
                           height: 4,
                         ),
-                        BorderedFormField(
-                          hint: 'Email',
-                          onSaved: (value) {
-                            loginData.value['email'] = value;
-                          },
+                        TextFormField(
+                          controller: emailTextEditingController,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            border: const OutlineInputBorder(),
+                            suffixIcon: Container(),
+                          ),
+                          focusNode: emailFocusNode,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(passFocusNode);
+                            FocusScope.of(context).requestFocus(passFocusNode0);
                           },
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -167,30 +183,70 @@ class SignInEmailPage extends HookWidget {
                             }
                             return null;
                           },
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          textEditingController: TextEditingController(),
-                          initialValue: '',
-                          focusNode: FocusNode(),
-                          maxLine: 999,
-                          onChanged: (String? string) {
-                            // print('Value changed: $string');
+                          onSaved: (value) {
+                            loginData.value['email'] = value!;
+                          },
+                          onChanged: (string) {
                             final Logger logger = Logger();
                             logger.i('Value changed: $string');
                           },
                           onTap: () {},
-                          suffixIcon: Container(),
+                          maxLines: 1,
                         ),
+                        // Add other form fields here
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formKey0.currentState!.validate()) {
+                              formKey0.currentState!.save();
+                              // Implement the login logic
+                              print('Login Data: $loginData');
+                            }
+                          },
+                          child: const Text('Login'),
+                        ),
+                        // BorderedFormField(
+                        //   hint: 'Email',
+                        //   onSaved: (value) {
+                        //     loginData.value['email'] = value;
+                        //   },
+                        //   onFieldSubmitted: (value) {
+                        //     FocusScope.of(context).requestFocus(passFocusNode);
+                        //   },
+                        //   validator: (value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'Email tidak boleh kosong';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   keyboardType: TextInputType.emailAddress,
+                        //   textInputAction: TextInputAction.next,
+                        //   textEditingController: TextEditingController(),
+                        //   initialValue: '',
+                        //   focusNode: FocusNode(),
+                        //   maxLine: 999,
+                        //   onChanged: (String? string) {
+                        //     // print('Value changed: $string');
+                        //     final Logger logger = Logger();
+                        //     logger.i('Value changed: $string');
+                        //   },
+                        //   onTap: () {},
+                        //   suffixIcon: Container(),
+                        // ),
                         const SizedBox(
                           height: 20,
                         ),
-                        BorderedFormField(
-                          hint: 'Password',
-                          focusNode: passFocusNode,
+                        TextFormField(
+                          controller: passwordTextEditingController,
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            border: const OutlineInputBorder(),
+                            suffixIcon: Container(),
+                          ),
+                          focusNode: passwordFocusNode,
                           obscureText: true,
-                          maxLine: 1,
-                          onSaved: (value) {
-                            loginData.value['password'] = value;
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (value) {
+                            submit();
                           },
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -198,15 +254,40 @@ class SignInEmailPage extends HookWidget {
                             }
                             return null;
                           },
-                          onFieldSubmitted: (value) {
-                            submit();
+                          onSaved: (value) {
+                            loginData.value['password'] = value!;
                           },
-                          textEditingController: TextEditingController(),
-                          initialValue: '',
-                          onChanged: (String? string) {},
-                          onTap: () {},
-                          suffixIcon: Container(),
+                          onChanged: (string) {},
+                          maxLines: 1,
                         ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: submit,
+                          child: const Text('Login'),
+                        ),
+                        // BorderedFormField(
+                        //   hint: 'Password',
+                        //   focusNode: passFocusNode,
+                        //   obscureText: true,
+                        //   maxLine: 1,
+                        //   onSaved: (value) {
+                        //     loginData.value['password'] = value;
+                        //   },
+                        //   validator: (value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'Password tidak boleh kosong';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onFieldSubmitted: (value) {
+                        //     submit();
+                        //   },
+                        //   textEditingController: TextEditingController(),
+                        //   initialValue: '',
+                        //   onChanged: (String? string) {},
+                        //   onTap: () {},
+                        //   suffixIcon: Container(),
+                        // ),
                         const SizedBox(
                           height: 32,
                         ),
